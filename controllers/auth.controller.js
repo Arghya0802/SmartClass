@@ -13,6 +13,15 @@ export const register = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
+  const findTeacher = await Teacher.findOne({ email });
+  const findStudent = await Student.findOne({ email });
+  const findAdmin = await Admin.findOne({ email });
+
+  if (findAdmin || findTeacher || findStudent)
+    return next(
+      new ApiError(400, "Sorry!!! Email-ID is already registered!!!")
+    );
+
   const post = uniqueId[0];
 
   if (post === "T") {
@@ -75,11 +84,14 @@ export const login = asyncHandler(async (req, res, next) => {
     const findAdmin = await Admin.findOne({ uniqueId });
 
     if (!findAdmin)
-      return next(new ApiError(401, "No Admin found with given Unique-Id"));
+      return next(new ApiError(400, "No Admin found with given Unique-Id"));
+
+    if (findAdmin.password !== password)
+      return next(new ApiError(401, "Sorry!!! Incorrect Password!!!"));
 
     return res.status(200).json({
       findAdmin,
-      message: "Admin found Successfullly",
+      message: "Admin Logged-In Successfullly",
       designation: "admin",
       success: true,
     });
@@ -89,7 +101,10 @@ export const login = asyncHandler(async (req, res, next) => {
     const findTeacher = await Teacher.findOne({ uniqueId });
 
     if (!findTeacher)
-      return next(new ApiError(401, "No Teacher found with given Unique-Id"));
+      return next(new ApiError(400, "No Teacher found with given Unique-Id"));
+
+    if (findTeacher.password !== password)
+      return next(new ApiError(401, "Sorry!!! Incorrect Password!!!"));
 
     const isHoD = findTeacher.designation === "hod";
 
@@ -105,7 +120,10 @@ export const login = asyncHandler(async (req, res, next) => {
     const findStudent = await Student.findOne({ uniqueId });
 
     if (!findStudent)
-      return next(new ApiError(401, "No Student found with given Unique-Id"));
+      return next(new ApiError(400, "No Student found with given Unique-Id"));
+
+    if (findStudent.password !== password)
+      return next(new ApiError(401, "Sorry!!! Incorrect Password"));
 
     return res.status(200).json({
       findStudent,
@@ -115,8 +133,8 @@ export const login = asyncHandler(async (req, res, next) => {
     });
   }
 
-  return res.status(500).json({
-    message: "Sorry!!! Internal Server Error!!!",
+  return res.status(400).json({
+    message: "Please enter a Valid Unique-Id",
     success: false,
   });
 });
