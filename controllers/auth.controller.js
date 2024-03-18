@@ -5,6 +5,24 @@ import Student from "../models/student.model.js";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
+const generateAccessAndRefreshTokens = async (userId, User) => {
+  try {
+    const user = await User.findById(userId);
+    // console.log(user);
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
+    // console.log(accessToken, refreshToken);
+    user.refreshToken = refreshToken;
+    // Before saving data into our MongoDB, we don't need Password, UserName validations
+    await user.save({ validateBeforeSave: false });
+
+    return { accessToken, refreshToken };
+  } catch (error) {
+    // console.log(error);
+    return next(new ApiError(500, error));
+  }
+};
+
 export const register = asyncHandler(async (req, res, next) => {
   const { name, email, password, uniqueId } = req.body;
 
@@ -72,69 +90,229 @@ export const login = asyncHandler(async (req, res, next) => {
   if (!uniqueId || !password)
     return next(
       new ApiError(
+        400,
         "Please enter all the neccessary details before proceeding!!!"
       )
     );
 
   const post = uniqueId[0];
   if (post !== "A" && post !== "T" && post !== "S")
-    return next(new ApiError(401, "Please enter a valid Unique-Id"));
+    return next(new ApiError(400, "Please enter a valid Unique-Id"));
 
   if (post === "A") {
-    const findAdmin = await Admin.findOne({ uniqueId });
+    const admin = await Admin.findOne({ uniqueId });
 
-    if (!findAdmin)
+    // console.log(admin._id);
+    if (!admin)
       return next(new ApiError(400, "No Admin found with given Unique-Id"));
 
-    if (findAdmin.password !== password)
-      return next(new ApiError(401, "Sorry!!! Incorrect Password!!!"));
+    const isValid = await admin.isPasswordCorrect(password);
 
-    return res.status(200).json({
-      findAdmin,
-      message: "Admin Logged-In Successfullly",
-      designation: "admin",
-      success: true,
-    });
+    if (!isValid)
+      return next(new ApiError(400, "Please enter Correct Password!!!"));
+    // console.log(user);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      admin._id,
+      Admin
+    );
+    // console.log(accessToken);
+    // console.log(refreshToken);
+    const loggedInAdmin = await Admin.findById(admin._id).select("-password");
+
+    // Options are designed so that cookies are edited from server-side only
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        loggedInAdmin,
+        accessToken,
+        refreshToken,
+        message: "Admin Logged-In Successfully",
+        success: true,
+      });
   }
 
   if (post === "T") {
-    const findTeacher = await Teacher.findOne({ uniqueId });
+    const teacher = await Teacher.findOne({ uniqueId });
 
-    if (!findTeacher)
+    if (!teacher)
       return next(new ApiError(400, "No Teacher found with given Unique-Id"));
 
-    if (findTeacher.password !== password)
-      return next(new ApiError(401, "Sorry!!! Incorrect Password!!!"));
+    const isValid = await teacher.isPasswordCorrect(password);
 
-    const isHoD = findTeacher.designation === "hod";
+    if (!isValid)
+      return next(new ApiError(400, "Please enter Correct Password!!!"));
+    // console.log(user);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      teacher._id,
+      Teacher
+    );
+    // console.log(accessToken);
+    // console.log(refreshToken);
+    const loggedInTeacher = await Teacher.findById(teacher._id).select(
+      "-password"
+    );
 
-    return res.status(200).json({
-      findTeacher,
-      message: "Teacher found Successfullly",
-      designation: isHoD ? "hod" : "teacher",
-      success: true,
-    });
+    // Options are designed so that cookies are edited from server-side only
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        loggedInTeacher,
+        accessToken,
+        refreshToken,
+        message: "Teacher Logged-In Successfully",
+        success: true,
+      });
   }
 
   if (post === "S") {
-    const findStudent = await Student.findOne({ uniqueId });
+    const student = await Student.findOne({ uniqueId });
 
-    if (!findStudent)
+    if (!student)
       return next(new ApiError(400, "No Student found with given Unique-Id"));
 
-    if (findStudent.password !== password)
-      return next(new ApiError(401, "Sorry!!! Incorrect Password"));
+    const isValid = await student.isPasswordCorrect(password);
 
-    return res.status(200).json({
-      findStudent,
-      message: "Student found Successfullly",
-      designation: "student",
-      success: true,
-    });
+    if (!isValid)
+      return next(new ApiError(400, "Please enter Correct Password!!!"));
+    // console.log(user);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
+      student._id,
+      Student
+    );
+    // console.log(accessToken);
+    // console.log(refreshToken);
+    const loggedInStudent = await Student.findById(student._id).select(
+      "-password"
+    );
+
+    // Options are designed so that cookies are edited from server-side only
+    const options = {
+      httpOnly: true,
+      secure: true,
+    };
+
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, options)
+      .cookie("refreshToken", refreshToken, options)
+      .json({
+        loggedInStudent,
+        accessToken,
+        refreshToken,
+        message: "Student Logged-In Successfully",
+        success: true,
+      });
   }
 
   return res.status(400).json({
     message: "Please enter a Valid Unique-Id",
+    success: false,
+  });
+});
+
+export const logout = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+
+  const { _id, uniqueId } = user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while decoding the Access-Token!!!"
+      )
+    );
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  if (uniqueId[0] === "A") {
+    await Admin.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          refreshToken: "EMPTY",
+        },
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        id: _id,
+        uniqueId: uniqueId,
+        message: "Admin logged out successfully",
+        success: true,
+      });
+  }
+
+  if (uniqueId[0] === "T") {
+    await Teacher.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          refreshToken: "EMPTY",
+        },
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        id: _id,
+        uniqueId: uniqueId,
+        message: "Teacher logged out successfully",
+        success: true,
+      });
+  }
+
+  if (uniqueId[0] === "S") {
+    await Student.findByIdAndUpdate(
+      _id,
+      {
+        $set: {
+          refreshToken: "EMPTY",
+        },
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .clearCookie("accessToken", options)
+      .clearCookie("refreshToken", options)
+      .json({
+        id: _id,
+        uniqueId: uniqueId,
+        message: "Student logged out successfully",
+        success: true,
+      });
+  }
+
+  return res.status(500).json({
+    message: "Sorry!!!Something went wrong while logging out User!!!",
     success: false,
   });
 });

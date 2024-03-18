@@ -1,0 +1,33 @@
+A --> Admin
+T --> Teacher
+S --> Student
+D --> Department
+L --> Subject
+
+Department:  Admin
+
+Teacher and Student should have Department
+(/api/v1/admin/add-teacher) --> Add Department
+(/api/v1/admin/add-student) --> Add Department 
+(/api/v1/teacher/add-resource)
+(/api/v1/hod/teacher-subject)
+
+Department:
+uniqueId
+Subjects: [ {uniqueId} ]
+Teachers: [ {uniqueId} ]
+HoD: 
+
+Subject:
+uniqueId,
+Department: uniqueId
+Teacher: uniqueId
+
+
+Resource:
+Department: uniqueId
+Subject: uniqueId
+Teacher: uniqueId
+file: String
+
+Assignment, Attendance

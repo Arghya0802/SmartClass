@@ -6,15 +6,20 @@ import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
 export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
-  const { uniqueId } = req.body;
+  const { uniqueId, departmentId } = req.body;
 
-  if (!uniqueId)
+  if (!uniqueId || !departmentId)
     return next(
-      new ApiError(401, "Please enter all the details before proceeding!!!")
+      new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  if (uniqueId[0] != "T")
-    return next(new ApiError(401, "Please enter a Valid Teacher Unique-Id"));
+  if (uniqueId[0] !== "T")
+    return next(new ApiError(400, "Please enter a Valid Teacher Unique-Id"));
+
+  const department = await Department.findOne({ departmentId });
+
+  if (!department)
+    return next(new ApiError(400, "Please enter a valid Department-Id!!!"));
 
   const newTeacher = await Teacher.create({ uniqueId });
 
@@ -29,15 +34,20 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
 });
 
 export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
-  const { uniqueId } = req.body;
+  const { uniqueId, departmentId } = req.body;
 
-  if (!uniqueId)
+  if (!uniqueId || !departmentId)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
   if (uniqueId[0] != "S")
-    return next(new ApiError(401, "Please enter a Valid Student Unique-Id"));
+    return next(new ApiError(400, "Please enter a Valid Student Unique-Id"));
+
+  const department = await Department.findOne({ departmentId });
+
+  if (!department)
+    return next(new ApiError(400, "Please enter a valid Department-Id!!!"));
 
   const newStudent = await Student.create({ uniqueId });
 
@@ -87,10 +97,13 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
 
   const existedHoD = await Teacher.findOne({ uniqueId });
 
-  if (!existedHoD) return next(new ApiError(400, "Teacher does not exists!!!"));
+  if (!existedHoD)
+    return next(new ApiError(404, "Requested Teacher does not exists!!!"));
 
   if (!existedHoD.name)
-    return next(new ApiError(400, "Required Teacher is not yet registered!!!"));
+    return next(
+      new ApiError(400, "Requested Teacher is not yet registered!!!")
+    );
 
   if (existedHoD.designation === "hod")
     return next(
@@ -100,6 +113,8 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
   const newHoD = await Teacher.findByIdAndUpdate(existedHoD._id, {
     designation: "hod",
   });
+
+  if (!newHoD) return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
   return res.status(200).json({
     newHoD,
