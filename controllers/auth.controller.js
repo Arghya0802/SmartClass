@@ -85,6 +85,7 @@ export const register = asyncHandler(async (req, res, next) => {
 });
 
 export const login = asyncHandler(async (req, res, next) => {
+  console.log(req.body);
   const { uniqueId, password } = req.body;
 
   if (!uniqueId || !password)
@@ -134,6 +135,7 @@ export const login = asyncHandler(async (req, res, next) => {
         accessToken,
         refreshToken,
         message: "Admin Logged-In Successfully",
+        designation: "admin",
         success: true,
       });
   }
@@ -174,7 +176,7 @@ export const login = asyncHandler(async (req, res, next) => {
         accessToken,
         refreshToken,
         message: "Teacher Logged-In Successfully",
-        designation: logg
+        designation: loggedInTeacher.designation,
         success: true,
       });
   }
@@ -215,6 +217,7 @@ export const login = asyncHandler(async (req, res, next) => {
         accessToken,
         refreshToken,
         message: "Student Logged-In Successfully",
+        designation : "student",
         success: true,
       });
   }
