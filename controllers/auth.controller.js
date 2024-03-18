@@ -4,6 +4,7 @@ import Student from "../models/student.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
+import bcrypt from "bcrypt";
 
 const generateAccessAndRefreshTokens = async (userId, User) => {
   try {
@@ -46,12 +47,17 @@ export const register = asyncHandler(async (req, res, next) => {
     const existedTeacher = await Teacher.findOne({ uniqueId });
 
     if (!existedTeacher)
-      return next(new ApiError(400, "No Teacher found with given Unique-Id"));
+      return next(new ApiError(404, "No Teacher found with given Unique-Id"));
 
-    const updatedTeacher = await Teacher.findByIdAndUpdate(
-      existedTeacher._id,
-      req.body
-    );
+    const hashed = await bcrypt.hash(password, 10);
+    const updatedTeacher = await Teacher.findByIdAndUpdate(existedTeacher._id, {
+      name,
+      email,
+      password: hashed,
+    });
+
+    if (!updatedTeacher)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     return res.status(200).json({
       updatedTeacher,
@@ -64,12 +70,18 @@ export const register = asyncHandler(async (req, res, next) => {
     const existedStudent = await Student.findOne({ uniqueId });
 
     if (!existedStudent)
-      return next(new ApiError(400, "No Teacher found with given Unique-Id"));
+      return next(new ApiError(404, "No Student found with given Unique-Id"));
 
-    const updatedStudent = await Student.findByIdAndUpdate(
-      existedStudent._id,
-      req.body
-    );
+    const hashed = await bcrypt.hash(password, 10);
+
+    const updatedStudent = await Student.findByIdAndUpdate(existedStudent._id, {
+      name,
+      email,
+      password: hashed,
+    });
+
+    if (!updatedStudent)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     return res.status(200).json({
       updatedStudent,
@@ -104,12 +116,12 @@ export const login = asyncHandler(async (req, res, next) => {
 
     // console.log(admin._id);
     if (!admin)
-      return next(new ApiError(400, "No Admin found with given Unique-Id"));
+      return next(new ApiError(404, "No Admin found with given Unique-Id"));
 
     const isValid = await admin.isPasswordCorrect(password);
 
     if (!isValid)
-      return next(new ApiError(400, "Please enter Correct Password!!!"));
+      return next(new ApiError(401, "Please enter Correct Password!!!"));
     // console.log(user);
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
       admin._id,
@@ -118,6 +130,9 @@ export const login = asyncHandler(async (req, res, next) => {
     // console.log(accessToken);
     // console.log(refreshToken);
     const loggedInAdmin = await Admin.findById(admin._id).select("-password");
+
+    if (!loggedInAdmin)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     // Options are designed so that cookies are edited from server-side only
     const options = {
@@ -133,6 +148,7 @@ export const login = asyncHandler(async (req, res, next) => {
         loggedInAdmin,
         accessToken,
         refreshToken,
+        designation: "admin",
         message: "Admin Logged-In Successfully",
         success: true,
       });
@@ -159,6 +175,9 @@ export const login = asyncHandler(async (req, res, next) => {
       "-password"
     );
 
+    if (!loggedInTeacher)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
+
     // Options are designed so that cookies are edited from server-side only
     const options = {
       httpOnly: true,
@@ -173,6 +192,7 @@ export const login = asyncHandler(async (req, res, next) => {
         loggedInTeacher,
         accessToken,
         refreshToken,
+        designation: loggedInTeacher.designation,
         message: "Teacher Logged-In Successfully",
         success: true,
       });
@@ -199,6 +219,9 @@ export const login = asyncHandler(async (req, res, next) => {
       "-password"
     );
 
+    if (!loggedInStudent)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
+
     // Options are designed so that cookies are edited from server-side only
     const options = {
       httpOnly: true,
@@ -213,6 +236,7 @@ export const login = asyncHandler(async (req, res, next) => {
         loggedInStudent,
         accessToken,
         refreshToken,
+        designation: "student",
         message: "Student Logged-In Successfully",
         success: true,
       });
@@ -243,7 +267,7 @@ export const logout = asyncHandler(async (req, res, next) => {
   };
 
   if (uniqueId[0] === "A") {
-    await Admin.findByIdAndUpdate(
+    const loggedOutAdmin = await Admin.findByIdAndUpdate(
       _id,
       {
         $set: {
@@ -252,6 +276,9 @@ export const logout = asyncHandler(async (req, res, next) => {
       },
       { new: true }
     );
+
+    if (!loggedOutAdmin)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     return res
       .status(200)
@@ -266,7 +293,7 @@ export const logout = asyncHandler(async (req, res, next) => {
   }
 
   if (uniqueId[0] === "T") {
-    await Teacher.findByIdAndUpdate(
+    const loggedOutTeacher = await Teacher.findByIdAndUpdate(
       _id,
       {
         $set: {
@@ -275,6 +302,9 @@ export const logout = asyncHandler(async (req, res, next) => {
       },
       { new: true }
     );
+
+    if (!loggedOutTeacher)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     return res
       .status(200)
@@ -289,7 +319,7 @@ export const logout = asyncHandler(async (req, res, next) => {
   }
 
   if (uniqueId[0] === "S") {
-    await Student.findByIdAndUpdate(
+    const loggedOutStudent = await Student.findByIdAndUpdate(
       _id,
       {
         $set: {
@@ -298,6 +328,9 @@ export const logout = asyncHandler(async (req, res, next) => {
       },
       { new: true }
     );
+
+    if (!loggedOutStudent)
+      return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     return res
       .status(200)
