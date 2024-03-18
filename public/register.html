@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="register.css">
+</head>
+<body>
+    <div class="overlay">
+        <!-- LOGN IN FORM by Omar Dsoky -->
+        <form id="registerForm">
+           <!--   con = Container  for items in the form-->
+           <div class="con">
+           <!--     Start  header Content  -->
+           <header class="head-form">
+              <h2>Registeration Form</h2>
+              <!--     A welcome message or an explanation of the login form -->
+              <p>Register here using your credentials</p>
+           </header>
+           <!--     End  header Content  -->
+           <br>
+           <div class="field-set">
+             
+              <!--   userID -->
+                 <span class="input-item">
+                   <i class="fa fa-user-circle"></i>
+                 </span>
+                <!--   user name Input-->
+                 <input class="form-input" id="uniqueId" type="text" name="uniqueId" placeholder="UID" required>
+             
+              <br>
+
+              <!--   name -->
+              <span class="input-item">
+                <i class="fa fa-user-circle"></i>
+              </span>
+             <!--   name Input-->
+              <input class="form-input" id="name" type="text" name="name" placeholder="Name" required>
+          
+           <br>
+             
+           <!--   emailID -->
+           <span class="input-item">
+            <i class="fa fa-user-circle"></i>
+          </span>
+         <!--   Email Input-->
+          <input class="form-input" id="email" type="text" name="email" placeholder="EmailID" required>
+      
+       <br>
+                   <!--   Password -->
+             
+              <span class="input-item">
+                <i class="fa fa-key"></i>
+               </span>
+              <!--   Password Input-->
+              <input class="form-input" type="password" placeholder="Password" id="password"  name="password" required>
+             
+              <br>
+        <!--        buttons -->
+        <!--      button LogIn -->
+              <button class="log-in" onclick="RegisterClicked()"> Register </button>
+
+              <br>
+              
+              <button class="btn submits sign-up" onclick="goToLogin()">Login
+                <!--         Sign Up font icon -->
+                      <i class="fa fa-user-plus" aria-hidden="true"></i>
+                      </button>
+           </div>
+             
+        <!--   End Conrainer  -->
+          </div>
+          
+          <!-- End Form -->
+        </form>
+        </div>
+    <script src="register.js">
+    </script>
+</body>
+</html>
