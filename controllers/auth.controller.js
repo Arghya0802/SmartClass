@@ -174,6 +174,7 @@ export const login = asyncHandler(async (req, res, next) => {
         accessToken,
         refreshToken,
         message: "Teacher Logged-In Successfully",
+        designation: logg
         success: true,
       });
   }
