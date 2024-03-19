@@ -2,6 +2,9 @@ import Teacher from "../models/teacher.model.js";
 import Admin from "../models/admin.model.js";
 import Student from "../models/student.model.js";
 
+import path from "path"
+__dirname = path.resolve();
+
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
@@ -89,7 +92,7 @@ export const login = asyncHandler(async (req, res, next) => {
     if (findAdmin.password !== password)
       return next(new ApiError(401, "Sorry!!! Incorrect Password!!!"));
 
-    return res.status(200).json({
+    return res.status(200).render(path.resolve(__dirname,"../public/users/admin"),{
       findAdmin,
       message: "Admin Logged-In Successfullly",
       designation: "admin",

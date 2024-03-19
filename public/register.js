@@ -37,3 +37,9 @@ function RegisterClicked()
         console.log('Error:', error);
     });
 }
+
+function goToLogin()
+{
+    event.preventDefault();
+    window.location.href = "login.html"
+}
