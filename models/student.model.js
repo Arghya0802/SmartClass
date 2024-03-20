@@ -13,13 +13,21 @@ const studentSchema = new mongoose.Schema(
       required: true,
       unique: true,
       validate: function () {
-        if (this.uniqueId.length < 3 || this.uniqueId[1] !== "-") return false;
+        if (
+          this.uniqueId.length < 3 ||
+          this.uniqueId[1] !== "-" ||
+          this.uniqueId[0] !== "S"
+        )
+          return false;
         return true;
       },
     },
     password: {
       type: String,
-      // required: true,
+      default: function () {
+        // Set the default email value based on uniqueId
+        return `${this.uniqueId}`;
+      },
     },
     email: {
       type: String,
@@ -43,8 +51,8 @@ studentSchema.pre("save", async function (next) {
 
     const hashed = await bcrypt.hash(this.password, 10);
 
-    // console.log(`Password hashed successfully!!!`);
-    // console.log(hashed);
+    console.log(`Password hashed successfully!!!`);
+    console.log(hashed);
     this.password = hashed;
     next();
   } catch (error) {
