@@ -7,14 +7,18 @@ function LoginClicked() {
     // Get form data
     const UID = document.getElementById("uniqueId").value;
     const pwd = document.getElementById("password").value;
-    var jsonObject = {
+    const jsonObject = {};
+    if(UID && pwd)
+    jsonObject = {
         uniqueId : UID,
         password : pwd
     }
-    console.log(JSON.stringify(jsonObject))
+    //console.log(JSON.stringify(jsonObject))
     
     document.getElementById("uniqueId").value = "";
     document.getElementById("password").value = "";
+
+    var statusCode;
 
     // Send POST request to API
     fetch('api/v1/auth/login', {
@@ -25,10 +29,12 @@ function LoginClicked() {
         body: JSON.stringify(jsonObject)
     })
     .then(response => {
+        statusCode = response.status;
         return response.json();
     })
     .then(data => {
-        console.log('Response from server:', data);
+        //console.log('Response from server:', { data , statusCode});
+        localStorage.setItem("response",JSON.stringify({data , statusCode}));
         if(data.designation === "student")
         window.location.href = "users/student.html";
         else if(data.designation === "hod")

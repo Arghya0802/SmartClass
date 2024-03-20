@@ -5,8 +5,8 @@
     <link rel="stylesheet" href="error.css">
 </head>
 <body>
-    <h1>404</h1>
-<div><p>> <span>ERROR CODE</span>: "<i id="errorCode">HTTP 404 forbidden</i>"</p>
+    <h1 id="Code">404</h1>
+<div><p>> <span>ERROR CODE</span>: "<i  id="errorCode">HTTP 404 forbidden</i>"</p>
 <p>> <span>ERROR DESCRIPTION</span>: "<i id="errorDescription">Access Denied. You Do Not Have The Permission To Access This Page On This Server</i>"</p>
 <p>> <span>ERROR POSSIBLY CAUSED BY</span>: [<b>execute access forbidden, read access forbidden, 
     write access forbidden, ssl required, ssl 128 required, ip address rejected, 
@@ -16,6 +16,14 @@
     yet valid, passport logon failed, source access denied, infinite depth is denied, too many requests from the same client ip</b>...]</p>
 <p>> <span>YOU CAN GO BACK TO THESE PAGES</span>: [<a href="/login.html"> Login </a>, <a href="/register.html"> Register </a>]</p>
 </div>
-<script src="/error.js"></script>
+<script>
+    const {statusCode, data} = JSON.parse(localStorage.getItem("response"));
+    console.log(JSON.stringify(data));
+    document.getElementById("errorCode").innerHTML = statusCode;
+    document.getElementById("Code").innerHTML = statusCode;
+    document.getElementById("errorDescription").innerHTML = data.message;
+</script>
+<script src="/error.js">
+</script>
 </body>
 </html>
