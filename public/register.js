@@ -7,7 +7,11 @@ function RegisterClicked()
     var mail = document.getElementById("email").value;
     var name = document.getElementById("name").value;
 
-    const jsonObject = {
+    var jsonObject = {}
+    var statusCode;
+
+    if(UID && pwd && mail && name)
+    jsonObject = {
         name : name,
         uniqueId : UID,
         email : mail,
@@ -24,10 +28,12 @@ function RegisterClicked()
         body: JSON.stringify(jsonObject)
     })
     .then(response => {
+        statusCode = response.status;
         return response.json();
     })
     .then(data => {
         console.log('Response from server:', data);
+        localStorage.setItem("response", JSON.stringify( {data, statusCode}));
         if(data.success === true)
         window.location.href = "login.html";
         else

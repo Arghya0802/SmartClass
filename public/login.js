@@ -7,7 +7,7 @@ function LoginClicked() {
     // Get form data
     const UID = document.getElementById("uniqueId").value;
     const pwd = document.getElementById("password").value;
-    const jsonObject = {};
+    var jsonObject = {};
     if(UID && pwd)
     jsonObject = {
         uniqueId : UID,
