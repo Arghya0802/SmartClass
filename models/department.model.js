@@ -11,7 +11,12 @@ const departmentSchema = new mongoose.Schema(
       required: true,
       unique: true,
       validate: function () {
-        if (this.uniqueId.length < 3 || this.uniqueId[1] !== "-") return false;
+        if (
+          this.uniqueId.length < 3 ||
+          this.uniqueId[1] !== "-" ||
+          this.uniqueId[0] !== "D"
+        )
+          return false;
         return true;
       },
     },

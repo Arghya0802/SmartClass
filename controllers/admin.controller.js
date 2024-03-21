@@ -1,6 +1,7 @@
 import Teacher from "../models/teacher.model.js";
 import Admin from "../models/admin.model.js";
 import Student from "../models/student.model.js";
+import Department from "../models/department.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
@@ -119,6 +120,38 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     newHoD,
     message: "HoD assigned successfully!!!",
+    success: true,
+  });
+});
+
+export const addDepartmentToDataBase = asyncHandler(async (req, res, next) => {
+  const { name, uniqueId } = req.body;
+
+  if (!uniqueId || !name)
+    return next(
+      new ApiError(
+        400,
+        "Please provide all the neccessary details before proceeding!!!"
+      )
+    );
+
+  const existedDepartment = await Department.findOne({
+    $or: [{ name }, { uniqueId }],
+  });
+
+  if (existedDepartment)
+    return next(
+      new ApiError(400, "Department Unique-Id or Name already exists!!!")
+    );
+
+  const newDepartment = await Department.create({ name, uniqueId });
+
+  if (!newDepartment)
+    return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
+
+  return res.status(201).json({
+    newDepartment,
+    message: "Department Created Successfully!!!",
     success: true,
   });
 });
