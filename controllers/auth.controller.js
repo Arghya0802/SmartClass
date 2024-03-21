@@ -241,7 +241,7 @@ export const login = asyncHandler(async (req, res, next) => {
         refreshToken,
         designation: "student",
         message: "Student Logged-In Successfully",
-        designation : "student",
+        designation: "student",
         success: true,
       });
   }

@@ -11,6 +11,7 @@
 
 /* Start body rules */
 body {
+<<<<<<< HEAD
     background-image: linear-gradient(-225deg, #E3FDF5 0%, #FFE6FA 100%);
 background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%);
 background-attachment: fixed;
@@ -31,6 +32,12 @@ opacity: .95;
 
 
 
+=======
+    background-image: linear-gradient(120deg, #4f0088 0%, #000000 100%);
+    height: 100vh;
+}
+
+>>>>>>> origin/Raj
 /* End body rules */
 
 /* Start form  attributes */
