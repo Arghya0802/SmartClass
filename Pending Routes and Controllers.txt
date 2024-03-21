@@ -4,9 +4,14 @@ S --> Student
 D --> Department
 L --> Subject
 
+Admin will add Teacher & Student uniqueId along with their assigned Department from Backend
+Student & Teacher then will register themselves using their registered uniqueId
+
 Department:  Admin
 
 Teacher and Student should have Department
+(/api/v1/admin/add-department) 
+(/api/v1/admin/add-subject)
 (/api/v1/admin/add-teacher) --> Add Department
 (/api/v1/admin/add-student) --> Add Department 
 (/api/v1/teacher/add-resource)

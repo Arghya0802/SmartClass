@@ -13,7 +13,12 @@ const teacherSchema = new mongoose.Schema(
       required: true,
       unique: true,
       validate: function () {
-        if (this.uniqueId.length < 3 || this.uniqueId[1] !== "-") return false;
+        if (
+          this.uniqueId.length < 3 ||
+          this.uniqueId[1] !== "-" ||
+          this.uniqueId[0] !== "T"
+        )
+          return false;
         return true;
       },
     },
@@ -34,6 +39,15 @@ const teacherSchema = new mongoose.Schema(
       enum: ["teacher", "hod"],
       default: "teacher",
     },
+    department: {
+      type: String,
+      required: true,
+    },
+    subjects: [
+      {
+        type: String,
+      },
+    ],
     refreshToken: {
       type: String,
       default: "Empty",

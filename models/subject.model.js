@@ -11,12 +11,18 @@ const subjectSchema = new mongoose.Schema(
       required: true,
       unique: true,
       validate: function () {
-        if (this.uniqueId.length < 3 || this.uniqueId[1] !== "-") return false;
+        if (
+          this.uniqueId.length < 3 ||
+          this.uniqueId[1] !== "-" ||
+          this.uniqueId[0] !== "L"
+        )
+          return false;
         return true;
       },
     },
     department: {
       type: String,
+      required: true,
     },
     teachers: [
       {
@@ -27,6 +33,6 @@ const subjectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Subject = mongoose.model("Subject", departmentSchema);
+const Subject = mongoose.model("Subject", subjectSchema);
 
 export default Subject;

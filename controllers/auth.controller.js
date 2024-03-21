@@ -97,7 +97,7 @@ export const register = asyncHandler(async (req, res, next) => {
 });
 
 export const login = asyncHandler(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { uniqueId, password } = req.body;
 
   if (!uniqueId || !password)
@@ -109,8 +109,8 @@ export const login = asyncHandler(async (req, res, next) => {
     );
 
   const post = uniqueId[0];
-  if (post !== "A" && post !== "T" && post !== "S")
-    return next(new ApiError(400, "Please enter a valid Unique-Id"));
+  // if (post !== "A" && post !== "T" && post !== "S")
+  //   return next(new ApiError(400, "Please enter a valid Unique-Id"));
 
   if (post === "A") {
     const admin = await Admin.findOne({ uniqueId });

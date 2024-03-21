@@ -47,6 +47,10 @@ app.use("/api/v1/auth", authRouter);
 import adminRouter from "./routes/admin.routes.js";
 app.use("/api/v1/admin", adminRouter);
 
+// HoD Routes
+import hodRouter from "./routes/hod.routes.js";
+app.use("/api/v1/hod", hodRouter);
+
 // Error Handler Middleware
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

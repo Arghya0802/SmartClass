@@ -37,6 +37,10 @@ const studentSchema = new mongoose.Schema(
         return `${this.uniqueId}@gmail.com`;
       },
     },
+    department: {
+      type: String,
+      required: true,
+    },
     refreshToken: {
       type: String,
       default: "EMPTY",
