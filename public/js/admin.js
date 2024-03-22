@@ -26,7 +26,17 @@ function addTeacherClicked() {
     "You Clicked add Teacher button";
 }
 
+function addAdminClicked() {
+  document.getElementById("display-window").innerHTML =
+    "You Clicked assign HOD button";
+}
+
 function assignHODClicked() {
+  document.getElementById("display-window").innerHTML =
+    "You Clicked assign HOD button";
+}
+
+function removeHODClicked() {
   document.getElementById("display-window").innerHTML =
     "You Clicked assign HOD button";
 }
