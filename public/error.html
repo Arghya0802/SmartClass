@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Error</title>
-<<<<<<< HEAD
-</head>
-<body>
-    <p>
-        There is an error in your details
-    </p>
-=======
     <link rel="stylesheet" href="error.css">
 </head>
+
 <body>
     <h1 id="Code">404</h1>
-<div><p>> <span>ERROR CODE</span>: "<i  id="errorCode">HTTP 404 forbidden</i>"</p>
-<p>> <span>ERROR DESCRIPTION</span>: "<i id="errorDescription">Access Denied. You Do Not Have The Permission To Access This Page On This Server</i>"</p>
-<p>> <span>YOU CAN GO BACK TO THESE PAGES</span>: [<a href="/login.html"> Login </a>, <a href="/register.html"> Register </a>]</p>
-</div>
-<script>
-    const {statusCode, data} = JSON.parse(localStorage.getItem("response"));
-    console.log(JSON.stringify(data));
-    document.getElementById("errorCode").innerHTML = statusCode;
-    document.getElementById("Code").innerHTML = statusCode;
-    document.getElementById("errorDescription").innerHTML = data.message;
-</script>
-<script src="/error.js">
-</script>
->>>>>>> origin/Raj
+    <div>
+        <p>> <span>ERROR CODE</span>: "<i id="errorCode">HTTP 404 forbidden</i>"</p>
+        <p>> <span>ERROR DESCRIPTION</span>: "<i id="errorDescription">Access Denied. You Do Not Have The Permission To
+                Access This Page On This Server</i>"</p>
+        <p>> <span>YOU CAN GO BACK TO THESE PAGES</span>: [<a href="/login.html"> Login </a>, <a href="/register.html">
+                Register </a>]</p>
+    </div>
+    <script>
+        const { statusCode, data } = JSON.parse(localStorage.getItem("response"));
+        console.log(JSON.stringify(data));
+        document.getElementById("errorCode").innerHTML = statusCode;
+        document.getElementById("Code").innerHTML = statusCode;
+        document.getElementById("errorDescription").innerHTML = data.message;
+    </script>
+    <script src="/error.js">
+    </script>
 </body>
+
 </html>
