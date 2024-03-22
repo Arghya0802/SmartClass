@@ -1,0 +1,42 @@
+function loginClicked()
+{
+    event.preventDefault();
+    var jsonObject;
+    const uniqueId = document.getElementById("unique-id").value;
+    const password = document.getElementById("password").value;
+    if(uniqueId && password)
+    {
+        jsonObject = {
+            uniqueId,
+            password
+        }
+    }
+
+    document.getElementById("unique-id").value = "";
+    document.getElementById("password").value = "";
+
+    var statusCode;
+    fetch("/api/v1/auth/login", {
+        method : 'POST',
+        headers : {
+            'Content-Type': 'application/json',
+        },
+        body : JSON.stringify(jsonObject)
+    }).then((response) => {
+        statusCode = response.status;
+        return response.json();
+    }).then((data) => {
+        const post = data.designation;
+        localStorage.setItem("response",JSON.stringify({data,statusCode}));
+        if(post==="admin")
+        window.location.href = "/admin.html";
+        else if(post==="hod")
+        window.location.href = "/hod.html";
+        else if(post==="student")
+        window.location.href = "/student.html";
+        else if(post==="teacher")
+        window.location.href = "/teacher.html";
+        else
+        window.location.href = "/error.html";
+    })
+}
