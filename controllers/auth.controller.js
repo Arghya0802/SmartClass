@@ -102,8 +102,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
   if (!uniqueId || !password)
     return next(
-      new ApiError(
-        400,
+      new ApiError(400,
         "Please enter all the neccessary details before proceeding!!!"
       )
     );
