@@ -11,7 +11,7 @@
   <header>
     <div class="container">
       <div class="logo">
-        <a href="#">
+        <a href="/admin.html">
             <img src="icons/Logo.svg" alt="Logo">
         </a>
     </div>
@@ -27,13 +27,13 @@
 
   <div class="main-content">
     <div class="sidebar">
-        <button func="window.location.href='#'">Add Class</button>
-        <button func="window.location.href='#'">Add Department</button>
-        <button func="window.location.href='#'">Add Teacher</button>
-        <button func="window.location.href='#'">Assign HOD</button>
+        <button onclick="addDepartmentClicked()">Add Department</button>
+        <button onclick="addSubjectClicked()">Add Subject</button>
+        <button onclick="addTeacherClicked()">Add Teacher</button>
+        <button onclick="assignHODClicked()">Assign HOD</button>
     </div>
 
-    <div class="content">
+    <div class="content" id="display-window">
       <h1>Welcome <span id="name"></span> !</h1>
       <p>You are assigned as <strong><span id="designation"></span></strong></p>
       <p>Your Unique ID is <strong><span id="uniqueId"></span></strong></p>
