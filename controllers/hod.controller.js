@@ -104,3 +104,77 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const addSubjectToDepartment = asyncHandler(async (req, res, next) => {
+  const { name, uniqueId } = req.body;
+
+  if (!uniqueId || !name)
+    return next(
+      new ApiError(
+        400,
+        "Please provide all the neccessary details before proceeding!!!"
+      )
+    );
+
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Token")
+    );
+
+  const hod = await Teacher.findById(_id);
+
+  if (!hod || !hod.department)
+    return next(new ApiError(404, "No HoD found with given details!!!"));
+
+  if (hod.designation !== "hod")
+    return next(new ApiError(401, "Un-Authorized Access!!!"));
+
+  const existedSubject = await Subject.findOne({ uniqueId });
+  const currentDepartment = hod.department;
+
+  if (existedSubject)
+    return next(new ApiError(400, "Subject Unique-Id already exists!!!"));
+
+  if (!currentDepartment)
+    return next(
+      new ApiError(404, "Sorry!!! No Department found with given HoD!!!")
+    );
+
+  for (const subjectId of currentDepartment.subjects) {
+    const alreadyAddedSubject = await Subject.findOne({ uniqueId: subjectId });
+
+    // console.log(alreadyAddedSubject.uniqueId);
+
+    if (
+      alreadyAddedSubject.name === name ||
+      alreadyAddedSubject.uniqueId === uniqueId
+    )
+      return next(
+        new ApiError(
+          400,
+          "Subject-Id or Subject-Name already exists in the given Department"
+        )
+      );
+  }
+
+  const newSubject = await Subject.create({
+    name,
+    uniqueId,
+    department: currentDepartment.uniqueId,
+  });
+
+  if (!newSubject)
+    return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
+
+  await Department.findByIdAndUpdate(currentDepartment._id, {
+    $push: { subjects: uniqueId },
+  });
+
+  return res.status(201).json({
+    newSubject,
+    message: "Subject Created and added to given Department Successfully!!!",
+    success: true,
+  });
+});

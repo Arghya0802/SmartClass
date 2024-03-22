@@ -147,6 +147,9 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Requested Teacher is not yet registered!!!")
     );
 
+  if (!existedHoD.department)
+    return next(new ApiError(400, "Given Department already has an HoD!!!"));
+
   if (existedHoD.designation === "hod")
     return next(
       new ApiError(400, "Given Teacher is already assigned as HoD!!!")
@@ -156,11 +159,20 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
     designation: "hod",
   });
 
+  const updatedDepartment = await Department.findByIdAndUpdate(
+    newHoD.department._id,
+    {
+      hod: existedHoD.uniqueId,
+    },
+    { new: true }
+  );
+
   if (!newHoD) return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
   return res.status(200).json({
     newHoD,
-    message: "HoD assigned successfully!!!",
+    updatedDepartment,
+    message: "HoD assigned successfully to his/her own Department!!!",
     success: true,
   });
 });
@@ -197,66 +209,40 @@ export const addDepartmentToDataBase = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const addSubjectToDepartment = asyncHandler(async (req, res, next) => {
-  const { name, uniqueId, departmentId } = req.body;
+export const removeHoD = asyncHandler(async (req, res, next) => {
+  const { uniqueId } = req.body;
 
-  if (!uniqueId || !name || !departmentId)
+  if (!uniqueId)
     return next(
-      new ApiError(
-        400,
-        "Please provide all the neccessary details before proceeding!!!"
-      )
+      new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  const existedSubject = await Subject.findOne({ uniqueId });
-  const currentDepartment = await Department.findOne({
-    uniqueId: departmentId,
-  });
+  const existedHoD = await Teacher.findOne({ uniqueId });
 
-  if (existedSubject)
-    return next(new ApiError(400, "Subject Unique-Id already exists!!!"));
+  if (!existedHoD || existedHoD.designation !== "hod")
+    return next(new ApiError(404, "No HoD found with given Unique-Id"));
 
-  if (!currentDepartment)
-    return next(
-      new ApiError(
-        404,
-        "Sorry!!! No Department found with given Department Unique-Id!!!"
-      )
-    );
+  const changedHoD = await Teacher.findByIdAndUpdate(
+    existedHoD._id,
+    {
+      designation: "teacher",
+    },
+    { new: true }
+  );
 
-  for (const subjectId of currentDepartment.subjects) {
-    const alreadyAddedSubject = await Subject.findOne({ uniqueId: subjectId });
+  const updatedDepartment = await Department.findByIdAndUpdate(
+    existedHoD.department._id,
+    {
+      hod: "",
+    },
+    { new: true }
+  );
 
-    // console.log(alreadyAddedSubject.uniqueId);
-
-    if (
-      alreadyAddedSubject.name === name ||
-      alreadyAddedSubject.uniqueId === uniqueId
-    )
-      return next(
-        new ApiError(
-          400,
-          "Subject-Id or Subject-Name already exists in the given Department"
-        )
-      );
-  }
-
-  const newSubject = await Subject.create({
-    name,
-    uniqueId,
-    department: departmentId,
-  });
-
-  if (!newSubject)
-    return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
-
-  await Department.findByIdAndUpdate(currentDepartment._id, {
-    $push: { subjects: uniqueId },
-  });
-
-  return res.status(201).json({
-    newSubject,
-    message: "Subject Created and added to given Department Successfully!!!",
+  return res.status(200).json({
+    changedHoD,
+    updatedDepartment,
+    message:
+      "Given HoD has been removed from the current Department!!! Please now assign a New HoD to the Current Department",
     success: true,
   });
 });
