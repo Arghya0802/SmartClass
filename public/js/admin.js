@@ -6,27 +6,55 @@ document.getElementById("designation").innerText = designation;
 document.getElementById("uniqueId").innerText = uniqueId;
 
 function addDepartmentClicked() {
-  // fetch("forms/test.html").then(response => {
-  //     return response.text();
-  // }
-  // ).then(html => {
-  //     document.getElementById("display-window").innerHTML = html;
-  // })
-  document.getElementById("display-window").innerHTML =
-    "You Clicked add Department button";
+  fetch("forms/dept.html").then(response => {
+      return response.text();
+  }
+  ).then(html => {
+      document.getElementById("display-window").innerHTML = html;
+  })
 }
 
-function addSubjectClicked() {
-  document.getElementById("display-window").innerHTML =
-    "You Clicked add Subject button";
+function addStudentClicked() {
+  fetch("forms/student.html").then(response => {
+    return response.text();
+}
+).then(html => {
+    document.getElementById("display-window").innerHTML = html;
+})
 }
 
 function addTeacherClicked() {
-  document.getElementById("display-window").innerHTML =
-    "You Clicked add Teacher button";
+  fetch("forms/teacher.html").then(response => {
+    return response.text();
+}
+).then(html => {
+    document.getElementById("display-window").innerHTML = html;
+})
+}
+
+function addAdminClicked() {
+  fetch("forms/addadmin.html").then(response => {
+    return response.text();
+}
+).then(html => {
+    document.getElementById("display-window").innerHTML = html;
+})
 }
 
 function assignHODClicked() {
-  document.getElementById("display-window").innerHTML =
-    "You Clicked assign HOD button";
+  fetch("forms/asghod.html").then(response => {
+    return response.text();
+}
+).then(html => {
+    document.getElementById("display-window").innerHTML = html;
+})
+}
+
+function removeHODClicked() {
+  fetch("forms/removehod.html").then(response => {
+    return response.text();
+}
+).then(html => {
+    document.getElementById("display-window").innerHTML = html;
+})
 }
