@@ -2,7 +2,6 @@ import Teacher from "../models/teacher.model.js";
 import Admin from "../models/admin.model.js";
 import Student from "../models/student.model.js";
 import Department from "../models/department.model.js";
-import Subject from "../models/subject.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
@@ -45,7 +44,7 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
   department.teachers.push(uniqueId);
-  department.save();
+  await department.save();
 
   return res.status(201).json({
     newTeacher,
@@ -178,7 +177,7 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
   });
 
   department.hod = newHoD.uniqueId;
-  department.save();
+  await department.save();
 
   if (!newHoD) return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
@@ -250,7 +249,7 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
   );
 
   department.hod = "";
-  department.save();
+  await department.save();
 
   return res.status(200).json({
     changedHoD,
