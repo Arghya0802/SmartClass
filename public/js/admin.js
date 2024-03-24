@@ -1,4 +1,7 @@
+
 const { data } = JSON.parse(localStorage.getItem("response"));
+localStorage.removeItem("response");
+
 const { designation, loggedInAdmin } = data;
 const { name, uniqueId } = loggedInAdmin;
 document.getElementById("name").innerText = name;
@@ -58,3 +61,48 @@ function removeHODClicked() {
     document.getElementById("display-window").innerHTML = html;
 })
 }
+
+// Need Changes
+
+function getAllAdmin() {
+  let html = ' ';
+  fetch("forms/showadmins.html").then(response => {
+    return response.text();
+  }
+  ).then(initialhtml => {
+    html += initialhtml;
+  })
+  fetch("/api/v1/admin/get-admin").then(response => response.json()).then(data => {
+    if(data.success)
+    {
+      data.allAdmin.forEach(admin => {
+        html += "<p>" + admin.name + " " + admin.uniqueId + " <button onclick=\"removeAdmin('" + admin.uniqueId + "')\"> Remove </button> </p>";
+      });
+      document.getElementById("display-window").innerHTML = html;
+    }
+  })
+}
+
+// Need Changes
+
+// Need Changes
+
+function removeAdmin(objectId)
+{
+  console.log(objectId)
+  fetch("/api/v1/admin/remove-admin",{
+    method : "DELETE",
+    headers : {
+      'Content-Type': 'application/json',
+  },
+  body : JSON.stringify({objectId})
+  }).then(res => res.json())
+  .then(data => {
+    if(data.success)
+    {
+      getAllAdmin();
+    }
+  })
+}
+
+// Need Changes

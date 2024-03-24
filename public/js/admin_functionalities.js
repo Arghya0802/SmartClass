@@ -20,7 +20,6 @@ function addAdmin(){
         email,
         password
     }
-    var statusCode;
     fetch("/api/v1/admin/add-admin", {
         method : 'POST',
         headers : {
@@ -28,11 +27,10 @@ function addAdmin(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";
@@ -50,7 +48,6 @@ function assignHOD(){
     const jsonObject = {
         uniqueId
     }
-    var statusCode;
     fetch("/api/v1/admin/assign-hod", {
         method : 'PATCH',
         headers : {
@@ -58,11 +55,10 @@ function assignHOD(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";
@@ -79,7 +75,6 @@ function removeHOD(){
     const jsonObject = {
         uniqueId
     }
-    var statusCode;
     fetch("/api/v1/admin/remove-hod", {
         method : 'PATCH',
         headers : {
@@ -87,11 +82,10 @@ function removeHOD(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";
@@ -115,7 +109,6 @@ function addStudent(){
         uniqueId,
         departmentId
     }
-    var statusCode;
     fetch("/api/v1/admin/add-student", {
         method : 'POST',
         headers : {
@@ -123,11 +116,10 @@ function addStudent(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";
@@ -152,7 +144,6 @@ function addDepartment(){
         uniqueId,
         name
     }
-    var statusCode;
     fetch("/api/v1/admin/add-department", {
         method : 'POST',
         headers : {
@@ -160,11 +151,10 @@ function addDepartment(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";
@@ -188,7 +178,6 @@ function addTeacher(){
         uniqueId,
         departmentId
     }
-    var statusCode;
     fetch("/api/v1/admin/add-teacher", {
         method : 'POST',
         headers : {
@@ -196,11 +185,10 @@ function addTeacher(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
-        statusCode = response.status;
         return response.json();
     }).then((data) => {
         document.getElementById("notification").innerText = data.message;
-        if(statusCode === 200)
+        if(data.success)
         document.getElementById("notification").style.color = "green";
         else
         document.getElementById("notification").style.color = "red";

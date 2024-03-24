@@ -200,6 +200,9 @@ export const addDepartmentToDataBase = asyncHandler(async (req, res, next) => {
       )
     );
 
+    if (uniqueId.length < 3 || uniqueId[1] !== "-" || uniqueId[0] !== "D")
+    return next(new ApiError(400,"Please enter a valid Department-ID"));
+
   const existedDepartment = await Department.findOne({
     $or: [{ name }, { uniqueId }],
   });
@@ -259,3 +262,26 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+//Testing purpose
+
+export const getAdmin = asyncHandler(async (req, res, next) => {
+  const allAdmin = await Admin.find({});
+  return res.status(200).json({
+    allAdmin,
+    message: "All admins fetched successfully",
+    success: true,
+  })
+})
+
+export const RemoveAdmin = asyncHandler(async(req,res,next) => {
+  const {objectId} = req.body;
+  console.log(objectId);
+  await Admin.deleteOne({"uniqueId" : objectId})
+  return res.status(200).json({
+    message : "Delete successful",
+    success : true,
+  })
+})
+
+//Testing purpose

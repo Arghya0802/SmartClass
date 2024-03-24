@@ -10,6 +10,8 @@ import {
   addStudentToDataBase,
   assignHoD,
   removeHoD,
+  getAdmin,
+  RemoveAdmin
 } from "../controllers/admin.controller.js";
 
 router.post("/add-teacher", addTeacherToDataBase);
@@ -19,5 +21,12 @@ router.post("/add-department", addDepartmentToDataBase);
 
 router.patch("/assign-hod", assignHoD);
 router.patch("/remove-hod", removeHoD);
+
+//Testing purpose
+
+router.get("/get-admin", getAdmin)
+router.delete("/remove-admin",RemoveAdmin)
+
+//Testing purpose
 
 export default router;

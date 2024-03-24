@@ -1,3 +1,10 @@
+const { statusCode, data } = JSON.parse(localStorage.getItem("response"));
+localStorage.removeItem("response");
+console.log(JSON.stringify(data));
+document.getElementById("errorCode").innerHTML = statusCode;
+document.getElementById("Code").innerHTML = statusCode;
+document.getElementById("errorDescription").innerHTML = data.message;
+
 var str = document.getElementsByTagName('div')[0].innerHTML.toString();
 var i = 0;
 document.getElementsByTagName('div')[0].innerHTML = "";
