@@ -120,6 +120,13 @@ export const login = asyncHandler(async (req, res, next) => {
   // if (post !== "A" && post !== "T" && post !== "S")
   //   return next(new ApiError(400, "Please enter a valid Unique-Id"));
 
+  // Options are designed so that cookies are edited from server-side only
+
+  // TODO: Change the httpOnly: true before publishing
+  const options = {
+    httpOnly: false, // Change it to true before publishing
+    secure: true,
+  };
   if (post === "A") {
     const admin = await Admin.findOne({ uniqueId });
 
@@ -138,16 +145,14 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInAdmin = await Admin.findById(admin._id);
+    const loggedInAdmin = await Admin.findById(admin._id).select(
+      "-refreshToken"
+    );
 
     if (!loggedInAdmin)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
 
     // Options are designed so that cookies are edited from server-side only
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
 
     return res
       .status(200)
@@ -181,16 +186,12 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInTeacher = await Teacher.findById(teacher._id);
+    const loggedInTeacher = await Teacher.findById(teacher._id).select(
+      "-refreshToken"
+    );
 
     if (!loggedInTeacher)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
-
-    // Options are designed so that cookies are edited from server-side only
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
 
     return res
       .status(200)
@@ -223,16 +224,12 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInStudent = await Student.findById(student._id);
+    const loggedInStudent = await Student.findById(student._id).select(
+      "-refreshToken"
+    );
 
     if (!loggedInStudent)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
-
-    // Options are designed so that cookies are edited from server-side only
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
 
     return res
       .status(200)
@@ -268,8 +265,9 @@ export const logout = asyncHandler(async (req, res, next) => {
       )
     );
 
+  // TODO: Change the httpOnly to true before publishing
   const options = {
-    httpOnly: true,
+    httpOnly: false, // Change it to true before publishing the website
     secure: true,
   };
 

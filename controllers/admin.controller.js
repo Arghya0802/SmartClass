@@ -267,7 +267,7 @@ export const removeAdmin = asyncHandler(async (req, res, next) => {
       new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
     );
 
-  const { adminId } = req.params;
+  const { adminId } = req.body;
 
   if (!adminId)
     return next(
@@ -341,6 +341,26 @@ export const getAllAdmins = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     admins,
     message: "Admins list successfully retrived!!!",
+    success: true,
+  });
+});
+
+export const getSingleAdmin = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const loggedInAdmin = await Admin.findById(_id);
+
+  if (!loggedInAdmin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  return res.status(200).json({
+    loggedInAdmin,
+    message: "Admin Data successfully fetched from DataBase!!!",
     success: true,
   });
 });
