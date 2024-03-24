@@ -22,9 +22,9 @@ export const uploadOnCloudinary = async (localFilePath) => {
 
     // console.log(response);
     // After successfully uploading, unlink the file from our local storage
-    console.log(
-      `File has been successfully uploaded!!!\nLink is: ${response.url}`
-    );
+    // console.log(
+    //   `File has been successfully uploaded!!!\nLink is: ${response.url}`
+    // );
     fs.unlinkSync(localFilePath);
     return response;
   } catch (error) {

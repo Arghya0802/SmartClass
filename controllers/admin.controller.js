@@ -258,3 +258,89 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const removeAdmin = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const { adminId } = req.params;
+
+  if (!adminId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const loggedInAdmin = await Admin.findById(_id);
+  const aboutToBeDeletedAdmin = await Admin.findById(adminId);
+
+  if (!loggedInAdmin || !aboutToBeDeletedAdmin)
+    return next(
+      new ApiError(404, "No Admin(s) found with given credientials!!!")
+    );
+
+  // console.log(loggedInAdmin.uniqueId);
+  // console.log(aboutToBeDeletedAdmin.uniqueId);
+
+  if (loggedInAdmin.uniqueId === aboutToBeDeletedAdmin.uniqueId)
+    return next(
+      new ApiError(400, "Sorry!!! No Admin can delete themselves!!!")
+    );
+
+  if (loggedInAdmin.createdAt > aboutToBeDeletedAdmin.createdAt)
+    return next(
+      new ApiError(
+        500,
+        "Sorry!!! You are not Authorized to delete an Older and more Experienced Admin!!!"
+      )
+    );
+
+  const deletedAdmin = await Admin.findByIdAndDelete(adminId);
+
+  if (!deletedAdmin)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while removing the Admin from DataBase!!!"
+      )
+    );
+
+  return res.status(200).json({
+    deletedAdmin,
+    message: "Requested Admin has been successfully deleted!!!",
+    success: true,
+  });
+});
+
+export const getAllAdmins = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const admins = await Admin.find();
+
+  if (!admins)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while retriving all the Admin data from DataBase!!!"
+      )
+    );
+
+  return res.status(200).json({
+    admins,
+    message: "Admins list successfully retrived!!!",
+    success: true,
+  });
+});

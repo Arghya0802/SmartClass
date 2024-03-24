@@ -52,6 +52,19 @@ const teacherSchema = new mongoose.Schema(
       type: String,
       default: "Empty",
     },
+
+    resources: [
+      {
+        subjectId: {
+          type: String,
+          required: true,
+        },
+        resourceId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Resource",
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

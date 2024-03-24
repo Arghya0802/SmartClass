@@ -50,11 +50,15 @@ export const register = asyncHandler(async (req, res, next) => {
       return next(new ApiError(404, "No Teacher found with given Unique-Id"));
 
     const hashed = await bcrypt.hash(password, 10);
-    const updatedTeacher = await Teacher.findByIdAndUpdate(existedTeacher._id, {
-      name,
-      email,
-      password: hashed,
-    });
+    const updatedTeacher = await Teacher.findByIdAndUpdate(
+      existedTeacher._id,
+      {
+        name,
+        email,
+        password: hashed,
+      },
+      { new: true }
+    );
 
     if (!updatedTeacher)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
@@ -74,11 +78,15 @@ export const register = asyncHandler(async (req, res, next) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
-    const updatedStudent = await Student.findByIdAndUpdate(existedStudent._id, {
-      name,
-      email,
-      password: hashed,
-    });
+    const updatedStudent = await Student.findByIdAndUpdate(
+      existedStudent._id,
+      {
+        name,
+        email,
+        password: hashed,
+      },
+      { new: true }
+    );
 
     if (!updatedStudent)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
@@ -102,7 +110,8 @@ export const login = asyncHandler(async (req, res, next) => {
 
   if (!uniqueId || !password)
     return next(
-      new ApiError(400,
+      new ApiError(
+        400,
         "Please enter all the neccessary details before proceeding!!!"
       )
     );
@@ -129,7 +138,7 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInAdmin = await Admin.findById(admin._id).select("-password");
+    const loggedInAdmin = await Admin.findById(admin._id);
 
     if (!loggedInAdmin)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
@@ -159,12 +168,12 @@ export const login = asyncHandler(async (req, res, next) => {
     const teacher = await Teacher.findOne({ uniqueId });
 
     if (!teacher)
-      return next(new ApiError(400, "No Teacher found with given Unique-Id"));
+      return next(new ApiError(404, "No Teacher found with given Unique-Id"));
 
     const isValid = await teacher.isPasswordCorrect(password);
 
     if (!isValid)
-      return next(new ApiError(400, "Please enter Correct Password!!!"));
+      return next(new ApiError(401, "Please enter Correct Password!!!"));
     // console.log(user);
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
       teacher._id,
@@ -172,9 +181,7 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInTeacher = await Teacher.findById(teacher._id).select(
-      "-password"
-    );
+    const loggedInTeacher = await Teacher.findById(teacher._id);
 
     if (!loggedInTeacher)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
@@ -195,7 +202,6 @@ export const login = asyncHandler(async (req, res, next) => {
         refreshToken,
         designation: loggedInTeacher.designation,
         message: "Teacher Logged-In Successfully",
-        designation: loggedInTeacher.designation,
         success: true,
       });
   }
@@ -204,12 +210,12 @@ export const login = asyncHandler(async (req, res, next) => {
     const student = await Student.findOne({ uniqueId });
 
     if (!student)
-      return next(new ApiError(400, "No Student found with given Unique-Id"));
+      return next(new ApiError(404, "No Student found with given Unique-Id"));
 
     const isValid = await student.isPasswordCorrect(password);
 
     if (!isValid)
-      return next(new ApiError(400, "Please enter Correct Password!!!"));
+      return next(new ApiError(401, "Please enter Correct Password!!!"));
     // console.log(user);
     const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(
       student._id,
@@ -217,9 +223,7 @@ export const login = asyncHandler(async (req, res, next) => {
     );
     // console.log(accessToken);
     // console.log(refreshToken);
-    const loggedInStudent = await Student.findById(student._id).select(
-      "-password"
-    );
+    const loggedInStudent = await Student.findById(student._id);
 
     if (!loggedInStudent)
       return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
