@@ -11,11 +11,13 @@ import {
   assignHoD,
   removeHoD,
   getAllAdmins,
-  getSingleAdmin
+  getSingleAdmin,
+  removeAdmin
 } from "../controllers/admin.controller.js";
 
 router.get("/all-admins", verifyJWT, getAllAdmins);
 router.get("/", verifyJWT, getSingleAdmin);
+router.delete("/remove-admin",verifyJWT,removeAdmin);
 
 router.post("/add-teacher", verifyJWT, addTeacherToDataBase);
 router.post("/add-student", verifyJWT, addStudentToDataBase);
