@@ -5,6 +5,7 @@ import Student from "../models/student.model.js";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const generateAccessAndRefreshTokens = async (userId, User) => {
   try {
@@ -355,6 +356,52 @@ export const logout = asyncHandler(async (req, res, next) => {
 
   return res.status(500).json({
     message: "Sorry!!!Something went wrong while logging out User!!!",
+    success: false,
+  });
+});
+
+export const verifyToken = asyncHandler(async (req, res, next) => {
+  const token =
+    req.cookies?.accessToken ||
+    req.header("Authorization")?.replace("Bearer ", "");
+
+  if (!token) return next(new ApiError(401, "Un-Authorized Access!!!"));
+  // TODO:
+
+  const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+  if (!decoded)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Token")
+    );
+
+  const { _id, uniqueId } = decoded;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while decoding the Access-Token!!!"
+      )
+    );
+
+  let user;
+
+  if (uniqueId[0] === "A") {
+    user = await Admin.findById(_id);
+  } else if (uniqueId[0] === "T") {
+    user = await Teacher.findById(_id);
+  } else if (uniqueId[0] == "S") {
+    user = await Student.findById(_id);
+  } else return next(new ApiError(400, "Please enter a Valid Unique-Id"));
+
+  if (user)
+    return res.status(200).json({
+      message: "Access Token is validated!!!",
+      success: true,
+    });
+
+  return res.status(500).json({
+    message: "Access Token is not validated!!!",
     success: false,
   });
 });
