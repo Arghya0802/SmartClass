@@ -136,7 +136,7 @@ export const login = asyncHandler(async (req, res, next) => {
 
     // Options are designed so that cookies are edited from server-side only
     const options = {
-      httpOnly: true,
+      httpOnly: false,
       secure: true,
     };
 

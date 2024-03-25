@@ -1,3 +1,22 @@
+let accessToken;
+let refreshToken;
+getCookie(document.cookie);
+console.log(accessToken);
+
+fetch("api/v1/admin/my-home", {
+  headers :
+  {
+    'Authorization': `Bearer ${accessToken}`,
+  }
+}).then(res => {
+  return res.json()
+})
+.then(data => {
+  const {admin} = data;
+  document.getElementById("name").innerText = admin.name;
+  document.getElementById("designation").innerText = "Admin";
+  document.getElementById("uniqueId").innerText = admin.uniqueId;
+})
 
 function addAdmin(){
     const uniqueId = document.getElementById("unique-id").value;
@@ -197,3 +216,72 @@ function addTeacher(){
         document.getElementById("notification").innerText = "";
     },2000)
 }
+
+function getAllAdmin() {
+
+    let html = "";
+  
+    fetch("forms/showadmins.html").then(response => {
+      return response.text();
+    }
+    ).then(data => {
+      html = data;
+    })
+  
+    fetch("/api/v1/admin/get-admin").then(response => response.json()).then(data => {
+      if(data.success)
+      {
+        data.allAdmin.forEach(admin => {
+          html += "<tr>";
+          html += "<td>" + admin.name + "</td>";
+          html += "<td>" + admin.uniqueId + "</td>";
+          html += "<td><button onclick=\"removeAdmin('" + admin.uniqueId + "')\"> Remove </button></td>"
+        });
+        html += "</tr>";
+        html +="</tbody>";
+        html += "</table>";
+        document.getElementById("display-window").innerHTML = html;
+      }
+    })
+  }
+  
+  // Need Changes
+  
+  // Need Changes
+  
+  function removeAdmin(objectId)
+  {
+    console.log(objectId)
+    fetch("/api/v1/admin/remove-admin",{
+      method : "DELETE",
+      headers : {
+        'Content-Type': 'application/json',
+    },
+    body : JSON.stringify({objectId})
+    }).then(res => res.json())
+    .then(data => {
+      if(data.success)
+      {
+        getAllAdmin();
+      }
+    })
+  }
+  
+  // Need Changes
+  
+  
+  
+  function getCookie(allCookies)
+  {
+      const cookieArray = allCookies.split(';');
+      const cookieObject = {};
+      cookieArray.forEach(cookie => {
+      const [name, value] = cookie.trim().split('=');
+      cookieObject[name] = value;
+  });
+  
+  // Access the tokens
+      accessToken = cookieObject['accessToken'];
+      refreshToken = cookieObject['refreshToken'];
+  
+  }

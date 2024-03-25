@@ -172,3 +172,39 @@ h2 {
   font-size: 24px;
   padding-top: 30px;
 }
+
+/*---------------------------*/
+
+table {
+  width: 100%;
+  padding: 0 100px;
+  border-collapse: collapse;
+}
+td {
+  padding: 16px;
+  text-align: center;
+  border: 2px solid #2D232E;
+  font-size: 26px;
+
+}
+th {
+  padding: 20px;
+  text-align: center;
+  border: 2px solid #2D232E;
+  background-color: #E0DDCF;
+  font-size: 36px;
+
+}
+button {
+  padding: 16px 32px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: #2D232E;
+  color: #F1F0EA;
+  font-family:Courier Prime;
+  font-size: 20px;
+}
+button:hover {
+  background-color: #473848;
+}

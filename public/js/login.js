@@ -25,12 +25,12 @@ function loginClicked()
     }).then((response) => {
 
         statusCode = response.status;
-        //console.log(response);
+
+        //console.log(response.headers.getSetCookie());
 
         return response.json();
     }).then((data) => {
         const post = data.designation;
-        localStorage.setItem("response",JSON.stringify({data,statusCode}));
         if(post==="admin")
         window.location.href = "/admin.html";
         else if(post==="hod")
@@ -40,6 +40,9 @@ function loginClicked()
         else if(post==="teacher")
         window.location.href = "/teacher.html";
         else
-        window.location.href = "/error.html";
+        {
+            localStorage.setItem("response",JSON.stringify({ message : data.message ,statusCode}));
+            window.location.href = "/error.html";
+        }
     })
 }

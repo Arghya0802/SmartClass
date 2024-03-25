@@ -265,7 +265,7 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
 
 //Testing purpose
 
-export const getAdmin = asyncHandler(async (req, res, next) => {
+export const getAllAdmin = asyncHandler(async (req, res, next) => {
   const allAdmin = await Admin.find({});
   return res.status(200).json({
     allAdmin,
@@ -280,6 +280,17 @@ export const RemoveAdmin = asyncHandler(async(req,res,next) => {
   await Admin.deleteOne({"uniqueId" : objectId})
   return res.status(200).json({
     message : "Delete successful",
+    success : true,
+  })
+})
+
+export const getAdmin = asyncHandler(async(req,res,next) => {
+  const objectId = req.user._id;
+  console.log(objectId);
+  const admin = await Admin.findById(objectId);
+  return res.status(200).json({
+    admin,
+    message : "get successful",
     success : true,
   })
 })

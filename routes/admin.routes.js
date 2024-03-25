@@ -10,8 +10,9 @@ import {
   addStudentToDataBase,
   assignHoD,
   removeHoD,
-  getAdmin,
-  RemoveAdmin
+  getAllAdmin,
+  RemoveAdmin,
+  getAdmin
 } from "../controllers/admin.controller.js";
 
 router.post("/add-teacher", addTeacherToDataBase);
@@ -24,8 +25,10 @@ router.patch("/remove-hod", removeHoD);
 
 //Testing purpose
 
-router.get("/get-admin", getAdmin)
+router.get("/get-admin", getAllAdmin)
 router.delete("/remove-admin",RemoveAdmin)
+
+router.get("/my-home", verifyJWT, getAdmin)
 
 //Testing purpose
 
