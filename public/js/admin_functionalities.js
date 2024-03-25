@@ -3,7 +3,7 @@ let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
 
-fetch("api/v1/admin/my-home", {
+fetch("api/v1/admin/", {
   headers :
   {
     'Authorization': `Bearer ${accessToken}`,
@@ -43,6 +43,7 @@ function addAdmin(){
         method : 'POST',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -71,6 +72,7 @@ function assignHOD(){
         method : 'PATCH',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -98,6 +100,7 @@ function removeHOD(){
         method : 'PATCH',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -132,6 +135,7 @@ function addStudent(){
         method : 'POST',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -167,6 +171,7 @@ function addDepartment(){
         method : 'POST',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -201,6 +206,7 @@ function addTeacher(){
         method : 'POST',
         headers : {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -228,7 +234,13 @@ function getAllAdmin() {
       html = data;
     })
   
-    fetch("/api/v1/admin/get-admin").then(response => response.json()).then(data => {
+    fetch("/api/v1/admin/all-admins",{
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
       if(data.success)
       {
         data.allAdmin.forEach(admin => {
@@ -279,9 +291,8 @@ function getAllAdmin() {
       const [name, value] = cookie.trim().split('=');
       cookieObject[name] = value;
   });
-  
-  // Access the tokens
-      accessToken = cookieObject['accessToken'];
-      refreshToken = cookieObject['refreshToken'];
+
+    accessToken = cookieObject['accessToken'];
+    refreshToken = cookieObject['refreshToken'];
   
   }
