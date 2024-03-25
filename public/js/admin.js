@@ -1,8 +1,3 @@
-if(!document.cookie)
-{
-  localStorage.setItem("response",JSON.stringify({ message : "You dont have access" ,statusCode : 404}));
-  document.location.href = "/error.html"
-}
 
 function addDepartmentClicked() {
   fetch("forms/dept.html").then(response => {

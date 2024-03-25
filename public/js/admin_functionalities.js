@@ -3,6 +3,31 @@ let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
 
+if(!accessToken)
+{
+  localStorage.setItem("response",JSON.stringify({ message : "Unauthorized Access" ,statusCode : 404}));
+  document.location.href = "/error/error.html"
+}
+
+var statusCode;
+
+fetch("api/v1/auth/verify",{
+  headers: {
+    'Authorization': `Bearer ${accessToken}`,
+  }
+})
+.then( res => {
+  statusCode = res.status;
+  return res.json();
+})
+.then(data => {
+  if(data.success === false)
+  {
+    localStorage.setItem("response",JSON.stringify({ message : data.message ,statusCode}));
+    window.location.href = "/error/error.html"
+  }
+})
+
 fetch("api/v1/admin/", {
   headers :
   {
