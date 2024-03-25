@@ -42,6 +42,20 @@ const subjectSchema = new mongoose.Schema(
         },
       },
     ],
+    assignments: [
+      {
+        teacherId: {
+          type: String,
+          required: true,
+        },
+        assignmentIds: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Assignment",
+          },
+        ],
+      },
+    ],
   },
   { timestamps: true }
 );

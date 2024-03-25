@@ -90,9 +90,13 @@ export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
   if (!newStudent)
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
+  department.students.push(uniqueId);
+  await department.save();
+
   return res.status(201).json({
     newStudent,
-    message: "Student with given Unique-Id successfully created!!!",
+    message:
+      "Student with given Unique-Id successfully created and added to given Department!!!",
     success: true,
   });
 });
@@ -199,8 +203,8 @@ export const addDepartmentToDataBase = asyncHandler(async (req, res, next) => {
       )
     );
 
-    if (uniqueId.length < 3 || uniqueId[1] !== "-" || uniqueId[0] !== "D")
-    return next(new ApiError(400,"Please enter a valid Department-ID"));
+  if (uniqueId.length < 3 || uniqueId[1] !== "-" || uniqueId[0] !== "D")
+    return next(new ApiError(400, "Please enter a valid Department-ID"));
 
   const existedDepartment = await Department.findOne({
     $or: [{ name }, { uniqueId }],
@@ -364,6 +368,80 @@ export const getSingleAdmin = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     loggedInAdmin,
     message: "Admin Data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});
+
+export const getAllStudents = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const students = await Student.find();
+
+  if (!students)
+    return next(
+      new ApiError(500, "Something went wrong while calling to DataBase!!!")
+    );
+
+  let registered = [],
+    notRegistered = [];
+
+  for (let i = 0; i < students.length; i++) {
+    if (students[i].name && students[i].password) registered.push(students[i]);
+    else notRegistered.push(students[i]);
+  }
+
+  return res.status(200).json({
+    registered,
+    notRegistered,
+    message:
+      "All the Students successfully fetched and segregated into Registered and Not Registered successfully!!!",
+    success: true,
+  });
+});
+
+export const getAllTeachers = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const teachers = await Teacher.find();
+
+  if (!teachers)
+    return next(
+      new ApiError(500, "Something went wrong while calling to DataBase!!!")
+    );
+
+  let registered = [],
+    notRegistered = [];
+
+  for (let i = 0; i < teachers.length; i++) {
+    if (teachers[i].name && teachers[i].password) registered.push(teachers[i]);
+    else notRegistered.push(teachers[i]);
+  }
+
+  return res.status(200).json({
+    registered,
+    notRegistered,
+    message:
+      "All the Teachers successfully fetched and segregated into Registered and Not Registered successfully!!!",
     success: true,
   });
 });

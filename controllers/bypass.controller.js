@@ -37,6 +37,9 @@ export const addStudentList = asyncHandler(async (req, res, next) => {
   for (const student of students) {
     const { uniqueId, departmentId } = student;
     await Student.create({ uniqueId, department: departmentId });
+    const department = await Department.findOne({ uniqueId: departmentId });
+    department.students.push(uniqueId);
+    await department.save();
   }
 
   res.status(201).json({

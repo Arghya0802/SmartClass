@@ -30,8 +30,14 @@ const departmentSchema = new mongoose.Schema(
         type: String,
       },
     ],
+    students: [
+      {
+        type: String,
+      },
+    ],
     hod: {
       type: String,
+      default: "No HoD is assigned yet!!!",
     },
   },
   { timestamps: true }

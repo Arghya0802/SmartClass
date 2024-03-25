@@ -41,6 +41,18 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    pendingAssignments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Assignment",
+      },
+    ],
+    submittedSolutions: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Solution",
+      },
+    ],
     refreshToken: {
       type: String,
       default: "EMPTY",
