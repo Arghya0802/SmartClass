@@ -11,8 +11,7 @@ import {
   assignHoD,
   removeHoD,
   getAllAdmins,
-  removeAdmin,
-  getSingleAdmin,
+  getSingleAdmin
 } from "../controllers/admin.controller.js";
 
 router.get("/all-admins", verifyJWT, getAllAdmins);
@@ -23,18 +22,7 @@ router.post("/add-student", verifyJWT, addStudentToDataBase);
 router.post("/add-admin", verifyJWT, addAdminToDataBase);
 router.post("/add-department", verifyJWT, addDepartmentToDataBase);
 
-router.patch("/assign-hod", verifyJWT, assignHoD);
-router.patch("/remove-hod", verifyJWT, removeHoD);
-
-router.delete("/remove-admin/", verifyJWT, removeAdmin);
-
-//Testing purpose
-
-router.get("/get-admin", getAllAdmin)
-router.delete("/remove-admin",RemoveAdmin)
-
-router.get("/my-home", verifyJWT, getAdmin)
-
-//Testing purpose
+router.patch("/assign-hod", assignHoD);
+router.patch("/remove-hod", removeHoD);
 
 export default router;
