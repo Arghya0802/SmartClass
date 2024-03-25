@@ -26,6 +26,6 @@ router.post("/add-department", verifyJWT, addDepartmentToDataBase);
 router.patch("/assign-hod", verifyJWT, assignHoD);
 router.patch("/remove-hod", verifyJWT, removeHoD);
 
-router.delete("/remove-admin/", verifyJWT, removeAdmin);
+router.delete("/remove-admin", verifyJWT, removeAdmin);
 
 export default router;
