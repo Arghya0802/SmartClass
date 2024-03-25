@@ -12,10 +12,10 @@ fetch("api/v1/admin/", {
   return res.json()
 })
 .then(data => {
-  const {admin} = data;
-  document.getElementById("name").innerText = admin.name;
+  const {loggedInAdmin} = data;
+  document.getElementById("name").innerText = loggedInAdmin.name;
   document.getElementById("designation").innerText = "Admin";
-  document.getElementById("uniqueId").innerText = admin.uniqueId;
+  document.getElementById("uniqueId").innerText = loggedInAdmin.uniqueId;
 })
 
 function addAdmin(){
@@ -29,10 +29,6 @@ function addAdmin(){
     document.getElementById("email-id").value = "";
     document.getElementById("password").value = "";
 
-    console.log(uniqueId);
-    console.log(name);
-    console.log(email);    
-    console.log(password);
     const jsonObject = {
         uniqueId,
         name,
@@ -64,15 +60,17 @@ function addAdmin(){
 function assignHOD(){
     const uniqueId = document.getElementById("unique-id").value;
     document.getElementById("unique-id").value = "";
-    console.log(uniqueId);
+
     const jsonObject = {
         uniqueId
     }
-    fetch("/api/v1/admin/assign-hod", {
+    console.log(jsonObject);
+
+    fetch("api/v1/admin/assign-hod", {
         method : 'PATCH',
         headers : {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
@@ -92,11 +90,11 @@ function assignHOD(){
 function removeHOD(){
     const uniqueId = document.getElementById("unique-id").value;
     document.getElementById("unique-id").value = "";
-    console.log(uniqueId);
+
     const jsonObject = {
         uniqueId
     }
-    fetch("/api/v1/admin/remove-hod", {
+    fetch("api/v1/admin/remove-hod", {
         method : 'PATCH',
         headers : {
             'Content-Type': 'application/json',
@@ -125,8 +123,6 @@ function addStudent(){
     document.getElementById("unique-id").value = "";
     document.getElementById("department").value = "";
 
-    console.log(uniqueId);
-    console.log(departmentId);
     const jsonObject = {
         uniqueId,
         departmentId
@@ -157,16 +153,20 @@ function addStudent(){
 function addDepartment(){
     const uniqueId = document.getElementById("department-id").value;
     const name = document.getElementById("department").value;
+
+    console.log(uniqueId);
+    console.log(name);
     
     document.getElementById("department-id").value = "";
     document.getElementById("department").value = "";
 
-    console.log(uniqueId);    
-    console.log(name);
     const jsonObject = {
         uniqueId,
         name
     }
+
+    console.log(jsonObject);
+
     fetch("/api/v1/admin/add-department", {
         method : 'POST',
         headers : {
@@ -175,8 +175,10 @@ function addDepartment(){
         },
         body : JSON.stringify(jsonObject)
     }).then((response) => {
+        console.log(response);
         return response.json();
     }).then((data) => {
+        console.log(data);
         document.getElementById("notification").innerText = data.message;
         if(data.success)
         document.getElementById("notification").style.color = "green";
@@ -196,8 +198,6 @@ function addTeacher(){
     document.getElementById("unique-id").value = "";
     document.getElementById("department").value = "";
 
-    console.log(uniqueId);
-    console.log(departmentId);
     const jsonObject = {
         uniqueId,
         departmentId
@@ -243,46 +243,76 @@ function getAllAdmin() {
     .then(data => {
       if(data.success)
       {
-        data.allAdmin.forEach(admin => {
+        data.admins.forEach(admin => {
           html += "<tr>";
           html += "<td>" + admin.name + "</td>";
           html += "<td>" + admin.uniqueId + "</td>";
-          html += "<td><button onclick=\"removeAdmin('" + admin.uniqueId + "')\"> Remove </button></td>"
+          html += "<td><button onclick=\"removeAdmin('" + admin._id + "')\"> Remove </button></td>"
+          html += "</tr>";
         });
-        html += "</tr>";
-        html +="</tbody>";
-        html += "</table>";
-        document.getElementById("display-window").innerHTML = html;
       }
+      html +="</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+        if(data.success)
+        document.getElementById("notification").style.color = "green";
+        else
+        document.getElementById("notification").style.color = "red";
+
+        setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
     })
   }
   
-  // Need Changes
-  
-  // Need Changes
-  
-  function removeAdmin(objectId)
+  function removeAdmin(adminId)
   {
-    console.log(objectId)
+    console.log(adminId)
     fetch("/api/v1/admin/remove-admin",{
       method : "DELETE",
       headers : {
+        'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
     },
-    body : JSON.stringify({objectId})
+    body : JSON.stringify({adminId})
     }).then(res => res.json())
     .then(data => {
+        document.getElementById("notification").innerText = data.message;
       if(data.success)
       {
+        document.getElementById("notification").style.color = "green";
         getAllAdmin();
       }
+      else
+        document.getElementById("notification").style.color = "red";
+    })
+    setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+  }
+
+
+  function logout()
+  {
+    fetch("/api/v1/auth/logout", {
+        headers : {
+            'Authorization': `Bearer ${accessToken}`,
+        },
+    }).then(res => res.json())
+    .then(data => {
+        if(data.success)
+        document.location.href = "/";
+        else
+        {
+            document.getElementById("notification").innerText = data.message;
+            setTimeout(() => {
+            document.getElementById("notification").innerText = "";
+            },2000)
+        }
     })
   }
-  
-  // Need Changes
-  
-  
-  
+
   function getCookie(allCookies)
   {
       const cookieArray = allCookies.split(';');

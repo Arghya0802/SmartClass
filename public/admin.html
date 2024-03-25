@@ -20,10 +20,14 @@
             <li><a href="#">Notice</a></li>
             <li><a href="#">About</a></li>
             <li><a href="#">Profile</a></li>
+            <li><button onclick="logout()">logout</button></li>
         </ul>
       </nav>
     </div>
   </header>
+
+  
+  <p id="notification" class= "notification" style="color:red;"> </p>
 
   <div class="main-content">
     <div class="sidebar">
@@ -35,7 +39,6 @@
         <button onclick="removeHODClicked()">Remove HOD</button>
         <button onclick="getAllAdmin()">Admin List</button>
     </div>
-
     <div class="content" id="display-window">
       <h1>Welcome <span id="name"></span> !</h1>
       <p>You are assigned as <strong><span id="designation"></span></strong></p>

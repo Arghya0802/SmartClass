@@ -41,8 +41,12 @@ function addAdminClicked() {
 }
 
 function addAdminClicked() {
-  document.getElementById("display-window").innerHTML =
-    "You Clicked assign HOD button";
+  fetch("forms/addadmin.html").then(response => {
+  return response.text();
+}
+).then(html => {
+  document.getElementById("display-window").innerHTML = html;
+})
 }
 
 function assignHODClicked() {

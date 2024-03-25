@@ -13,7 +13,7 @@
         <div class="rectangle">
             <h1>Welcome to SmartClass</h1>
             <div class="buttons">
-                <a href="login.html"><button class="login-btn">Log In</button></a>
+                <a onclick="checkLogin()"><button class="login-btn">Log In</button></a>
                 <a href="register.html"><button class="register-btn">Register</button></a>
             </div>
             <div class="des">
@@ -22,5 +22,12 @@
             </div>
         </div>
     </div>
+    <script>
+        function checkLogin(){
+            //Verify JWT
+            //if verified redirect to page else redirect to login
+            document.location.href = "/login.html";
+        }
+    </script>
 </body>
 </html>
