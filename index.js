@@ -51,6 +51,10 @@ app.use("/api/v1/admin", adminRouter);
 import hodRouter from "./routes/hod.routes.js";
 app.use("/api/v1/hod", hodRouter);
 
+// Teacher Routes
+import teacherRouter from "./routes/teacher.routes.js";
+app.use("/api/v1/teacher", teacherRouter);
+
 // Error Handler Middleware
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

@@ -2,7 +2,6 @@ import Teacher from "../models/teacher.model.js";
 import Admin from "../models/admin.model.js";
 import Student from "../models/student.model.js";
 import Department from "../models/department.model.js";
-import Subject from "../models/subject.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
@@ -45,7 +44,7 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
   department.teachers.push(uniqueId);
-  department.save();
+  await department.save();
 
   return res.status(201).json({
     newTeacher,
@@ -178,7 +177,7 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
   });
 
   department.hod = newHoD.uniqueId;
-  department.save();
+  await department.save();
 
   if (!newHoD) return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
@@ -253,7 +252,7 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
   );
 
   department.hod = "";
-  department.save();
+  await department.save();
 
   return res.status(200).json({
     changedHoD,
@@ -263,36 +262,108 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
   });
 });
 
-//Testing purpose
+export const removeAdmin = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
 
-export const getAllAdmin = asyncHandler(async (req, res, next) => {
-  const allAdmin = await Admin.find({});
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const { adminId } = req.body;
+
+  if (!adminId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const loggedInAdmin = await Admin.findById(_id);
+  const aboutToBeDeletedAdmin = await Admin.findById(adminId);
+
+  if (!loggedInAdmin || !aboutToBeDeletedAdmin)
+    return next(
+      new ApiError(404, "No Admin(s) found with given credientials!!!")
+    );
+
+  // console.log(loggedInAdmin.uniqueId);
+  // console.log(aboutToBeDeletedAdmin.uniqueId);
+
+  if (loggedInAdmin.uniqueId === aboutToBeDeletedAdmin.uniqueId)
+    return next(
+      new ApiError(400, "Sorry!!! No Admin can delete themselves!!!")
+    );
+
+  if (loggedInAdmin.createdAt > aboutToBeDeletedAdmin.createdAt)
+    return next(
+      new ApiError(
+        500,
+        "Sorry!!! You are not Authorized to delete an Older and more Experienced Admin!!!"
+      )
+    );
+
+  const deletedAdmin = await Admin.findByIdAndDelete(adminId);
+
+  if (!deletedAdmin)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while removing the Admin from DataBase!!!"
+      )
+    );
+
   return res.status(200).json({
-    allAdmin,
-    message: "All admins fetched successfully",
+    deletedAdmin,
+    message: "Requested Admin has been successfully deleted!!!",
     success: true,
-  })
-})
+  });
+});
 
-export const RemoveAdmin = asyncHandler(async(req,res,next) => {
-  const {objectId} = req.body;
-  console.log(objectId);
-  await Admin.deleteOne({"uniqueId" : objectId})
+export const getAllAdmins = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const admins = await Admin.find();
+
+  if (!admins)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while retriving all the Admin data from DataBase!!!"
+      )
+    );
+
   return res.status(200).json({
-    message : "Delete successful",
-    success : true,
-  })
-})
+    admins,
+    message: "Admins list successfully retrived!!!",
+    success: true,
+  });
+});
 
-export const getAdmin = asyncHandler(async(req,res,next) => {
-  const objectId = req.user._id;
-  console.log(objectId);
-  const admin = await Admin.findById(objectId);
+export const getSingleAdmin = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const loggedInAdmin = await Admin.findById(_id);
+
+  if (!loggedInAdmin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
   return res.status(200).json({
-    admin,
-    message : "get successful",
-    success : true,
-  })
-})
-
-//Testing purpose
+    loggedInAdmin,
+    message: "Admin Data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});
