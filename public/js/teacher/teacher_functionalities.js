@@ -123,7 +123,7 @@ function addAttendance() {
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 4000);
+  }, 3000);
 }
 
 // Backend Functionalities ends here

@@ -23,10 +23,10 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false || data.designation!=="hod") {
+    if (data.success === false || data.designation !== "hod") {
       localStorage.setItem(
         "response",
-        JSON.stringify({ message : data.message, statusCode })
+        JSON.stringify({ message: data.message, statusCode })
       );
       window.location.href = "/error/error.html";
     }
@@ -89,7 +89,40 @@ function assignSubjectToTeacher() {
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 2000);
+  }, 3000);
+}
+
+function addAttendance() {
+  const subjectId = document.getElementById("subject-id").value;
+  const studentId = document.getElementById("student-id").value;
+
+  document.getElementById("subject-id").value = "";
+  document.getElementById("student-id").value = "";
+
+  const jsonObject = {
+    subjectId,
+    studentId,
+  };
+  fetch("/api/v1/hod/attendance", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 3000);
 }
 
 // Backend Functionalities ends here

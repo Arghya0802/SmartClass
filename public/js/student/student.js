@@ -1,5 +1,5 @@
 function addSolutionClicked() {
-  fetch("forms/studentforms/addSolution.html")
+  fetch("forms/studentforms/addsoltuion.html")
     .then((response) => {
       return response.text();
     })
