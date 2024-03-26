@@ -25,9 +25,6 @@ function loginClicked()
     }).then((response) => {
 
         statusCode = response.status;
-
-        //console.log(response.headers.getSetCookie());
-
         return response.json();
     }).then((data) => {
         const post = data.designation;
@@ -42,7 +39,7 @@ function loginClicked()
         else
         {
             localStorage.setItem("response",JSON.stringify({ message : data.message ,statusCode}));
-            window.location.href = "/error.html";
+            window.location.href = "/error/error.html";
         }
     })
 }
