@@ -392,7 +392,7 @@ export const verifyToken = asyncHandler(async (req, res, next) => {
     user = await Admin.findById(_id);
   } else if (uniqueId[0] === "T") {
     user = await Teacher.findById(_id);
-    if(user.designation === "Teacher")
+    if(user.designation === "teacher")
     designation = "teacher";
     else
     designation = "hod"

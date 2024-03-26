@@ -41,7 +41,12 @@ fetch("api/v1/admin/", {
   document.getElementById("name").innerText = loggedInAdmin.name;
   document.getElementById("designation").innerText = "Admin";
   document.getElementById("uniqueId").innerText = loggedInAdmin.uniqueId;
+  
+    // setTimeout(()=>{
+    //     logout();
+    // },data.session)
 })
+
 
 function addAdmin(){
     const uniqueId = document.getElementById("unique-id").value;
@@ -252,7 +257,7 @@ function getAllAdmin() {
 
     let html = "";
   
-    fetch("forms/showadmins.html").then(response => {
+    fetch("forms/adminforms/showadmins.html").then(response => {
       return response.text();
     }
     ).then(data => {
