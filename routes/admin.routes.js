@@ -15,6 +15,7 @@ import {
   removeAdmin,
   getAllTeachers,
   getAllStudents,
+  removeStudent
 } from "../controllers/admin.controller.js";
 
 router.get("/admins", verifyJWT, getAllAdmins);
@@ -31,5 +32,7 @@ router.patch("/assign-hod", verifyJWT, assignHoD);
 router.patch("/remove-hod", verifyJWT, removeHoD);
 
 router.delete("/remove-admin", verifyJWT, removeAdmin);
+//router.delete("/remove-teacher", verifyJWT, removeTeacher);
+router.delete("/remove-student", verifyJWT, removeStudent);
 
 export default router;

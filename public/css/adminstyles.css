@@ -207,3 +207,10 @@ button {
 button:hover {
   background-color: #473848;
 }
+
+.dashed-rectangle {
+  border: 2px dashed #000;
+  padding: 20px;
+  display: inline-block;
+  margin-bottom: 20px;
+}

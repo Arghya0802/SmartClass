@@ -445,3 +445,43 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const removeStudent = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const { studentId } = req.body;
+
+  if (!studentId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const loggedInAdmin = await Admin.findById(_id);
+  const aboutToBeDeletedStudent = await Admin.findById(studentId);
+
+  if (!loggedInAdmin)
+    return next(
+      new ApiError(404, "No Admin(s) found with given credientials!!!")
+    );
+
+  const deletedAdmin = await Admin.findByIdAndDelete(adminId);
+
+  if (!deletedAdmin)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while removing the Admin from DataBase!!!"
+      )
+    );
+
+  return res.status(200).json({
+    deletedAdmin,
+    message: "Requested Admin has been successfully deleted!!!",
+    success: true,
+  });
+});
