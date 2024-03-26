@@ -23,7 +23,7 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false) {
+    if (data.success === false || data.designation!=="student") {
       localStorage.setItem(
         "response",
         JSON.stringify({ message: data.message, statusCode })
@@ -32,7 +32,7 @@ fetch("api/v1/auth/verify", {
     }
   });
 
-fetch("api/v1/teacher/", {
+fetch("api/v1/student/", {
   headers: {
     Authorization: `Bearer ${accessToken}`,
   },
@@ -41,10 +41,10 @@ fetch("api/v1/teacher/", {
     return res.json();
   })
   .then((data) => {
-    const { loggedInTeacher } = data;
-    document.getElementById("name").innerText = loggedInTeacher.name;
-    document.getElementById("designation").innerText = "Teacher";
-    document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
+    const { loggedInStudent } = data;
+    document.getElementById("name").innerText = loggedInStudent.name;
+    document.getElementById("designation").innerText = "Student";
+    document.getElementById("uniqueId").innerText = loggedInStudent.uniqueId;
 
     // setTimeout(()=>{
     //     logout();

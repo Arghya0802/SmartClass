@@ -21,7 +21,7 @@ fetch("api/v1/auth/verify",{
   return res.json();
 })
 .then(data => {
-  if(data.success === false)
+  if(data.success === false || data.designation!=="admin")
   {
     localStorage.setItem("response",JSON.stringify({ message : data.message ,statusCode}));
     window.location.href = "/error/error.html"

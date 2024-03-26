@@ -39,3 +39,4 @@ router.post("/assignment/upload-marks", verifyJWT, assignMarks);
 router.get("/", verifyJWT, getSingleTeacher);
 
 export default router;
+

@@ -30,3 +30,4 @@ router.post(
 
 router.get("/", verifyJWT, getSingleStudent);
 export default router;
+

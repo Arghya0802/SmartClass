@@ -14,3 +14,4 @@ router.patch("/assign-subject-teacher", verifyJWT, assignSubjectToTeacher);
 router.patch("/add-subject-department", verifyJWT, addSubjectToDepartment);
 
 export default router;
+

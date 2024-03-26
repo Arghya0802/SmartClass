@@ -30,6 +30,6 @@ function registerClicked()
         if(statusCode === 200)
         window.location.href = "/login.html";
         else
-        window.location.href = "/error.html";
+        window.location.href = "/error/error.html";
     })
 }

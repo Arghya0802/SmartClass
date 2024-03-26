@@ -23,7 +23,7 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false) {
+    if (data.success === false || data.designation!=="teacher") {
       localStorage.setItem(
         "response",
         JSON.stringify({ message: data.message, statusCode })
@@ -43,7 +43,7 @@ fetch("api/v1/teacher/", {
   .then((data) => {
     const { loggedInTeacher } = data;
     document.getElementById("name").innerText = loggedInTeacher.name;
-    document.getElementById("designation").innerText = "Teacher";
+    document.getElementById("designation").innerText = loggedInTeacher.designation;
     document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
 
     // setTimeout(()=>{

@@ -37,7 +37,6 @@ const departmentSchema = new mongoose.Schema(
     ],
     hod: {
       type: String,
-      default: "No HoD is assigned yet!!!",
     },
   },
   { timestamps: true }

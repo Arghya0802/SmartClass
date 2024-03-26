@@ -23,16 +23,16 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false) {
+    if (data.success === false || data.designation!=="hod") {
       localStorage.setItem(
         "response",
-        JSON.stringify({ message: data.message, statusCode })
+        JSON.stringify({ message : data.message, statusCode })
       );
       window.location.href = "/error/error.html";
     }
   });
 
-fetch("api/v1/teacher/", {
+fetch("api/v1/hod/", {
   headers: {
     Authorization: `Bearer ${accessToken}`,
   },
@@ -41,10 +41,10 @@ fetch("api/v1/teacher/", {
     return res.json();
   })
   .then((data) => {
-    const { loggedInTeacher } = data;
-    document.getElementById("name").innerText = loggedInTeacher.name;
-    document.getElementById("designation").innerText = "Teacher";
-    document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
+    const { loggedInHoD } = data;
+    document.getElementById("name").innerText = loggedInHoD.name;
+    document.getElementById("designation").innerText = loggedInHoD.designation;
+    document.getElementById("uniqueId").innerText = loggedInHoD.uniqueId;
 
     // setTimeout(()=>{
     //     logout();
