@@ -385,11 +385,13 @@ export const verifyToken = asyncHandler(async (req, res, next) => {
     );
 
   let user;
-  let designation;
+  if (uniqueId[0] === "A") user = await Admin.findById(_id);
+  else if (uniqueId[0] === "T") user = await Teacher.findById(_id);
+  else if (uniqueId[0] == "S") user = await Student.findById(_id);
+  else return next(new ApiError(400, "Please enter a Valid Unique-Id"));
 
   if (user)
     return res.status(200).json({
-      designation,
       message: "Access Token is validated!!!",
       designation:
         user.uniqueId[0] === "A"
