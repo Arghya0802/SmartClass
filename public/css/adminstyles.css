@@ -207,3 +207,55 @@ button {
 button:hover {
   background-color: #473848;
 }
+
+
+/* ----------------------------------------------------------------------------------- */
+
+.add-file-section {
+  text-align: center;
+  width: 100%;
+}
+  .dashed-rectangle {
+    border: 2px dashed #000;
+    width: 100%;
+    padding: 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+    font-family:Courier Prime;
+  }
+  .form-group-addfile {
+    margin-bottom: 30px;
+  }
+  
+  .form-group-addfile label {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family:Courier Prime;
+  }
+  
+  .form-group-addfile input {
+    width: 100%;
+    padding: 32px;
+    align-items: center;
+    border-radius: 4px;
+    font-size: 24px;
+    font-family:Courier Prime;
+  }
+
+  .login-btn-large {
+    padding: 20px 100px;
+    margin: 0 15px;
+    font-family:Courier Prime;
+    font-size: 36px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #2D232E;
+    color: #F1F0EA;
+    }
+    
+    .login-btn-large:hover {
+    background-color: #59405b;
+    }

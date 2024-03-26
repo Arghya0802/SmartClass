@@ -5,10 +5,18 @@
         <input type="text" id="assignment-id" placeholder="Enter Assignment ID">
     </div>
     <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" placeholder="Enter Title">
+        <label for="title">Assignment Title:</label>
+        <input type="text" id="title" placeholder="Enter Title of the assignment">
+    </div>
+    <div class="form-group-addfile">
+      <label for="file-input">Add file:</label>
+      <div class="add-file-section">
+          <div class="dashed-rectangle">
+              <input type="file" id="fileInput" class="file-input" accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png">
+          </div>
+      </div>
     </div>
     <div class="btn-container">
-        <button class="login-btn" id="add-admin" onclick="addAssignment()">Add</button>
+        <button class="login-btn-large" id="add-admin" onclick="addAssignment()">Add</button>
     </div>
 </div>

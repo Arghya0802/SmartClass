@@ -1,0 +1,259 @@
+/* Resetting default margin and padding */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+    font-family:Courier Prime;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #F1F0EA;
+    height: 100vh;
+  }
+  .logo img {
+    height: 50px; 
+    width: auto;
+    background-color: #b4aa7c; 
+  }
+  .container {
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b4aa7c; 
+    padding: 15px 80px;
+  }
+  
+  header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 24px;
+  }
+  
+  nav ul {
+    list-style: none;
+  }
+  
+  nav ul li {
+    display: inline;
+    margin-left: 20px;
+  }
+  
+  nav ul li a {
+    color: black; 
+    text-decoration: none;
+    font-size: 20px; 
+    font-family:Courier Prime;
+    background-color: #b4aa7c; 
+  }
+  
+  .main-content {
+    display: flex;
+    height: 100%;
+  }
+  
+  .sidebar {
+    background-color: #b4aa7c; /* Change to desired background color */
+    width: 22%; /* Adjust as needed */
+    text-decoration: none;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sidebar button {
+    display: block;
+    width: 100%;
+    padding: 15px 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #463148;
+    color: #F1F0EA;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px; 
+    font-family:Courier Prime;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  h1 {
+  font-size: 36px;
+  padding: 10px;
+  }
+  p {
+  font-size: 20px;
+  padding: 4px 10px;
+  }
+  
+
+
+  /* --------------- */
+
+.form-group {
+    margin-bottom: 30px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 24px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family:Courier Prime;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 32px;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 24px;
+    font-family:Courier Prime;
+  }
+  
+  
+  
+  /* --------------------------- */
+  
+  .btn-container {
+    text-align: center;
+  }
+  
+  .login-btn {
+  padding: 15px 80px;
+  margin: 0 15px;
+  font-family:Courier Prime;
+  font-size: 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #2D232E;
+  color: #F1F0EA;
+  }
+  
+  .login-btn:hover {
+  background-color: #59405b;
+  }
+  
+  h2 {
+    font-size: 48px;
+    padding-top: 20px;
+    padding-bottom: 25px;
+  }
+  
+  .container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .notification {
+    font-size: 30px;
+    text-align: center;
+  }
+  
+  /*---------------------------*/
+  
+  table {
+    width: 100%;
+    padding: 0 100px;
+    border-collapse: collapse;
+  }
+  td {
+    padding: 16px;
+    text-align: center;
+    border: 2px solid #2D232E;
+    font-size: 26px;
+  
+  }
+  th {
+    padding: 20px;
+    text-align: center;
+    border: 2px solid #2D232E;
+    background-color: #E0DDCF;
+    font-size: 36px;
+  
+  }
+  button {
+    padding: 16px 32px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #2D232E;
+    color: #F1F0EA;
+    font-family:Courier Prime;
+    font-size: 20px;
+  }
+  button:hover {
+    background-color: #473848;
+  }
+  
+  
+  /* ----------------------------------------------------------------------------------- */
+  
+  .add-file-section {
+    text-align: center;
+    width: 100%;
+  }
+    .dashed-rectangle {
+      border: 2px dashed #000;
+      width: 100%;
+      padding: 10px;
+      display: inline-block;
+      margin-bottom: 20px;
+      font-family:Courier Prime;
+    }
+    .form-group-addfile {
+      margin-bottom: 30px;
+    }
+    
+    .form-group-addfile label {
+      display: block;
+      font-size: 24px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-family:Courier Prime;
+    }
+    
+    .form-group-addfile input {
+      width: 100%;
+      padding: 32px;
+      align-items: center;
+      border-radius: 4px;
+      font-size: 24px;
+      font-family:Courier Prime;
+    }
+  
+    .login-btn-large {
+      padding: 20px 100px;
+      margin: 0 15px;
+      font-family:Courier Prime;
+      font-size: 36px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #2D232E;
+      color: #F1F0EA;
+      }
+      
+      .login-btn-large:hover {
+      background-color: #59405b;
+      }
