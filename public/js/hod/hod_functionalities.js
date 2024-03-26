@@ -59,19 +59,19 @@ function addAssignment() {
     "Hi there You have clicked Add";
 }
 
-function addResource() {
+function assignSubjectToTeacher() {
   const subjectId = document.getElementById("subject-id").value;
-  const title = document.getElementById("title").value;
+  const teacherId = document.getElementById("teacher-id").value;
 
   document.getElementById("subject-id").value = "";
-  document.getElementById("title").value = "";
+  document.getElementById("teacher-id").value = "";
 
   const jsonObject = {
     subjectId,
-    title,
+    teacherId,
   };
-  fetch("/api/v1/teacher/resources/add", {
-    method: "POST",
+  fetch("/api/v1/hod/assign-subject-teacher", {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,

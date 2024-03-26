@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student</title>
+    <title>Student | SmartClass</title>
+    <link rel="stylesheet" href="css/adminstyles.css">
+    <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
 </head>
+
 <body>
-    
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="/student.html">
+                    <img src="icons/Logo.svg" alt="Logo">
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Notice</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Profile</a></li>
+                    <li><button onclick="logout()">logout</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+
+    <p id="notification" class="notification" style="color:red;"> </p>
+
+    <div class="main-content">
+        <div class="sidebar">
+            <button onclick="addSolutionClicked()">Add Solution</button>
+            <!-- <button onclick="addResourceClicked()">Add Resource</button> -->
+        </div>
+        <div class="content" id="display-window">
+            <h1>Welcome <span id="name"></span> !</h1>
+            <p>You are assigned as <strong><span id="designation"></span></strong></p>
+            <p>Your Unique ID is <strong><span id="uniqueId"></span></strong></p>
+        </div>
+    </div>
+    <script src="js/student/student.js"></script>
+    <script src="js/student/student_functionalities.js"></script>
 </body>
+
 </html>

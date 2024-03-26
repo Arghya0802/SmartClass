@@ -8,6 +8,7 @@ import {
   getAllAssignments,
   getAllPendingAssignments,
   getAllSubmittedAssignments,
+  getSingleStudent,
   submitAssignment,
 } from "../controllers/student.controller.js";
 
@@ -27,4 +28,5 @@ router.post(
   submitAssignment
 );
 
+router.get("/", verifyJWT, getSingleStudent);
 export default router;

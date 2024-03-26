@@ -331,3 +331,25 @@ export const assignMarks = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getSingleTeacher = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const loggedInTeacher = await Teacher.findById(_id);
+
+  if (!loggedInTeacher || loggedInTeacher.designation !== "teacher")
+    return next(
+      new ApiError(404, "No Teacher found with given credentials!!!")
+    );
+
+  return res.status(200).json({
+    loggedInTeacher,
+    message: "LoggedIn Teacher data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});

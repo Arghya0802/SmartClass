@@ -178,3 +178,23 @@ export const addSubjectToDepartment = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getSingleHoD = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const loggedInHoD = await Teacher.findById(_id);
+
+  if (!loggedInHoD || loggedInHoD.designation !== "hod")
+    return next(new ApiError(404, "No HoD found with given credentials!!!"));
+
+  return res.status(200).json({
+    loggedInHoD,
+    message: "LoggedIn HoD data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});

@@ -59,18 +59,20 @@ function addAssignment() {
     "Hi there You have clicked Add";
 }
 
-function addResource() {
-  const subjectId = document.getElementById("subject-id").value;
+function addSolution() {
+  const assignmentId = document.getElementById("solution-id").value;
   const title = document.getElementById("title").value;
 
-  document.getElementById("subject-id").value = "";
+  document.getElementById("solution-id").value = "";
   document.getElementById("title").value = "";
 
   const jsonObject = {
-    subjectId,
+    assignmentId,
     title,
   };
-  fetch("/api/v1/teacher/resources/add", {
+  console.log(jsonObject);
+
+  fetch("/api/v1/student/assignment/submit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -79,9 +81,11 @@ function addResource() {
     body: JSON.stringify(jsonObject),
   })
     .then((response) => {
+      //   console.log(response);
       return response.json();
     })
     .then((data) => {
+      //   console.log(data);
       document.getElementById("notification").innerText = data.message;
       if (data.success)
         document.getElementById("notification").style.color = "green";

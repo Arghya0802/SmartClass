@@ -95,7 +95,9 @@ export const submitAssignment = asyncHandler(async (req, res, next) => {
   const { assignmentId } = req.body;
 
   if (!assignmentId)
-    return next(400, "Please enter all the details before proceeding!!!");
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
 
   const assignment = await Assignment.findById(assignmentId);
 
@@ -245,6 +247,28 @@ export const submitAssignment = asyncHandler(async (req, res, next) => {
     newSolution,
     message:
       "Solution to the Current Assignment has been successfully submitted!!!",
+    success: true,
+  });
+});
+
+export const getSingleStudent = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const loggedInStudent = await Student.findById(_id);
+
+  if (!loggedInStudent)
+    return next(
+      new ApiError(404, "No Student found with given credentials!!!")
+    );
+
+  return res.status(200).json({
+    loggedInStudent,
+    message: "LoggedIn Student data successfully fetched from DataBase!!!",
     success: true,
   });
 });

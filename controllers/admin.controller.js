@@ -367,7 +367,7 @@ export const getSingleAdmin = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({
     loggedInAdmin,
-    message: "Admin Data successfully fetched from DataBase!!!",
+    message: "LoggedIn Admin data successfully fetched from DataBase!!!",
     success: true,
   });
 });

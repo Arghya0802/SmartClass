@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,32 +8,33 @@
   <link rel="stylesheet" href="css/adminstyles.css">
   <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <header>
     <div class="container">
       <div class="logo">
-        <a href="/admin.html">
-            <img src="icons/Logo.svg" alt="Logo">
+        <a href="/teacher.html">
+          <img src="icons/Logo.svg" alt="Logo">
         </a>
-    </div>
+      </div>
       <nav>
         <ul>
-            <li><a href="#">Notice</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><button onclick="logout()">logout</button></li>
+          <li><a href="#">Notice</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Profile</a></li>
+          <li><button onclick="logout()">logout</button></li>
         </ul>
       </nav>
     </div>
   </header>
 
-  
-  <p id="notification" class= "notification" style="color:red;"> </p>
+
+  <p id="notification" class="notification" style="color:red;"> </p>
 
   <div class="main-content">
     <div class="sidebar">
-        <button onclick="addAssignmentClicked()">Add Assignment</button>
-        <button onclick="addResourceClicked()">Add Resource</button>
+      <button onclick="addAssignmentClicked()">Add Assignment</button>
+      <button onclick="addResourceClicked()">Add Resource</button>
     </div>
     <div class="content" id="display-window">
       <h1>Welcome <span id="name"></span> !</h1>
@@ -43,4 +45,5 @@
   <script src="js/teacher/teacher.js"></script>
   <script src="js/teacher/teacher_functionalities.js"></script>
 </body>
+
 </html>
