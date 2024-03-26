@@ -46,13 +46,49 @@ fetch("api/v1/teacher/", {
     //     logout();
     // },data.session)
 })
-
+ 
+// Backend Functionalities are starts here
 
 function addAssignment()
 {
     //Testing functionality
     document.getElementById("notification").innerText = "Hi there You have clicked Add";
 }
+
+function addResource(){
+  const resourceId = document.getElementById("resource-id").value;
+  const title = document.getElementById("title").value;
+
+  document.getElementById("resource-id").value = "";
+  document.getElementById("title").value = "";
+
+  const jsonObject = {
+      resourceId,
+      title
+  }
+  fetch("/api/v1/teacher/resources/add", {
+      method : 'POST',
+      headers : {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+      },
+      body : JSON.stringify(jsonObject)
+  }).then((response) => {
+      return response.json();
+  }).then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if(data.success)
+      document.getElementById("notification").style.color = "green";
+      else
+      document.getElementById("notification").style.color = "red";
+  })
+  setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+  },2000)
+
+}
+
+// Backend Functionalities ends here
 
 function logout()
 {

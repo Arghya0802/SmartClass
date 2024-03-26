@@ -264,7 +264,7 @@ function getAllAdmin() {
       html = data;
     })
   
-    fetch("/api/v1/admin/all-admins",{
+    fetch("/api/v1/admin/admins",{
         headers: {
             'Authorization': `Bearer ${accessToken}`,
         }
