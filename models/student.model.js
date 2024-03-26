@@ -57,6 +57,17 @@ const studentSchema = new mongoose.Schema(
       type: String,
       default: "EMPTY",
     },
+    datesPresent: [
+      {
+        type: String,
+      },
+    ],
+    attendances: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attendance",
+      },
+    ],
   },
   { timestamps: true }
 );

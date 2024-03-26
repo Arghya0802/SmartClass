@@ -9,13 +9,17 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import Department from "../models/department.model.js";
 import Student from "../models/student.model.js";
 import Solution from "../models/solution.model.js";
+import Attendance from "../models/attendance.model.js";
 
 export const addResources = asyncHandler(async (req, res, next) => {
-  const { subjectId } = req.body;
+  const { chapter, subjectId } = req.body;
   // console.log(subjectId);
-  if (!subjectId)
+  if (!subjectId || !chapter)
     return next(
-      new ApiError(400, "Please enter the Subject-Id before proceeding!!!")
+      new ApiError(
+        400,
+        "Please enter the Subject-Id or Title before proceeding!!!"
+      )
     );
 
   if (
@@ -94,7 +98,10 @@ export const addResources = asyncHandler(async (req, res, next) => {
       teacher.resources[i].resourceId
     );
 
-    if (addedResource.subjectId === subjectId) {
+    if (
+      addedResource.subjectId === subjectId &&
+      addedResource.chapter === chapter
+    ) {
       for (let j = 0; j < resourcesLink.length; j++) {
         addedResource.links.push(resourcesLink[j]);
         await addedResource.save();
@@ -105,6 +112,7 @@ export const addResources = asyncHandler(async (req, res, next) => {
 
   if (!isSubjectAlreadyAdded) {
     const newResource = await Resource.create({
+      chapter,
       subjectId,
       teacherId: uniqueId,
       links: resourcesLink,
@@ -118,9 +126,10 @@ export const addResources = asyncHandler(async (req, res, next) => {
         )
       );
 
-    teacher.resources.push({ subjectId, resourceId: newResource._id });
+    teacher.resources.push({ chapter, subjectId, resourceId: newResource._id });
     await teacher.save();
     subject.resources.push({
+      chapter,
       teacherId: uniqueId,
       resourceId: newResource._id,
     });
@@ -130,19 +139,19 @@ export const addResources = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     resourcesLink,
     message:
-      "All the Resources of the given Teacher and for the particular Subject has been successfully uploaded!!!",
+      "All the Resources of the given Teacher and for the particular Subject for the Particular Chapter has been successfully uploaded!!!",
     success: true,
   });
 });
 
 export const addAssignment = asyncHandler(async (req, res, next) => {
-  const { subjectId, fullMarks } = req.body;
+  const { subjectId, fullMarks, title } = req.body;
   // console.log(subjectId);
-  if (!subjectId || !fullMarks)
+  if (!subjectId || !fullMarks || !title)
     return next(
       new ApiError(
         400,
-        "Please enter the Subject-Id or Full-Marks before proceeding!!!"
+        "Please enter the Subject-Id or Full-Marks or Title before proceeding!!!"
       )
     );
 
@@ -229,6 +238,7 @@ export const addAssignment = asyncHandler(async (req, res, next) => {
   }
 
   const newCreatedAssignment = await Assignment.create({
+    title,
     fullMarks,
     subjectId,
     teacherId: uniqueId,
@@ -350,6 +360,139 @@ export const getSingleTeacher = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     loggedInTeacher,
     message: "LoggedIn Teacher data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});
+
+export const giveAttendanceToStudent = asyncHandler(async (req, res, next) => {
+  const { studentId, subjectId } = req.body;
+
+  if (!studentId || !subjectId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const student = await Student.findOne({ uniqueId: studentId });
+  const subject = await Subject.findOne({ uniqueId: subjectId });
+  const teacher = await Teacher.findById(_id);
+
+  if (!student || !teacher || !subject)
+    return next(
+      new ApiError(404, "Teacher or Student or Subject not found!!!")
+    );
+
+  if (student.department !== teacher.department)
+    return next(
+      new ApiError(
+        400,
+        "Student and Teacher must be from the Same Department!!!"
+      )
+    );
+
+  if (!student.name || !student.password)
+    return next(
+      new ApiError(400, "Only Registered Students can be marked as present!!!")
+    );
+
+  let isSubjectPresent = false;
+
+  for (let i = 0; i < teacher.subjects.length; i++) {
+    if (isSubjectPresent) break;
+
+    if (teacher.subjects[i] === subjectId) {
+      isSubjectPresent = true;
+      break;
+    }
+  }
+
+  if (!isSubjectPresent)
+    return next(
+      new ApiError(400, "Given Subject is not assigned to LoggedIn Teacher!!!")
+    );
+
+  const dateObj = new Date();
+  const month = dateObj.getUTCMonth() + 1; // Months are indexed from 0 to 11
+  const day = dateObj.getUTCDate();
+  const year = dateObj.getUTCFullYear();
+
+  const date = `${year}/${month}/${day}`;
+  let isDatePresent = false;
+  let markedAttendance;
+
+  for (let i = 0; i < student.datesPresent.length; i++) {
+    if (isDatePresent) break;
+
+    if (student.datesPresent[i] === date) isDatePresent = true;
+  }
+  for (let i = 0; i < student.attendances.length; i++) {
+    if (markedAttendance) break;
+
+    const attendace = await Attendance.findById(student.attendances[i]);
+
+    if (!attendace)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    if (attendace.subjectId === subjectId && attendace.teacherId === uniqueId)
+      markedAttendance = attendace;
+  }
+
+  if (markedAttendance) {
+    if (isDatePresent)
+      return next(
+        new ApiError(
+          400,
+          "Given Student is already marked present for the Current Lecture"
+        )
+      );
+
+    student.datesPresent.push(date);
+    await student.save();
+
+    markedAttendance.daysPresent += 1;
+    await markedAttendance.save();
+
+    return res.status(200).json({
+      markedAttendance,
+      message:
+        "Given Student has been successfully marked present for the current lecture!!!",
+      success: true,
+    });
+  }
+
+  const newAttendance = await Attendance.create({
+    subjectId,
+    teacherId: uniqueId,
+    daysPresent: 1,
+  });
+
+  if (!newAttendance)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
+
+  student.attendances.push(newAttendance._id);
+  await student.save();
+
+  if (!isDatePresent) {
+    student.datesPresent.push(date);
+    await student.save();
+  }
+  return res.status(200).json({
+    newAttendance,
+    message:
+      "Given Student has been successfully marked present for this lecture!!!",
     success: true,
   });
 });

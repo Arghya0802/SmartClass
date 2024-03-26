@@ -57,6 +57,9 @@ export const addTeacherList = asyncHandler(async (req, res, next) => {
   for (const teacher of teachers) {
     const { uniqueId, departmentId } = teacher;
     await Teacher.create({ uniqueId, department: departmentId });
+    const department = await Department.findOne({ uniqueId: departmentId });
+    department.teachers.push(uniqueId);
+    await department.save();
   }
 
   res.status(201).json({

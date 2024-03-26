@@ -23,7 +23,7 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false || data.designation!=="teacher") {
+    if (data.success === false || data.designation !== "teacher") {
       localStorage.setItem(
         "response",
         JSON.stringify({ message: data.message, statusCode })
@@ -43,7 +43,8 @@ fetch("api/v1/teacher/", {
   .then((data) => {
     const { loggedInTeacher } = data;
     document.getElementById("name").innerText = loggedInTeacher.name;
-    document.getElementById("designation").innerText = loggedInTeacher.designation;
+    document.getElementById("designation").innerText =
+      loggedInTeacher.designation;
     document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
 
     // setTimeout(()=>{
@@ -90,6 +91,39 @@ function addResource() {
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
   }, 2000);
+}
+
+function addAttendance() {
+  const subjectId = document.getElementById("subject-id").value;
+  const studentId = document.getElementById("student-id").value;
+
+  document.getElementById("subject-id").value = "";
+  document.getElementById("student-id").value = "";
+
+  const jsonObject = {
+    subjectId,
+    studentId,
+  };
+  fetch("/api/v1/teacher/attendance", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 4000);
 }
 
 // Backend Functionalities ends here

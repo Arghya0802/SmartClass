@@ -59,6 +59,10 @@ const teacherSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        chapter: {
+          type: String,
+          required: true,
+        },
         resourceId: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Resource",
