@@ -25,16 +25,6 @@ const departmentSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    teachers: [
-      {
-        type: String,
-      },
-    ],
-    students: [
-      {
-        type: String,
-      },
-    ],
     hod: {
       type: String,
     },
