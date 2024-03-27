@@ -47,6 +47,10 @@ app.use("/api/v1/auth", authRouter);
 import adminRouter from "./routes/admin.routes.js";
 app.use("/api/v1/admin", adminRouter);
 
+//Resource routes
+import resourceRouter from "./routes/resource.routes.js";
+app.use("/api/v1/resource", resourceRouter);
+
 // HoD Routes
 import hodRouter from "./routes/hod.routes.js";
 app.use("/api/v1/hod", hodRouter);

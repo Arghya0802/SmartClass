@@ -2,6 +2,7 @@ let accessToken;
 let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
+let teacherId;
 
 if (!accessToken) {
   localStorage.setItem(
@@ -45,6 +46,7 @@ fetch("api/v1/teacher/", {
     document.getElementById("name").innerText = loggedInTeacher.name;
     document.getElementById("designation").innerText = loggedInTeacher.designation;
     document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
+    teacherId = loggedInTeacher.uniqueId;
 
     // setTimeout(()=>{
     //     logout();
@@ -91,6 +93,78 @@ function addResource() {
     document.getElementById("notification").innerText = "";
   }, 2000);
 }
+
+
+function getAllResources(teacherId) {
+
+  let html = "";
+
+  fetch("forms/teacherforms/showresources.html").then(response => {
+    return response.text();
+  }
+  ).then(data => {
+    html = data;
+  })
+
+  fetch("/api/v1/resource/"+teacherId,{
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success)
+    {
+      data.resources.forEach(resource => {
+        html += "<tr>";
+        html += "<td>" + resource.name + "</td>";
+        html += "<td>" + resource.name + "</td>";
+        html += "<td><button onclick=\"removeResource('" + resource._id + "')\"> Remove </button></td>"
+        html += "</tr>";
+      });
+    }
+    html +="</tbody>";
+    html += "</table>";
+    document.getElementById("display-window").innerHTML = html;
+    document.getElementById("notification").innerText = data.message;
+      if(data.success)
+      document.getElementById("notification").style.color = "green";
+      else
+      document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+      },2000)
+  })
+}
+
+
+function removeResource(resourceId)
+{
+  console.log(resourceId)
+  fetch("/api/v1/resource/remove-resource",{
+    method : "DELETE",
+    headers : {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+  },
+  body : JSON.stringify({resourceId})
+  }).then(res => res.json())
+  .then(data => {
+      document.getElementById("notification").innerText = data.message;
+    if(data.success)
+    {
+      document.getElementById("notification").style.color = "green";
+      getAllAdmin();
+    }
+    else
+      document.getElementById("notification").style.color = "red";
+  })
+  setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+      },2000)
+}
+
 
 // Backend Functionalities ends here
 
