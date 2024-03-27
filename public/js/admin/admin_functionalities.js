@@ -296,6 +296,57 @@ function getAllAdmin() {
     })
   }
   
+  function getAllStudents(departmentId) {
+
+    let html = "";
+  
+    fetch("forms/adminforms/showstudents.html").then(response => {
+      return response.text();
+    }
+    ).then(data => {
+      html = data;
+    })
+  
+    fetch("/api/v1/admin/students/"+departmentId,{
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success)
+      {
+        data.registered.forEach(student => {
+          html += "<tr>";
+          html += "<td>" + student.name + "</td>";
+          html += "<td>" + student.uniqueId + "</td>";
+          html += "<td><button onclick=\"removeStudent('" + student._id + "')\"> Remove </button></td>"
+          html += "</tr>";
+        });
+        data.notRegistered.forEach(student => {
+            html += "<tr>";
+            html += "<td>" + student.name + "</td>";
+            html += "<td>" + student.uniqueId + "</td>";
+            html += "<td><button onclick=\"removeStudent('" + student._id + "')\"> Remove </button></td>"
+            html += "</tr>";
+          });
+      }
+      html +="</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+        if(data.success)
+        document.getElementById("notification").style.color = "green";
+        else
+        document.getElementById("notification").style.color = "red";
+
+        setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+    })
+  }
+
+
   function removeAdmin(adminId)
   {
     console.log(adminId)
@@ -321,6 +372,81 @@ function getAllAdmin() {
         document.getElementById("notification").innerText = "";
         },2000)
   }
+
+
+  function removeStudent(studentId)
+  {
+    console.log(studentId)
+    fetch("/api/v1/admin/remove-student",{
+      method : "DELETE",
+      headers : {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+    },
+    body : JSON.stringify({studentId})
+    }).then(res => res.json())
+    .then(data => {
+        document.getElementById("notification").innerText = data.message;
+      if(data.success)
+      {
+        document.getElementById("notification").style.color = "green";
+        getAllStudents(data.department);
+      }
+      else
+        document.getElementById("notification").style.color = "red";
+    })
+    setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+  }
+
+
+
+  function getAllDepartments() {
+
+    let html = "";
+  
+    fetch("forms/adminforms/showdepartments.html").then(response => {
+      return response.text();
+    }
+    ).then(data => {
+      html = data;
+    })
+  
+    fetch("/api/v1/admin/departments",{
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success)
+      {
+        data.departments.forEach(department => {
+          html += "<tr>";
+          html += "<td>" + department.name + "</td>";
+          html += "<td>" + department.uniqueId + "</td>";
+          html += "<td>" + department.hod + "</td>";
+          html += "<td><button onclick=\"getAllStudents('" + department.uniqueId + "')\"> Students List </button></td>"
+          html += "<td><button onclick=\"getAllTeachers('" + department.uniqueId + "')\"> Teachers List </button></td>"
+          html += "</tr>";
+        });
+      }
+      html +="</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+        if(data.success)
+        document.getElementById("notification").style.color = "green";
+        else
+        document.getElementById("notification").style.color = "red";
+
+        setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+    })
+  }
+  
 
 
   function logout()

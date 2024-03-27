@@ -385,7 +385,9 @@ export const getAllStudents = asyncHandler(async (req, res, next) => {
   if (!admin)
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
-  const students = await Student.find();
+  
+  const department = req.params.department;
+  const students = await Student.find({department});
 
   if (!students)
     return next(
@@ -446,6 +448,34 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
   });
 });
 
+export const getAllDepartments = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const departments = await Department.find();
+
+  if (!departments)
+    return next(
+      new ApiError(500, "Something went wrong while calling to DataBase!!!")
+    );
+
+  return res.status(200).json({
+    departments,
+    message:
+      "All the Departments successfully fetched !!!",
+    success: true,
+  });
+});
+
 export const removeStudent = asyncHandler(async (req, res, next) => {
   const { _id, uniqueId } = req.user;
 
@@ -461,27 +491,51 @@ export const removeStudent = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  const loggedInAdmin = await Admin.findById(_id);
-  const aboutToBeDeletedStudent = await Admin.findById(studentId);
+  const deletedStudent = await Student.findByIdAndDelete(studentId);
 
-  if (!loggedInAdmin)
-    return next(
-      new ApiError(404, "No Admin(s) found with given credientials!!!")
-    );
-
-  const deletedAdmin = await Admin.findByIdAndDelete(adminId);
-
-  if (!deletedAdmin)
+  if (!deletedStudent)
     return next(
       new ApiError(
         500,
-        "Something went wrong while removing the Admin from DataBase!!!"
+        "Something went wrong while removing the Student from DataBase!!!"
       )
     );
 
   return res.status(200).json({
-    deletedAdmin,
-    message: "Requested Admin has been successfully deleted!!!",
+    deletedStudent,
+    message: "Requested Student has been successfully deleted!!!",
+    success: true,
+  });
+});
+
+export const removeTeacher = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const { teacherId } = req.body;
+
+  if (!teacherId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const deletedTeacher = await Teacher.findByIdAndDelete(teacherId);
+
+  if (!deletedTeacher)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while removing the Teacher from DataBase!!!"
+      )
+    );
+
+  return res.status(200).json({
+    deletedTeacher,
+    message: "Requested Teacher has been successfully deleted!!!",
     success: true,
   });
 });

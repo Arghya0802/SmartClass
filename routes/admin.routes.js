@@ -15,13 +15,16 @@ import {
   removeAdmin,
   getAllTeachers,
   getAllStudents,
-  removeStudent
+  getAllDepartments,
+  removeStudent,
+  removeTeacher,
 } from "../controllers/admin.controller.js";
 
 router.get("/admins", verifyJWT, getAllAdmins);
 router.get("/", verifyJWT, getSingleAdmin);
 router.get("/teachers", verifyJWT, getAllTeachers);
-router.get("/students", verifyJWT, getAllStudents);
+router.get("/students/:department", verifyJWT, getAllStudents);
+router.get("/departments", verifyJWT, getAllDepartments);
 
 router.post("/add-teacher", verifyJWT, addTeacherToDataBase);
 router.post("/add-student", verifyJWT, addStudentToDataBase);
@@ -32,7 +35,7 @@ router.patch("/assign-hod", verifyJWT, assignHoD);
 router.patch("/remove-hod", verifyJWT, removeHoD);
 
 router.delete("/remove-admin", verifyJWT, removeAdmin);
-//router.delete("/remove-teacher", verifyJWT, removeTeacher);
+router.delete("/remove-teacher", verifyJWT, removeTeacher);
 router.delete("/remove-student", verifyJWT, removeStudent);
 
 export default router;
