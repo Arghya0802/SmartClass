@@ -43,8 +43,6 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
   if (!newTeacher)
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
-  department.teachers.push(uniqueId);
-  await department.save();
 
   return res.status(201).json({
     newTeacher,
@@ -89,9 +87,6 @@ export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
 
   if (!newStudent)
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
-
-  department.students.push(uniqueId);
-  await department.save();
 
   return res.status(201).json({
     newStudent,
@@ -424,7 +419,8 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
   if (!admin)
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
-  const teachers = await Teacher.find();
+  const department = req.params.department;
+  const teachers = await Teacher.find({department});
 
   if (!teachers)
     return next(

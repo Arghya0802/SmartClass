@@ -167,6 +167,7 @@ function addStudent(){
     }).then((response) => {
         return response.json();
     }).then((data) => {
+      console.log(data);
         document.getElementById("notification").innerText = data.message;
         if(data.success)
         document.getElementById("notification").style.color = "green";
@@ -347,6 +348,57 @@ function getAllAdmin() {
   }
 
 
+  function getAllTeachers(departmentId) {
+
+    let html = "";
+  
+    fetch("forms/adminforms/showteachers.html").then(response => {
+      return response.text();
+    }
+    ).then(data => {
+      html = data;
+    })
+  
+    fetch("/api/v1/admin/teachers/"+departmentId,{
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if(data.success)
+      {
+        data.registered.forEach(teacher => {
+          html += "<tr>";
+          html += "<td>" + teacher.name + "</td>";
+          html += "<td>" + teacher.uniqueId + "</td>";
+          html += "<td><button onclick=\"removeTeacher('" + teacher._id + "')\"> Remove </button></td>"
+          html += "</tr>";
+        });
+        data.notRegistered.forEach(teacher => {
+            html += "<tr>";
+            html += "<td>" + teacher.name + "</td>";
+            html += "<td>" + teacher.uniqueId + "</td>";
+            html += "<td><button onclick=\"removeTeacher('" + teacher._id + "')\"> Remove </button></td>"
+            html += "</tr>";
+          });
+      }
+      html +="</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+        if(data.success)
+        document.getElementById("notification").style.color = "green";
+        else
+        document.getElementById("notification").style.color = "red";
+
+        setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+    })
+  }
+
+
   function removeAdmin(adminId)
   {
     console.log(adminId)
@@ -390,7 +442,34 @@ function getAllAdmin() {
       if(data.success)
       {
         document.getElementById("notification").style.color = "green";
-        getAllStudents(data.department);
+        getAllStudents(data.deletedStudent.department);
+      }
+      else
+        document.getElementById("notification").style.color = "red";
+    })
+    setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+        },2000)
+  }
+
+
+  function removeTeacher(teacherId)
+  {
+    console.log(teacherId)
+    fetch("/api/v1/admin/remove-teacher",{
+      method : "DELETE",
+      headers : {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json',
+    },
+    body : JSON.stringify({teacherId})
+    }).then(res => res.json())
+    .then(data => {
+        document.getElementById("notification").innerText = data.message;
+      if(data.success)
+      {
+        document.getElementById("notification").style.color = "green";
+        getAllTeachers(data.deletedTeacher.department);
       }
       else
         document.getElementById("notification").style.color = "red";

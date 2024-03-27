@@ -22,7 +22,7 @@ import {
 
 router.get("/admins", verifyJWT, getAllAdmins);
 router.get("/", verifyJWT, getSingleAdmin);
-router.get("/teachers", verifyJWT, getAllTeachers);
+router.get("/teachers/:department", verifyJWT, getAllTeachers);
 router.get("/students/:department", verifyJWT, getAllStudents);
 router.get("/departments", verifyJWT, getAllDepartments);
 
