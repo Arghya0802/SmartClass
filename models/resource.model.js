@@ -2,10 +2,19 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    chapter: {
-      type: String,
-      required: true,
-    },
+    chapters: [
+      {
+        name: {
+          type: String,
+          // required: true,
+        },
+        links: [
+          {
+            type: String,
+          },
+        ],
+      },
+    ],
     subjectId: {
       type: String,
       required: true,
@@ -14,12 +23,6 @@ const resourceSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    links: [
-      {
-        type: String,
-        // required: true,
-      },
-    ],
   },
   { timestamps: true }
 );

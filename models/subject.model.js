@@ -32,10 +32,6 @@ const subjectSchema = new mongoose.Schema(
 
     resources: [
       {
-        chapter: {
-          type: String,
-          required: true,
-        },
         teacherId: {
           type: String,
           required: true,

@@ -27,3 +27,13 @@ function addAttendanceClicked() {
       document.getElementById("display-window").innerHTML = html;
     });
 }
+
+function getAllResources() {
+  fetch("forms/teacherforms/showresources.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("display-window").innerHTML = html;
+    });
+}

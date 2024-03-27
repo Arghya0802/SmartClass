@@ -445,3 +445,156 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getAllDepartments = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin)
+    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+
+  const departments = await Department.find();
+
+  if (!departments)
+    return next(
+      new ApiError(500, "Something went wrong while calling to DataBase!!!")
+    );
+
+  for (let i = 0; i < departments.length; i++) {
+    if (!departments[i].hod) departments[i].hod = "No HoD assigned yet!!!";
+  }
+
+  return res.status(200).json({
+    departments,
+    message: "All Departments fetched successfully!!!",
+    success: true,
+  });
+});
+
+export const getStudentsOfDepartment = asyncHandler(async (req, res, next) => {
+  const { departmentId } = req.params;
+
+  if (!departmentId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin) return next(new ApiError(404, "No Admin found with given ID!!!"));
+
+  const department = await Department.findOne({ uniqueId: departmentId });
+
+  if (!department)
+    return next(new ApiError(404, "No Department found with given ID!!!"));
+
+  if (!department.students.length)
+    return res.status(200).json({
+      message: "No Student is yet assigned to Current Department",
+      success: false,
+    });
+
+  let registered = [],
+    notRegistered = [];
+
+  // console.log(department.students);
+
+  for (let i = 0; i < department.students.length; i++) {
+    const student = await Student.findOne({ uniqueId: department.students[i] });
+
+    if (!student)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    if (student.name && student.password) registered.push(student);
+    else {
+      student.name = "Student yet to be registered";
+      notRegistered.push(student);
+    }
+  }
+  return res.status(200).json({
+    registered,
+    notRegistered,
+    message:
+      "All Students of given Department fetched and segregrated into Registered and Not Registered successfully!!!",
+    success: true,
+  });
+});
+
+export const getTeachersOfDepartment = asyncHandler(async (req, res, next) => {
+  const { departmentId } = req.params;
+
+  if (!departmentId)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+
+  if (!admin) return next(new ApiError(404, "No Admin found with given ID!!!"));
+
+  const department = await Department.findOne({ uniqueId: departmentId });
+
+  if (!department)
+    return next(new ApiError(404, "No Department found with given ID!!!"));
+
+  let registered = [],
+    notRegistered = [];
+
+  if (!department.teachers.length)
+    return res.status(200).json({
+      message: "No Teacher is yet assigned in the current Department",
+      success: false,
+    });
+  // console.log(department.teachers);
+
+  for (let i = 0; i < department.teachers.length; i++) {
+    const teacher = await Teacher.findOne({ uniqueId: department.teachers[i] });
+
+    if (!teacher)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    if (teacher.name && teacher.password) registered.push(teacher);
+    else {
+      teacher.name = "Teacher yet to be registered";
+      notRegistered.push(teacher);
+    }
+  }
+
+  return res.status(200).json({
+    registered,
+    notRegistered,
+    message:
+      "All Teachers of given Department fetched and segregrated into Registered and Not Registered successfully!!!",
+    success: true,
+  });
+});

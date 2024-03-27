@@ -126,6 +126,205 @@ function addAttendance() {
   }, 3000);
 }
 
+// Define the function to handle the button click
+function handleLinksButtonClick(subjectId, chapter) {
+  // console.log(subjectId, chapter);
+  getAllLinksForChapter(subjectId, chapter);
+}
+
+function getAllResources() {
+  let html = "";
+
+  fetch("forms/teacherforms/showresources.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/teacher/resources", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.resources.forEach((resource) => {
+          html += "<tr>";
+          html += "<td>" + resource.name + "</td>";
+          html += "<td>" + resource.subjectId + "</td>";
+          html += "<td>" + resource.chapter + "</td>";
+          html += `<td>
+            <button onclick="handleLinksButtonClick('${resource.subjectId}', '${resource.chapter}')">
+              Links
+            </button>
+          </td>`;
+
+          // html +=
+          //   "<td><button onclick=\"getAllTeachers('" +
+          //   department.uniqueId +
+          //   "')\"> Teachers List </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllLinksForChapter(subjectId, chapter) {
+  let html = "";
+  // console.log(subjectId, chapter);
+
+  fetch("forms/teacherforms/showchapterlinks.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      // console.log(jsonObject);
+      html = data;
+    });
+
+  const jsonObject = {
+    subjectId,
+    chapter,
+  };
+  // console.log(JSON.stringify(jsonObject));
+
+  fetch("/api/v1/teacher/resources/chapter", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // console.log(data);
+      if (data.success) {
+        // console.log(data.resourcesLink);
+        data.resourcesLink.forEach((link) => {
+          html += "</tr>";
+          html += "<td>" + link + "</td>";
+          html += `<td><button onclick="UpdateLink('${link}')"> Update </button></td>`;
+          html += `<td><button onclick="removeLink('${link}', '${subjectId}')"> Remove </button></td>`;
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+      } else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function removeLink(url, subjectId) {
+  const jsonObject = {
+    url,
+    subjectId,
+  };
+  fetch("/api/v1/teacher/resources/delete", {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        getAllLinksForChapter(data.subjectId, data.chapter);
+        document.getElementById("notification").style.color = "green";
+      } else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 3000);
+}
+
+// async function getAllLinksForChapter(subjectId, chapter) {
+//   try {
+//     const jsonObject = {
+//       subjectId,
+//       chapter,
+//     };
+
+//     console.log(jsonObject);
+
+//     // Fetch the HTML template
+//     const responseHtml = await fetch(
+//       "forms/teacherforms/showchapterlinks.html"
+//     );
+//     const data = await responseHtml.text();
+//     console.log(jsonObject);
+//     let html = data;
+
+//     // Fetch resource links
+//     const responseApi = await fetch("/api/v1/teacher/resources", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       body: JSON.stringify(jsonObject),
+//     });
+
+//     const apiData = await responseApi.json();
+//     console.log(apiData);
+
+//     if (apiData.success) {
+//       apiData.resourceLinks.forEach((resource) => {
+//         html += "</tr>";
+//         html += `<td>${resource.link}</td>`;
+//         html += `<td><button onclick="UpdateLink('${resource.link}')"> Update </button></td>`;
+//         html += `<td><button onclick="removeLink('${resource.link}')"> Remove </button></td>`;
+//         html += "</tr>";
+//       });
+//     }
+
+//     html += "</tbody>";
+//     html += "</table>";
+
+//     // Display the HTML content
+//     document.getElementById("display-window").innerHTML = html;
+//     document.getElementById("notification").innerText = apiData.message;
+
+//     if (apiData.success)
+//       document.getElementById("notification").style.color = "green";
+//     else document.getElementById("notification").style.color = "red";
+
+//     setTimeout(() => {
+//       document.getElementById("notification").innerText = "";
+//     }, 2000);
+//   } catch (error) {
+//     console.log("Error fetching data:", error);
+//   }
+// }
+
 // Backend Functionalities ends here
 
 function logout() {

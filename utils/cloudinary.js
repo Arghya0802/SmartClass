@@ -35,4 +35,24 @@ export const uploadOnCloudinary = async (localFilePath) => {
   }
 };
 
-// export const deleteFromCloudinary = async ()
+const getPublicId = (imageURL) => {
+  const parts = imageURL.split("/");
+  const filename = parts.pop();
+  const publicId = filename.split(".")[0];
+  return publicId;
+};
+// Delete an image asset called 'zombie'
+export const deleteFromCloudinary = async (publicUrl) => {
+  try {
+    if (!publicUrl) return null;
+
+    const publicId = getPublicId(publicUrl);
+
+    const response = await cloudinary.uploader.destroy(publicId);
+
+    return response;
+  } catch (error) {
+    console.log("Error while file uploading to Cloudinary\n", error);
+    return null;
+  }
+};

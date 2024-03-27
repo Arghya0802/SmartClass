@@ -1,7 +1,7 @@
 let accessToken;
 let refreshToken;
 getCookie(document.cookie);
-console.log(accessToken);
+// console.log(accessToken);
 
 if (!accessToken) {
   localStorage.setItem(
@@ -97,7 +97,7 @@ function assignHOD() {
   const jsonObject = {
     uniqueId,
   };
-  console.log(jsonObject);
+  //   console.log(jsonObject);
 
   fetch("api/v1/admin/assign-hod", {
     method: "PATCH",
@@ -198,7 +198,7 @@ function addDepartment() {
     name,
   };
 
-  console.log(jsonObject);
+  //   console.log(jsonObject);
 
   fetch("/api/v1/admin/add-department", {
     method: "POST",
@@ -431,12 +431,14 @@ function getAllTeachers(departmentId) {
     });
 
   fetch("/api/v1/admin/teachers/" + departmentId, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   })
     .then((response) => response.json())
     .then((data) => {
+      //   console.log(data);
       if (data.success) {
         data.registered.forEach((teacher) => {
           html += "<tr>";
@@ -485,6 +487,7 @@ function getAllStudents(departmentId) {
     });
 
   fetch("/api/v1/admin/students/" + departmentId, {
+    method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -492,6 +495,7 @@ function getAllStudents(departmentId) {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
+        console.log(data);
         data.registered.forEach((student) => {
           html += "<tr>";
           html += "<td>" + student.name + "</td>";

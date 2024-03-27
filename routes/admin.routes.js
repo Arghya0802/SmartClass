@@ -15,12 +15,20 @@ import {
   removeAdmin,
   getAllTeachers,
   getAllStudents,
+  getAllDepartments,
+  getStudentsOfDepartment,
+  getTeachersOfDepartment,
 } from "../controllers/admin.controller.js";
+
+router.get("/teachers/:departmentId", verifyJWT, getTeachersOfDepartment);
+router.get("/students/:departmentId", verifyJWT, getStudentsOfDepartment);
 
 router.get("/admins", verifyJWT, getAllAdmins);
 router.get("/", verifyJWT, getSingleAdmin);
 router.get("/teachers", verifyJWT, getAllTeachers);
+
 router.get("/students", verifyJWT, getAllStudents);
+router.get("/departments", verifyJWT, getAllDepartments);
 
 router.post("/add-teacher", verifyJWT, addTeacherToDataBase);
 router.post("/add-student", verifyJWT, addStudentToDataBase);
