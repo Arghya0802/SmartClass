@@ -2,7 +2,6 @@ let accessToken;
 let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
-let teacherId;
 
 if (!accessToken) {
   localStorage.setItem(
@@ -46,7 +45,6 @@ fetch("api/v1/teacher/", {
     document.getElementById("name").innerText = loggedInTeacher.name;
     document.getElementById("designation").innerText = loggedInTeacher.designation;
     document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
-    teacherId = loggedInTeacher.uniqueId;
 
     // setTimeout(()=>{
     //     logout();
@@ -63,16 +61,16 @@ function addAssignment() {
 
 function addResource() {
   const subjectId = document.getElementById("subject-id").value;
-  const title = document.getElementById("title").value;
+  const chapter = document.getElementById("title").value;
 
   document.getElementById("subject-id").value = "";
   document.getElementById("title").value = "";
 
   const jsonObject = {
     subjectId,
-    title,
+    chapter
   };
-  fetch("/api/v1/teacher/resources/add", {
+  fetch("/api/v1/resource/add-resource", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -95,18 +93,18 @@ function addResource() {
 }
 
 
-function getAllResources(teacherId) {
+function getAllSubjects() {
 
   let html = "";
 
-  fetch("forms/teacherforms/showresources.html").then(response => {
+  fetch("forms/teacherforms/showsubjects.html").then(response => {
     return response.text();
   }
   ).then(data => {
     html = data;
   })
 
-  fetch("/api/v1/resource/"+teacherId,{
+  fetch("/api/v1/teacher/",{
       headers: {
           'Authorization': `Bearer ${accessToken}`,
       }
@@ -115,11 +113,12 @@ function getAllResources(teacherId) {
   .then(data => {
     if(data.success)
     {
-      data.resources.forEach(resource => {
+      data.loggedInTeacher.subjects.forEach(subject => {
         html += "<tr>";
-        html += "<td>" + resource.name + "</td>";
-        html += "<td>" + resource.name + "</td>";
-        html += "<td><button onclick=\"removeResource('" + resource._id + "')\"> Remove </button></td>"
+        html += "<td>" + subject + "</td>";
+        html += "<td>" + subject + "</td>";
+        html += "<td><button onclick=\"getAllResources('" + subject + "')\"> Resources </button></td>"
+        html += "<td><button onclick=\"getAllAssignments('" + subject + "')\"> Assignments </button></td>"
         html += "</tr>";
       });
     }
@@ -139,9 +138,53 @@ function getAllResources(teacherId) {
 }
 
 
-function removeResource(resourceId)
+function getAllResources(subjectId) {
+
+  let html = "";
+
+  fetch("forms/teacherforms/showresources.html").then(response => {
+    return response.text();
+  }
+  ).then(data => {
+    html = data;
+  })
+
+  fetch("/api/v1/resource/"+subjectId,{
+      headers: {
+          'Authorization': `Bearer ${accessToken}`,
+      }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(data.success)
+    {
+      console.log(data);
+      data.resources.forEach(resource => {
+        html += "<tr>";
+        html += "<td>" + resource.subjectId + "</td>";
+        html += "<td>" + resource.chapter + "</td>";
+        html += "<td><button onclick=\"removeResource('" + resource._id + "', '" + subjectId + "')\"> Remove </button></td>"
+        html += "</tr>";
+      });
+    }
+    html +="</tbody>";
+    html += "</table>";
+    document.getElementById("display-window").innerHTML = html;
+    document.getElementById("notification").innerText = data.message;
+      if(data.success)
+      document.getElementById("notification").style.color = "green";
+      else
+      document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+      },2000)
+  })
+}
+
+
+function removeResource(resourceId,subjectId)
 {
-  console.log(resourceId)
   fetch("/api/v1/resource/remove-resource",{
     method : "DELETE",
     headers : {
@@ -155,7 +198,7 @@ function removeResource(resourceId)
     if(data.success)
     {
       document.getElementById("notification").style.color = "green";
-      getAllAdmin();
+      getAllResources(subjectId);
     }
     else
       document.getElementById("notification").style.color = "red";

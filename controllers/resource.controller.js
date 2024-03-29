@@ -7,6 +7,42 @@ import Resource from "../models/resource.model.js";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
+export const addResource = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const {subjectId, chapter} = req.body;
+
+  if (!subjectId || !chapter)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const addResource = await Resource.create({
+    subjectId,
+    chapter,
+    teacherId : uniqueId
+  });
+
+  if (!addResource)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while removing the Student from DataBase!!!"
+      )
+    );
+
+  return res.status(200).json({
+    addResource,
+    message: "Requested Resource has been successfully added!!!",
+    success: true,
+  });
+});
+
 export const getAllResources = asyncHandler(async (req, res, next) => {
     const { _id, uniqueId } = req.user;
   
@@ -15,8 +51,8 @@ export const getAllResources = asyncHandler(async (req, res, next) => {
         new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
       );
 
-      const {teacherId} = req.params;
-    const resources = await Resource.find({teacherId});
+      const {subjectId} = req.params
+    const resources = await Resource.find({teacherId : uniqueId, subjectId});
   
     return res.status(200).json({
       resources,
@@ -36,7 +72,7 @@ export const getAllResources = asyncHandler(async (req, res, next) => {
         new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
       );
   
-    const resourceId = req.body;
+    const {resourceId} = req.body;
   
     if (!resourceId)
       return next(
