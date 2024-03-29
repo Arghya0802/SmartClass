@@ -11,11 +11,13 @@ import {
   giveAttendanceToStudent,
   getAllResources,
   getAllLinksForChapter,
+  getAllAssignments,
 } from "../controllers/teacher.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
-router.post("/resources/chapter", verifyJWT, getAllLinksForChapter);
+router.get("/assignments", verifyJWT, getAllAssignments);
 
+router.post("/resources/chapter", verifyJWT, getAllLinksForChapter);
 router.get("/resources", verifyJWT, getAllResources);
 
 router.post(

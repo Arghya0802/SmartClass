@@ -1,14 +1,29 @@
 <div class="container">
-    <h2>Add Department</h2>
+    <h2>Add Resource</h2>
     <div class="form-group">
-        <label for="subject-id">Subject-ID:</label>
-        <input type="text" id="subject-id" placeholder="Enter Subject-ID">
+        <label for="subject-id">Subject ID:</label>
+        <input type="text" id="subject-id" placeholder="Enter Subject ID">
     </div>
+
     <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" placeholder="Enter title">
+        <label for="chapter">Chapter Name:</label>
+        <input type="text" id="chapter" placeholder="Enter Chapter of the Subject for whom you want to upload">
+    </div>
+
+    <!-- <div class="form-group">
+        <label for="full-marks">Full Marks:</label>
+        <input type="text" id="full-marks" placeholder="Enter Full Marks for the assignment">
+    </div> -->
+    <div class="form-group-addfile">
+        <label for="file-input">Add files:</label>
+        <div class="add-file-section">
+            <div class="dashed-rectangle">
+                <input type="file" id="fileInput" class="file-input"
+                    accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png" multiple>
+            </div>
+        </div>
     </div>
     <div class="btn-container">
-        <button class="login-btn" id="add-department" onclick="addResource()">Add</button>
+        <button class="login-btn-large" id="add-admin" onclick="addResources()">Add</button>
     </div>
 </div>

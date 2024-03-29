@@ -28,12 +28,22 @@ function addAttendanceClicked() {
     });
 }
 
-function getAllResources() {
-  fetch("forms/teacherforms/showresources.html")
-    .then((response) => {
-      return response.text();
-    })
-    .then((html) => {
-      document.getElementById("display-window").innerHTML = html;
-    });
-}
+// function getAllResourcesClicked() {
+//   fetch("forms/teacherforms/showresources.html")
+//     .then((response) => {
+//       return response.text();
+//     })
+//     .then((html) => {
+//       document.getElementById("display-window").innerHTML = html;
+//     });
+// }
+
+// function getAllAssignmentsClicked() {
+//   fetch("forms/teacherforms/showassignments.html")
+//     .then((response) => {
+//       return response.text();
+//     })
+//     .then((html) => {
+//       document.getElementById("display-window").innerHTML = html;
+//     });
+// }

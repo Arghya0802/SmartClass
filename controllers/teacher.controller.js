@@ -28,7 +28,7 @@ const deleteUrls = async (resources) => {
 
 export const addResources = asyncHandler(async (req, res, next) => {
   const { chapter, subjectId } = req.body;
-  // console.log(subjectId);
+  // console.log(subjectId, chapter, req.files.resources.length);
   if (!subjectId || !chapter)
     return next(
       new ApiError(
@@ -92,9 +92,8 @@ export const addResources = asyncHandler(async (req, res, next) => {
     const localFilePath = req.files.resources[i].path;
 
     const newResource = await uploadOnCloudinary(localFilePath);
-
+    // console.log(newResource);
     if (!newResource) {
-      deleteUrls(resourcesLink);
       return next(
         new ApiError(
           500,
@@ -106,19 +105,19 @@ export const addResources = asyncHandler(async (req, res, next) => {
     resourcesLink.push(newResource.url);
   }
 
+  // console.log(resourcesLink.length);
   isSubjectPresent = false;
 
   for (let i = 0; i < teacher.resources.length; i++) {
-    // if (isSubjectPresent)
-
     const presentResource = await Resource.findById(
       teacher.resources[i].resourceId
     );
 
+    // console.log(presentResource);
     if (!presentResource) {
-      deleteUrls(resourcesLink);
+      // deleteUrls(resourcesLink) ;
       return next(
-        new ApiError(500, "Something went wrong while calling to Cloudinary!!!")
+        new ApiError(500, "Something went wrong while calling to DataBase!!")
       );
     }
 
@@ -184,7 +183,8 @@ export const addResources = asyncHandler(async (req, res, next) => {
 
 export const addAssignment = asyncHandler(async (req, res, next) => {
   const { subjectId, fullMarks, title } = req.body;
-  // console.log(subjectId);
+  // console.log(subjectId, fullMarks, title);
+  console.log(req.files.assignments.length);
   if (!subjectId || !fullMarks || !title)
     return next(
       new ApiError(
@@ -609,7 +609,7 @@ export const deleteResource = asyncHandler(async (req, res, next) => {
         const updatedTeacher = await Teacher.findByIdAndUpdate(
           teacher._id,
           {
-            $pull: { resources: { resourceIds: resource._id } },
+            $pull: { "resources.resourceIds": resource._id },
           },
           { new: true }
         );
@@ -625,7 +625,7 @@ export const deleteResource = asyncHandler(async (req, res, next) => {
         const updatedSubject = await Subject.findByIdAndUpdate(
           subject._id,
           {
-            $pull: { resources: { resourceIds: resource._id } },
+            $pull: { "resources.resourceIds": resource._id },
           },
           { new: true }
         );
@@ -774,6 +774,9 @@ export const getAllLinksForChapter = asyncHandler(async (req, res, next) => {
     if (id === subjectId) {
       // console.log(presentResource);
       for (let j = 0; j < presentResource.chapters.length; j++) {
+        console.log(presentResource.chapters.length);
+        console.log(presentResource.chapters[j].name);
+        if (resourcesLink.length) break;
         if (presentResource.chapters[j].name === chapter) {
           // console.log(presentResource.chapters[j]);
           resourcesLink = presentResource.chapters[j].links;
@@ -786,6 +789,57 @@ export const getAllLinksForChapter = asyncHandler(async (req, res, next) => {
     resourcesLink,
     message:
       "All the Public URLs for the given Subject's Chapter fetched successfully!!!",
+    success: true,
+  });
+});
+
+export const getAllAssignments = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const teacher = await Teacher.findById(_id);
+  let assignments = [];
+
+  if (!teacher)
+    return next(new ApiError(404, "No Teacher found with given ID!!!"));
+
+  for (let i = 0; i < teacher.assignments.length; i++) {
+    const subject = await Subject.findOne({
+      uniqueId: teacher.assignments[i].subjectId,
+    }).select("name uniqueId");
+
+    if (!subject)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    for (let j = 0; j < teacher.assignments[i].assignmentIds.length; j++) {
+      const addedAssignment = await Assignment.findById(
+        teacher.assignments[i].assignmentIds[j]
+      );
+
+      if (!addedAssignment)
+        return next(
+          new ApiError(
+            500,
+            "Something went wrong while calling to the DataBase!!!"
+          )
+        );
+
+      assignments.push(addedAssignment);
+    }
+  }
+
+  return res.status(200).json({
+    assignments,
+    message: "All the assignments of the given teacher fetched successfully!!!",
     success: true,
   });
 });

@@ -1,20 +1,25 @@
 <div class="container">
     <h2>Add Assignment</h2>
     <div class="form-group">
-        <label for="assignment-id">Assignment ID:</label>
-        <input type="text" id="assignment-id" placeholder="Enter Assignment ID">
-    </div>
-    <div class="form-group">
         <label for="title">Assignment Title:</label>
         <input type="text" id="title" placeholder="Enter Title of the assignment">
     </div>
+    <div class="form-group">
+        <label for="subject-id">Subject ID:</label>
+        <input type="text" id="subject-id" placeholder="Enter Subject ID">
+    </div>
+    <div class="form-group">
+        <label for="full-marks">Full Marks:</label>
+        <input type="text" id="full-marks" placeholder="Enter Full Marks for the assignment">
+    </div>
     <div class="form-group-addfile">
-      <label for="file-input">Add file:</label>
-      <div class="add-file-section">
-          <div class="dashed-rectangle">
-              <input type="file" id="fileInput" class="file-input" accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png">
-          </div>
-      </div>
+        <label for="file-input">Add files:</label>
+        <div class="add-file-section">
+            <div class="dashed-rectangle">
+                <input type="file" id="fileInput" class="file-input"
+                    accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png" multiple>
+            </div>
+        </div>
     </div>
     <div class="btn-container">
         <button class="login-btn-large" id="add-admin" onclick="addAssignment()">Add</button>

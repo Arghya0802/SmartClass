@@ -54,43 +54,109 @@ fetch("api/v1/teacher/", {
 
 // Backend Functionalities are starts here
 
-function addAssignment() {
-  //Testing functionality
-  document.getElementById("notification").innerText =
-    "Hi there You have clicked Add";
+async function addAssignment() {
+  try {
+    const subjectId = document.getElementById("subject-id").value;
+    const title = document.getElementById("title").value;
+    const fullMarks = document.getElementById("full-marks").value;
+
+    // Create a new FormData object
+    const formData = new FormData();
+
+    // Get the selected files
+    const fileInput = document.getElementById("fileInput");
+    const files = fileInput.files;
+
+    // Append each file to the FormData
+    for (const file of files) {
+      console.log(file);
+      formData.append("assignments", file);
+    }
+
+    document.getElementById("subject-id").value = "";
+    document.getElementById("title").value = "";
+    document.getElementById("full-marks").value = "";
+    document.getElementById("fileInput").value = "";
+
+    // Append the subjectId and title to the FormData
+    formData.append("subjectId", subjectId);
+    formData.append("title", title);
+    formData.append("fullMarks", fullMarks);
+
+    console.log(formData);
+
+    const response = await fetch("/api/v1/teacher/assignment/add", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: formData,
+    });
+
+    const data = await response.json();
+    document.getElementById("notification").innerText = data.message;
+
+    if (data.success)
+      document.getElementById("notification").style.color = "green";
+    else document.getElementById("notification").style.color = "red";
+
+    setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+    }, 3000);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function addResource() {
-  const subjectId = document.getElementById("subject-id").value;
-  const title = document.getElementById("title").value;
+async function addResources() {
+  try {
+    const subjectId = document.getElementById("subject-id").value;
+    const chapter = document.getElementById("chapter").value;
 
-  document.getElementById("subject-id").value = "";
-  document.getElementById("title").value = "";
+    // Create a new FormData object
+    const formData = new FormData();
 
-  const jsonObject = {
-    subjectId,
-    title,
-  };
-  fetch("/api/v1/teacher/resources/add", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(jsonObject),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      document.getElementById("notification").innerText = data.message;
-      if (data.success)
-        document.getElementById("notification").style.color = "green";
-      else document.getElementById("notification").style.color = "red";
+    // Get the selected files
+    const fileInput = document.getElementById("fileInput");
+    const files = fileInput.files;
+
+    // Append each file to the FormData
+    for (const file of files) {
+      console.log(file);
+      formData.append("resources", file);
+    }
+
+    document.getElementById("subject-id").value = "";
+    document.getElementById("chapter").value = "";
+    document.getElementById("fileInput").value = "";
+
+    // Append the subjectId and title to the FormData
+    formData.append("subjectId", subjectId);
+    formData.append("chapter", chapter);
+
+    console.log(formData);
+
+    const response = await fetch("/api/v1/teacher/resources/add", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: formData,
     });
-  setTimeout(() => {
-    document.getElementById("notification").innerText = "";
-  }, 2000);
+
+    const data = await response.json();
+    document.getElementById("notification").innerText = data.message;
+
+    if (data.success)
+      document.getElementById("notification").style.color = "green";
+    else document.getElementById("notification").style.color = "red";
+
+    setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+    }, 3000);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 function addAttendance() {
@@ -238,92 +304,116 @@ function getAllLinksForChapter(subjectId, chapter) {
     });
 }
 
-function removeLink(url, subjectId) {
-  const jsonObject = {
-    url,
-    subjectId,
-  };
-  fetch("/api/v1/teacher/resources/delete", {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(jsonObject),
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      document.getElementById("notification").innerText = data.message;
-      if (data.success) {
-        getAllLinksForChapter(data.subjectId, data.chapter);
-        document.getElementById("notification").style.color = "green";
-      } else document.getElementById("notification").style.color = "red";
+async function removeLink(url, subjectId) {
+  try {
+    const jsonObject = {
+      url,
+      subjectId,
+    };
+    const apiResponse = await fetch("/api/v1/teacher/resources/delete", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(jsonObject),
     });
-  setTimeout(() => {
-    document.getElementById("notification").innerText = "";
-  }, 3000);
+    const data = await apiResponse.json();
+    document.getElementById("notification").innerText = data.message;
+    if (data.success) {
+      getAllLinksForChapter(data.subjectId, data.chapter);
+      document.getElementById("notification").style.color = "green";
+    } else document.getElementById("notification").style.color = "red";
+
+    setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+    }, 3000);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-// async function getAllLinksForChapter(subjectId, chapter) {
-//   try {
-//     const jsonObject = {
-//       subjectId,
-//       chapter,
-//     };
+function getAllAssignments() {
+  let html = "";
 
-//     console.log(jsonObject);
+  fetch("forms/teacherforms/showassignments.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
 
-//     // Fetch the HTML template
-//     const responseHtml = await fetch(
-//       "forms/teacherforms/showchapterlinks.html"
-//     );
-//     const data = await responseHtml.text();
-//     console.log(jsonObject);
-//     let html = data;
+  fetch("/api/v1/teacher/assignments", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.assignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.subjectId + "</td>";
+          // console.log(assignment);
+          // console.log(assignment.addedAssignment);
+          // const addedAssignment = JSON.stringify(assignment);
+          // console.log(addedAssignment);
+          html += `<td><button onclick="showAllAssignmentLinks('${assignment._id}')"> Update </button></td>`;
 
-//     // Fetch resource links
-//     const responseApi = await fetch("/api/v1/teacher/resources", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//       body: JSON.stringify(jsonObject),
-//     });
+          html += `<td>
+            <button onclick="updateAssignment('${assignment._id}')">
+              Update
+            </button>
+          </td>`;
+          html += `<td>
+            <button onclick="delteAssignment('${assignment._id}')">
+              Delete
+            </button>
+          </td>`;
 
-//     const apiData = await responseApi.json();
-//     console.log(apiData);
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
 
-//     if (apiData.success) {
-//       apiData.resourceLinks.forEach((resource) => {
-//         html += "</tr>";
-//         html += `<td>${resource.link}</td>`;
-//         html += `<td><button onclick="UpdateLink('${resource.link}')"> Update </button></td>`;
-//         html += `<td><button onclick="removeLink('${resource.link}')"> Remove </button></td>`;
-//         html += "</tr>";
-//       });
-//     }
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
 
-//     html += "</tbody>";
-//     html += "</table>";
+async function showAllAssignmentLinks(assignments) {
+  try {
+    let html = "";
 
-//     // Display the HTML content
-//     document.getElementById("display-window").innerHTML = html;
-//     document.getElementById("notification").innerText = apiData.message;
+    const response = await fetch("forms/teacherforms/showmyassignment.html");
+    console.log(response);
+    const data = await response.text();
+    html += data;
+    // console.log(html);
 
-//     if (apiData.success)
-//       document.getElementById("notification").style.color = "green";
-//     else document.getElementById("notification").style.color = "red";
+    html += "</tbody>";
+    html += "</table>";
+    document.getElementById("display-window").innerHTML = html;
+    document.getElementById("notification").innerText = "data.message;";
+    // if (data.success)
+    //   document.getElementById("notification").style.color = "green";
+    // else document.getElementById("notification").style.color = "red";
 
-//     setTimeout(() => {
-//       document.getElementById("notification").innerText = "";
-//     }, 2000);
-//   } catch (error) {
-//     console.log("Error fetching data:", error);
-//   }
-// }
+    setTimeout(() => {
+      document.getElementById("notification").innerText = "";
+    }, 2000);
+  } catch (error) {}
+}
 
 // Backend Functionalities ends here
 
