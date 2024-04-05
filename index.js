@@ -63,6 +63,10 @@ app.use("/api/v1/teacher", teacherRouter);
 import studentRouter from "./routes/student.routes.js";
 app.use("/api/v1/student", studentRouter);
 
+// Assignment Routes
+import assignmentRouter from "./routes/assignment.routes.js";
+aap.use("/api/v1/assignment", assignmentRouter);
+
 // Error Handler Middleware
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);
