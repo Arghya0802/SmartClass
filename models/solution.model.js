@@ -17,11 +17,6 @@ const solutionSchema = new mongoose.Schema(
       ref: "Assignment",
       required: true,
     },
-    submissions: [
-      {
-        type: String,
-      },
-    ],
   },
   { timestamps: true }
 );

@@ -24,38 +24,10 @@ const subjectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    teachers: [
-      {
-        type: String,
-      },
-    ],
-
-    resources: [
-      {
-        teacherId: {
-          type: String,
-          required: true,
-        },
-        resourceId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Resource",
-        },
-      },
-    ],
-    assignments: [
-      {
-        teacherId: {
-          type: String,
-          required: true,
-        },
-        assignmentIds: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Assignment",
-          },
-        ],
-      },
-    ],
+    teacher: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );

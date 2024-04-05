@@ -15,7 +15,7 @@ export const addResource = asyncHandler(async (req, res, next) => {
       new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
     );
 
-  const {subjectId, chapter} = req.body;
+  const {subjectId, chapter, link} = req.body;
 
   if (!subjectId || !chapter)
     return next(
@@ -25,7 +25,8 @@ export const addResource = asyncHandler(async (req, res, next) => {
   const addResource = await Resource.create({
     subjectId,
     chapter,
-    teacherId : uniqueId
+    teacherId : uniqueId,
+    link
   });
 
   if (!addResource)
