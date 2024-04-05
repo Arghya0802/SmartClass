@@ -14,18 +14,10 @@ const assignmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    links: [
-      {
-        type: String,
-        // required: true,
-      },
-    ],
-    solutions: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Solution",
-      },
-    ],
+    link: {
+      type: String,
+      required: true,
+    }
   },
   { timestamps: true }
 );
