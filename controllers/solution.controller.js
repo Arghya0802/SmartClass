@@ -107,9 +107,9 @@ export const createSolution = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllSolutions = asyncHandler(async (req, res, next) => {
-  const { subjectId } = req.params;
+  const { assignmentId } = req.params;
 
-  if (!subjectId)
+  if (!assignmentId)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
@@ -122,13 +122,17 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
     );
 
   const student = await Student.findById(_id);
-  const subject = await Subject.findById(subjectId);
+  const assignment = await Assignment.findById(assignmentId);
 
-  if (!subject || !student)
+  if (!assignment || !student)
     return next(
-      new ApiError(404, "No Subject or Teacher found with given credentials!!!")
+      new ApiError(
+        404,
+        "No Assignment or Teacher found with given credentials!!!"
+      )
     );
 
+  const teacher = await Teacher.findOne();
   if (subject.department !== student.department)
     return next(
       new ApiError(

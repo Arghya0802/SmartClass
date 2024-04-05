@@ -104,6 +104,11 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
 
   const { _id } = req.user;
 
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
   const assignment = await Assignment.findById(assignmentId);
   const teacher = await Teacher.findById(_id);
 
@@ -116,23 +121,11 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
     );
 
   if (assignment.teacherId !== teacher.uniqueId)
-    return next(401, "Sorry!!! Access-Denied!!!");
+    return next(new ApiError(401, "Sorry!!! Access-Denied!!!"));
 
   const allSubmittedSolutions = await Solution.find({
     assignment: assignmentId,
   });
-
-  for (const solution of allSubmittedSolutions) {
-    const removedSolution = await Solution.findByIdAndDelete(solution._id);
-
-    if (!removedSolution)
-      return next(
-        new ApiError(
-          500,
-          "Something went wrong while calling to the DataBase!!!"
-        )
-      );
-  }
 
   const response = await deleteFromCloudinary(assignment.link);
 
