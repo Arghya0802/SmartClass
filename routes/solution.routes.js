@@ -22,3 +22,4 @@ router.post(
 router.get("/all/:subjectId", verifyJWT, getAllSolutions);
 
 export default router;
+

@@ -10,7 +10,7 @@ import {
 } from "../controllers/assignment.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
-router.post("/add/:subjectId", verifyJWT, createAssignment);
+router.post("/add/", verifyJWT, createAssignment);
 
 router.patch("/:solutionId/assign-marks", verifyJWT, assignMarksToStudent);
 
