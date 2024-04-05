@@ -65,7 +65,11 @@ app.use("/api/v1/student", studentRouter);
 
 // Assignment Routes
 import assignmentRouter from "./routes/assignment.routes.js";
-aap.use("/api/v1/assignment", assignmentRouter);
+app.use("/api/v1/assignment", assignmentRouter);
+
+// Solution Routes
+import solutionRouter from "./routes/solution.routes.js";
+app.use("/api/v1/solution", solutionRouter);
 
 // Error Handler Middleware
 app.use(notFoundMiddleware);

@@ -17,6 +17,9 @@ const solutionSchema = new mongoose.Schema(
       ref: "Assignment",
       required: true,
     },
+    link: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

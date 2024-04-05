@@ -55,28 +55,14 @@ const teacherSchema = new mongoose.Schema(
 
     resources: [
       {
-        subjectId: {
-          type: String,
-          required: true,
-        },
-        resourceId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Resource",
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Resource",
       },
     ],
     assignments: [
       {
-        subjectId: {
-          type: String,
-          required: true,
-        },
-        assignmentIds: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Assignment",
-          },
-        ],
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Assignment",
       },
     ],
   },
