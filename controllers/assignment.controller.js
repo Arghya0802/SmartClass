@@ -13,8 +13,8 @@ import {
 import Solution from "../models/solution.model.js";
 
 export const createAssignment = asyncHandler(async (req, res, next) => {
-  const { subjectId, fullMarks, assignmentLink } = req.params;
-  if (!subjectId || !fullMarks || !assignmentLink)
+  const { subjectId, fullMarks, link } = req.body;
+  if (!subjectId || !fullMarks || !link)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
@@ -50,42 +50,17 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
       new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
     );
 
-  const subject = await Subject.findById(subjectId);
-  const teacher = await Teacher.findById(_id);
-
-  if (!subject || !teacher)
-    return next(
-      new ApiError(404, "No Teacher or Subject found with given credentials!!!")
-    );
-
-  let isSubjectPresent = false;
-  for (const id of teacher.subjects) {
-    if (isSubjectPresent) break;
-    if (id === subject.uniqueId) isSubjectPresent = true;
-  }
-
-  if (!isSubjectPresent)
-    return next(
-      new ApiError(
-        403,
-        "Current Subject is not assigned to LoggedIn Teacher!!!"
-      )
-    );
-
   const newAssignment = await Assignment.create({
-    subjectId: subject.uniqueId,
-    teacherId: teacher.uniqueId,
+    subjectId,
+    teacherId: _id,
     fullMarks,
-    link: assignmentLink,
+    link,
   });
 
   if (!newAssignment)
     return next(
       new ApiError(500, "Something went wrong while calling to the DataBase!!!")
     );
-
-  teacher.assignments.push(newAssignment);
-  await teacher.save();
 
   return res.status(201).json({
     newAssignment,
@@ -102,47 +77,6 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  const { _id } = req.user;
-
-  const assignment = await Assignment.findById(assignmentId);
-  const teacher = await Teacher.findById(_id);
-
-  if (!assignment || !teacher)
-    return next(
-      new ApiError(
-        404,
-        "No Assignment or Teacher found with given credentials!!!"
-      )
-    );
-
-  if (assignment.teacherId !== teacher.uniqueId)
-    return next(401, "Sorry!!! Access-Denied!!!");
-
-  const allSubmittedSolutions = await Solution.find({
-    assignment: assignmentId,
-  });
-
-  for (const solution of allSubmittedSolutions) {
-    const removedSolution = await Solution.findByIdAndDelete(solution._id);
-
-    if (!removedSolution)
-      return next(
-        new ApiError(
-          500,
-          "Something went wrong while calling to the DataBase!!!"
-        )
-      );
-  }
-
-  const response = await deleteFromCloudinary(assignment.link);
-
-  if (!response)
-    return next(
-      new ApiError(
-        500,
-        "Something went wrong while deleting the uploaded files from Cloudinary!!!"
-      )
-    );
   const deletedAssignment = await Assignment.findByIdAndDelete(assignmentId);
 
   if (!deletedAssignment)

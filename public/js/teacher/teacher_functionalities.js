@@ -55,9 +55,39 @@ fetch("api/v1/teacher/", {
 // Backend Functionalities are starts here
 
 function addAssignment() {
-  //Testing functionality
-  document.getElementById("notification").innerText =
-    "Hi there You have clicked Add";
+  const subjectId = document.getElementById("subject-id").value;
+  const fullMarks = document.getElementById("full-marks").value;
+  const link = document.getElementById("link").value;
+
+  document.getElementById("subject-id").value = "";
+  document.getElementById("full-marks").value = "";
+  document.getElementById("link").value = "";
+
+  const jsonObject = {
+    subjectId,
+    fullMarks,
+    link,
+  };
+  fetch("/api/v1/assignment/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
 }
 
 function addResource() {
@@ -235,7 +265,8 @@ function getAllAssignments(subjectId) {
         console.log(data);
         data.assignments.forEach((assignment) => {
           html += "<tr>";
-          html += "<td>" + assignment.chapter + "</td>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
           html += "<td>" + assignment.link + "</td>";
           html +=
             "<td><button onclick=\"removeAssignment('" +
