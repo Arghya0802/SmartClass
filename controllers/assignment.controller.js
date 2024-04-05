@@ -175,37 +175,12 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
         )
       );
 
-    const teacher = await Teacher.findById(_id);
-    const subject = await Subject.findById(subjectId);
-
-    if (!subject || !teacher)
-      return next(
-        new ApiError(
-          404,
-          "No Subject or Teacher found with given credentials!!!"
-        )
-      );
-
-    let isSubjectPresent = false;
-    for (const id of teacher.subjects) {
-      if (isSubjectPresent) break;
-      if (id === subject.uniqueId) isSubjectPresent = true;
-    }
-
-    if (!isSubjectPresent)
-      return next(
-        new ApiError(
-          403,
-          "Current Subject is not assigned to LoggedIn Teacher!!!"
-        )
-      );
-
-    const allAssignments = await Assignment.find({
+    const assignments = await Assignment.find({
       subjectId,
-      teacherId: teacher.uniqueId,
+      teacherId: _id,
     });
 
-    if (!allAssignments)
+    if (!assignments)
       return next(
         new ApiError(
           500,
@@ -214,7 +189,7 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
       );
 
     return res.status(200).json({
-      allAssignments,
+      assignments,
       message:
         "All the Assignments of the given Teacher for the given Subject fetched successfully!!!",
       success: true,

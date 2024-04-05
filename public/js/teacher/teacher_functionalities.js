@@ -286,6 +286,60 @@ function removeAssignment(assignmentId, subjectId) {
   }, 2000);
 }
 
+function getAllSolutions(subjectId) {
+  let html = "";
+
+  fetch("forms/teacherforms/showsolutions.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/solution/" + subjectId, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.solutions.forEach((solution) => {
+          html += "<tr>";
+          html += "<td>" + solution.studentId + "</td>";
+          html += "<td>" + solution.link + "</td>";
+          html += "<td>" + solution.marksObtained + "</td>";
+          html += "<td>" + solution.fullMarks + "</td>";
+
+          let str = "Edit Marks"
+          if(solution.marksObtained)
+          str = "Add Marks"
+
+          html +=
+            "<td><button onclick=\"addMarks('" +
+            solution._id +
+            "', '" +
+            subjectId +
+            "')\"> " + str + " </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
 // Backend Functionalities ends here
 
 function logout() {
