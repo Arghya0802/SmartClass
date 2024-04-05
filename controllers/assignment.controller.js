@@ -13,35 +13,35 @@ import {
 import Solution from "../models/solution.model.js";
 
 export const createAssignment = asyncHandler(async (req, res, next) => {
-  const { subjectId, fullMarks } = req.params;
-  if (!subjectId || !fullMarks)
+  const { subjectId, fullMarks, assignmentLink } = req.params;
+  if (!subjectId || !fullMarks || !assignmentLink)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  if (
-    !req.files ||
-    !Array.isArray(req.files.assignment) ||
-    !req.files.assignment.length
-  )
-    return next(
-      new ApiError(
-        400,
-        "Please enter some Assignment Resources before proceeding!!!"
-      )
-    );
+  // if (
+  //   !req.files ||
+  //   !Array.isArray(req.files.assignment) ||
+  //   !req.files.assignment.length
+  // )
+  //   return next(
+  //     new ApiError(
+  //       400,
+  //       "Please enter some Assignment Resources before proceeding!!!"
+  //     )
+  //   );
 
-  const localFilePath = req.files.assignment[0].path;
+  // const localFilePath = req.files.assignment[0].path;
 
-  const response = await uploadOnCloudinary(localFilePath);
+  // const response = await uploadOnCloudinary(localFilePath);
 
-  if (!response)
-    return next(
-      new ApiError(
-        500,
-        "Something went wrong while uploading files at Cloudinary!!!"
-      )
-    );
+  // if (!response)
+  //   return next(
+  //     new ApiError(
+  //       500,
+  //       "Something went wrong while uploading files at Cloudinary!!!"
+  //     )
+  //   );
 
   const { _id } = req.user;
 
@@ -76,7 +76,7 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
     subjectId: subject.uniqueId,
     teacherId: teacher.uniqueId,
     fullMarks,
-    link: response.url,
+    link: assignmentLink,
   });
 
   if (!newAssignment)

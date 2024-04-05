@@ -10,17 +10,7 @@ import {
 } from "../controllers/assignment.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
-router.post(
-  "/add/:subjectId",
-  verifyJWT,
-  upload.fields([
-    {
-      name: "assignment",
-      maxCount: 1,
-    },
-  ]),
-  createAssignment
-);
+router.post("/add/:subjectId", verifyJWT, createAssignment);
 
 router.patch("/:solutionId/assign-marks", verifyJWT, assignMarksToStudent);
 
