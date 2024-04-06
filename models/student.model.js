@@ -37,7 +37,7 @@ const studentSchema = new mongoose.Schema(
         return `${this.uniqueId}@gmail.com`;
       },
     },
-    department: {
+    departmentId: {
       type: String,
       required: true,
     },

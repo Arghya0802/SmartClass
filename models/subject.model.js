@@ -20,11 +20,11 @@ const subjectSchema = new mongoose.Schema(
         return true;
       },
     },
-    department: {
+    departmentId: {
       type: String,
       required: true,
     },
-    teacher: {
+    teacherId: {
       type: String,
       required: true,
     }

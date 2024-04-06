@@ -20,11 +20,6 @@ const departmentSchema = new mongoose.Schema(
         return true;
       },
     },
-    subjects: [
-      {
-        type: String,
-      },
-    ],
     hod: {
       type: String,
     },

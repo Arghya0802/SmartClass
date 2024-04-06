@@ -39,7 +39,7 @@ const teacherSchema = new mongoose.Schema(
       enum: ["teacher", "hod"],
       default: "teacher",
     },
-    department: {
+    departmentId: {
       type: String,
       required: true,
     },
