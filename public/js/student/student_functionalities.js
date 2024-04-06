@@ -53,10 +53,140 @@ fetch("api/v1/student/", {
 
 // Backend Functionalities are starts here
 
-function addAssignment() {
-  //Testing functionality
-  document.getElementById("notification").innerText =
-    "Hi there You have clicked Add";
+function getAllSubjects() {
+  let html = "";
+
+  fetch("forms/studentforms/showsubjects.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        // need to change after Backend changes
+        data.loggedInTeacher.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject + "</td>";
+          html += "<td>" + subject + "</td>";
+          html +=
+            "<td><button onclick=\"getAllResources('" +
+            subject +
+            "')\"> Resources </button></td>";
+          html +=
+            "<td><button onclick=\"getAllAssignments('" +
+            subject +
+            "')\"> Assignments </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllAssignments(subjectId) {
+  let html = "";
+
+  fetch("forms/teacherforms/showassignments.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/assignment/" + subjectId, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.assignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html +=
+            "<td><button onclick=\"addSolutions('" +
+            assignment._id +
+            "')\"> Solutions </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllResources(subjectId) {
+  let html = "";
+
+  fetch("forms/teacherforms/showresources.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/resource/" + subjectId, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.resources.forEach((resource) => {
+          html += "<tr>";
+          html += "<td>" + resource.chapter + "</td>";
+          html += "<td>" + resource.link + "</td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
 }
 
 function addSolution() {

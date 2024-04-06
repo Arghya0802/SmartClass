@@ -119,35 +119,12 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
   if (!_id)
     return next(new ApiError(500, "Something went wrong with the token!!!"));
 
-  const teacher = await Teacher.findOne(assignment.teacherId);
-
-  if (!teacher)
-    return next(
-      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
-    );
-
-  if (teacher.department !== student.department)
-    return next(
-      new ApiError(
-        403,
-        "Current Subject is not assigned to LoggedIn Student's Department!!!"
-      )
-    );
-
-  const allSolutions = await Solution.find({ assignment: assignmentId });
   const solutions = await Solution.find({ assignmentId });
 
   if (!solutions)
     return next(
       new ApiError(500, "Something went wrong while calling to the DataBase!!!")
     );
-
-  let subjectSolutions = [];
-
-  for (const solution of allSolutions) {
-    if (solution.studentId === student.uniqueId)
-      subjectSolutions.push(solution);
-  }
 
   return res.status(200).json({
     solutions,

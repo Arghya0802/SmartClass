@@ -12,7 +12,7 @@ const solutionSchema = new mongoose.Schema(
     marksObtained: {
       type: Number,
     },
-    assignment: {
+    assignmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Assignment",
       required: true,
