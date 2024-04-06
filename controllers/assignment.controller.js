@@ -98,10 +98,6 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
   if (assignment.teacherId !== teacher.uniqueId)
     return next(new ApiError(401, "Sorry!!! Access-Denied!!!"));
 
-  const allSubmittedSolutions = await Solution.find({
-    assignment: assignmentId,
-  });
-
   const response = await deleteFromCloudinary(assignment.link);
 
   if (!response)

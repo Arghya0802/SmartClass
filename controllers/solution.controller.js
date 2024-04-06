@@ -132,8 +132,14 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
       )
     );
 
-  const teacher = await Teacher.findOne();
-  if (subject.department !== student.department)
+  const teacher = await Teacher.findOne(assignment.teacherId);
+
+  if (!teacher)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
+
+  if (teacher.department !== student.department)
     return next(
       new ApiError(
         403,
@@ -141,7 +147,7 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
       )
     );
 
-  const allSolutions = await Solution.find({ studentId: student.uniqueId });
+  const allSolutions = await Solution.find({ assignment: assignmentId });
 
   if (!allSolutions)
     return next(
@@ -151,17 +157,8 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
   let subjectSolutions = [];
 
   for (const solution of allSolutions) {
-    const assignment = await Assignment.findById(solution.assignment);
-
-    if (!assignment)
-      return next(
-        new ApiError(
-          500,
-          "Something went wrong while calling to the DataBase!!!"
-        )
-      );
-
-    if (assignment.subjectId === subjectId) subjectSolutions.push(solution);
+    if (solution.studentId === student.uniqueId)
+      subjectSolutions.push(solution);
   }
 
   return res.status(200).json({
