@@ -66,7 +66,7 @@ export const getAllDepartmentSubjects = asyncHandler(async (req, res, next) => {
 
   const subjects = await Subject.find({
     departmentId: hod ? hod.departmentId : student.departmentId,
-  });
+  }).distinct("uniqueId");
 
   for (const subject of subjects) {
     subject.name = capitalizeWords(subject.name);

@@ -9,7 +9,7 @@ const subjectSchema = new mongoose.Schema(
     uniqueId: {
       type: String,
       required: true,
-      unique: true,
+      // unique: true,
       validate: function () {
         if (
           this.uniqueId.length < 3 ||
