@@ -125,6 +125,7 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
 
   if (!_id)
     return next(new ApiError(500, "Something went wrong with the token!!!"));
+  
   const solutions = await Solution.find({ assignmentId });
 
   if (!solutions)

@@ -43,28 +43,10 @@ const teacherSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subjects: [
-      {
-        type: String,
-      },
-    ],
     refreshToken: {
       type: String,
       default: "Empty",
     },
-
-    resources: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Resource",
-      },
-    ],
-    assignments: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Assignment",
-      },
-    ],
   },
   { timestamps: true }
 );
