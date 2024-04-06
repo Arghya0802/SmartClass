@@ -19,7 +19,7 @@ router.post(
   createSolution
 );
 
-router.get("/all/:subjectId", verifyJWT, getAllSolutions);
+router.get("/all/:assignmentId", verifyJWT, getAllSolutions);
 
 export default router;
 

@@ -269,15 +269,15 @@ function getAllAssignments(subjectId) {
           html += "<td>" + assignment.fullMarks + "</td>";
           html += "<td>" + assignment.link + "</td>";
           html +=
+            "<td><button onclick=\"getAllSolutions('" +
+            assignment._id +
+            "')\"> Solutions </button></td>";
+          html +=
             "<td><button onclick=\"removeAssignment('" +
             assignment._id +
             "', '" +
             subjectId +
             "')\"> Remove </button></td>";
-          html +=
-            "<td><button onclick=\"getAllSolutions('" +
-            subjectId +
-            "')\"> Solutions </button></td>";
           html += "</tr>";
         });
       }
@@ -317,7 +317,7 @@ function removeAssignment(assignmentId, subjectId) {
   }, 2000);
 }
 
-function getAllSolutions(subjectId) {
+function getAllSolutions(assignmentId) {
   let html = "";
 
   fetch("forms/teacherforms/showsolutions.html")
@@ -328,7 +328,7 @@ function getAllSolutions(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/solution/" + subjectId, {
+  fetch("/api/v1/solution/all/" + assignmentId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
