@@ -342,7 +342,7 @@ export const getSingleTeacher = asyncHandler(async (req, res, next) => {
 
   const loggedInTeacher = await Teacher.findById(_id);
 
-  if (!loggedInTeacher || loggedInTeacher.designation !== "teacher")
+  if (!loggedInTeacher)
     return next(
       new ApiError(404, "No Teacher found with given credentials!!!")
     );
@@ -350,6 +350,30 @@ export const getSingleTeacher = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     loggedInTeacher,
     message: "LoggedIn Teacher data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});
+
+export const getAllSubjectsOfTeacher = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const teacher = await Teacher.findById(_id);
+
+  if (!teacher)
+    return next(
+      new ApiError(404, "No Teacher found with given credentials!!!")
+    );
+
+  const subjects = await Subject.find({ teacherId: teacher.uniqueId });
+
+  return res.status(200).json({
+    subjects,
+    message: "All the Subjects for the given Teacher fetched successfully!!!",
     success: true,
   });
 });

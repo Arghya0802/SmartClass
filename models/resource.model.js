@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const resourceSchema = new mongoose.Schema(
   {
-    chapter: {
+    topic: {
       type: String,
       required: true,
     },
@@ -17,7 +17,7 @@ const resourceSchema = new mongoose.Schema(
     link: {
       type: String,
       required: true,
-    }
+    },
   },
   { timestamps: true }
 );

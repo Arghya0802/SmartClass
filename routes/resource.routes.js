@@ -1,11 +1,18 @@
 import express from "express";
 const router = express.Router();
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
-import { getAllResources, removeResource, addResource } from "../controllers/resource.controller.js";
+import {
+  getAllResources,
+  removeResource,
+  createResource,
+} from "../controllers/resource.controller.js";
 
-router.get("/:subjectId", verifyJWT, getAllResources);
-router.delete("/remove-resource", verifyJWT, removeResource);
-router.post("/add-resource", verifyJWT, addResource);
+router.post("/add", verifyJWT, createResource);
 
-export default router
+router.get("/all/:subjectId", verifyJWT, getAllResources);
+
+router.delete("/remove", verifyJWT, removeResource);
+
+export default router;

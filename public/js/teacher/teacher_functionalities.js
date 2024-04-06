@@ -92,7 +92,7 @@ function addAssignment() {
 
 function addResource() {
   const subjectId = document.getElementById("subject-id").value;
-  const chapter = document.getElementById("title").value;
+  const topic = document.getElementById("title").value;
   const link = document.getElementById("link").value;
 
   document.getElementById("subject-id").value = "";
@@ -101,10 +101,10 @@ function addResource() {
 
   const jsonObject = {
     subjectId,
-    chapter,
+    topic,
     link,
   };
-  fetch("/api/v1/resource/add-resource", {
+  fetch("/api/v1/resource/add", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -145,10 +145,11 @@ function getAllSubjects() {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        data.loggedInTeacher.subjects.forEach((subject) => {
+        data.subjects.forEach((subject) => {
+          // Subjects array is received from Backend API Call
           html += "<tr>";
-          html += "<td>" + subject + "</td>";
-          html += "<td>" + subject + "</td>";
+          html += "<td>" + subject.name + "</td>";
+          html += "<td>" + subject.uniqueId + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
             subject +
@@ -185,7 +186,7 @@ function getAllResources(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/resource/" + subjectId, {
+  fetch("/api/v1/resource/all" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -196,7 +197,7 @@ function getAllResources(subjectId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += "<td>" + resource.chapter + "</td>";
+          html += "<td>" + resource.topic + "</td>";
           html += "<td>" + resource.link + "</td>";
           html +=
             "<td><button onclick=\"removeResource('" +
@@ -222,13 +223,13 @@ function getAllResources(subjectId) {
 }
 
 function removeResource(resourceId, subjectId) {
-  fetch("/api/v1/resource/remove-resource", {
+  fetch("/api/v1/resource/remove", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ resourceId }),
+    body: JSON.stringify({ resourceId }), // ObjectId
   })
     .then((res) => res.json())
     .then((data) => {
@@ -254,7 +255,8 @@ function getAllAssignments(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/assignment/" + subjectId, {
+  // SubjectId --> ObjectId in Params
+  fetch("/api/v1/assignment/all" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -295,6 +297,7 @@ function getAllAssignments(subjectId) {
     });
 }
 
+// AssignmentId --> ObjectId in Body
 function removeAssignment(assignmentId, subjectId) {
   fetch("/api/v1/assignment/remove", {
     method: "DELETE",
@@ -328,6 +331,7 @@ function getAllSolutions(assignmentId) {
       html = data;
     });
 
+  // AssignmentId --> ObjectId in Params
   fetch("/api/v1/solution/all/" + assignmentId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -344,16 +348,17 @@ function getAllSolutions(assignmentId) {
           html += "<td>" + solution.marksObtained + "</td>";
           html += "<td>" + solution.fullMarks + "</td>";
 
-          let str = "Edit Marks"
-          if(solution.marksObtained)
-          str = "Add Marks"
+          let str = "Edit Marks";
+          if (solution.marksObtained) str = "Add Marks";
 
           html +=
             "<td><button onclick=\"addMarks('" +
             solution._id +
             "', '" +
             subjectId +
-            "')\"> " + str + " </button></td>";
+            "')\"> " +
+            str +
+            " </button></td>";
           html += "</tr>";
         });
       }

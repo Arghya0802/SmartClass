@@ -6,6 +6,7 @@ import {
   addAssignment,
   addResources,
   assignMarks,
+  getAllSubjectsOfTeacher,
   getSingleTeacher,
 } from "../controllers/teacher.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -38,5 +39,5 @@ router.post("/assignment/upload-marks", verifyJWT, assignMarks);
 
 router.get("/", verifyJWT, getSingleTeacher);
 
+// router.get("/subjects", verifyJWT, getAllSubjectsOfTeacher);
 export default router;
-

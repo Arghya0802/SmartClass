@@ -7,17 +7,7 @@ import {
 } from "../controllers/solution.controller.js";
 const router = express.Router();
 
-router.post(
-  "/add/:assignmentId",
-  verifyJWT,
-  upload.fields([
-    {
-      name: "solutions",
-      maxCount: 1,
-    },
-  ]),
-  createSolution
-);
+router.post("/add/:assignmentId", verifyJWT, createSolution);
 
 router.get("/all/:assignmentId", verifyJWT, getAllSolutions);
 

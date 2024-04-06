@@ -71,6 +71,14 @@ app.use("/api/v1/assignment", assignmentRouter);
 import solutionRouter from "./routes/solution.routes.js";
 app.use("/api/v1/solution", solutionRouter);
 
+// Subject Routes
+import subjectRouter from "./routes/subject.routes.js";
+app.use("/api/v1/subject", subjectRouter);
+
+// Marks Routes
+import marksRouter from "./routes/marks.routes.js";
+app.use("/api/v1/marks", marksRouter);
+
 // Error Handler Middleware
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

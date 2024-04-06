@@ -10,35 +10,36 @@ import Solution from "../models/solution.model.js";
 
 export const createSolution = asyncHandler(async (req, res, next) => {
   const { assignmentId } = req.params;
+  const { link } = req.body;
 
-  if (!assignmentId)
+  if (!assignmentId || !link)
     return next(
       new ApiError(400, "Please enter all the details before entering!!!")
     );
 
-  if (
-    !req.files ||
-    !Array.isArray(req.files.solutions) ||
-    !req.files.solution.length
-  )
-    return next(
-      new ApiError(
-        400,
-        "Please enter some Assignment Resources before proceeding!!!"
-      )
-    );
+  // if (
+  //   !req.files ||
+  //   !Array.isArray(req.files.solutions) ||
+  //   !req.files.solution.length
+  // )
+  //   return next(
+  //     new ApiError(
+  //       400,
+  //       "Please enter some Assignment Resources before proceeding!!!"
+  //     )
+  //   );
 
-  const localFilePath = req.files.solutions[0].path;
+  // const localFilePath = req.files.solutions[0].path;
 
-  const response = await uploadOnCloudinary(localFilePath);
+  // const response = await uploadOnCloudinary(localFilePath);
 
-  if (!response)
-    return next(
-      new ApiError(
-        500,
-        "Something went wrong while uploading files at Cloudinary!!!"
-      )
-    );
+  // if (!response)
+  //   return next(
+  //     new ApiError(
+  //       500,
+  //       "Something went wrong while uploading files at Cloudinary!!!"
+  //     )
+  //   );
 
   const { _id } = req.user;
 
@@ -65,7 +66,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
       new ApiError(500, "Something went wrong while calling to the DataBase!!!")
     );
 
-  if (student.department !== teacher.department)
+  if (student.departmentId !== teacher.departmentId)
     return next(
       new ApiError(
         401,
@@ -89,7 +90,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
   const newSolution = await Solution.create({
     studentId: student.uniqueId,
     assignment: assignmentId,
-    link: response.url,
+    link: link,
     fullMarks: assignment.fullMarks,
   });
 
@@ -125,7 +126,14 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
 
   if (!_id)
     return next(new ApiError(500, "Something went wrong with the token!!!"));
-  
+
+  const teacher = await Teacher.findById(_id);
+
+  if (!teacher)
+    return next(
+      new ApiError(404, "No Teacher found with given credentials!!!")
+    );
+
   const solutions = await Solution.find({ assignmentId });
 
   if (!solutions)
@@ -136,7 +144,7 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     solutions,
     message:
-      "All the Solutions for the given Student for the given Subject fetched successfully!!!",
+      "All the Solutions for the given Assingment fetched successfully!!!",
     success: true,
   });
 });

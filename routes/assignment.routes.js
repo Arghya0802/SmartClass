@@ -10,12 +10,12 @@ import {
 } from "../controllers/assignment.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 
-router.post("/add/", verifyJWT, createAssignment);
+router.post("/add", verifyJWT, createAssignment);
 
 router.patch("/:solutionId/assign-marks", verifyJWT, assignMarksToStudent);
 
 router.delete("/remove", verifyJWT, removeAssignment);
 
-router.get("/:subjectId", verifyJWT, getAllAssignmentsOfTeacher);
+router.get("/all/:subjectId", verifyJWT, getAllAssignmentsOfTeacher);
 
 export default router;
