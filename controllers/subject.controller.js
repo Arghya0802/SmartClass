@@ -7,6 +7,16 @@ import Resource from "../models/resource.model.js";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 
+function capitalizeWords(input) {
+  return input
+    .toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word[0].toUpperCase() + word.substr(1);
+    })
+    .join(" ");
+}
+
 export const getAllSubjects = asyncHandler(async (req, res, next) => {
   const { _id } = req.user;
 
@@ -23,6 +33,10 @@ export const getAllSubjects = asyncHandler(async (req, res, next) => {
     );
 
   const subjects = await Subject.find({ teacherId: teacher.uniqueId });
+
+  for (const subject of subjects) {
+    subject.name = capitalizeWords(subject.name);
+  }
 
   return res.status(200).json({
     subjects,

@@ -38,67 +38,28 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
   if (!hod || hod.designation !== "hod")
     return next(new ApiError(404, "No HoD found with given ID"));
 
-  if (hod.department !== existedTeacher.department)
+  if (hod.departmentId !== existedTeacher.departmentId)
     return next(
-      new ApiError(400, "HoD and Teacher's Department are different!!!")
+      new ApiError(403, "HoD and Teacher's Department are different!!!")
     );
 
-  // if (
-  //   (hod.uniqueId !== existedTeacher.uniqueId) &&
-  //   (existedTeacher.designation === "hod")
-  // )
-  //   return next(
-  //     new ApiError(
-  //       400,
-  //       "Sorry!!! Cannot assign subject to another Department's HoD!!!"
-  //     )
-  //   );
-
-  if (existedSubject.department !== hod.department)
+  if (existedSubject.departmentId !== hod.departmentId)
     return next(
       new ApiError(400, "Current Subject doesn't belong to HoD's Department!!!")
     );
 
-  for (const assignedSubjectId of existedTeacher.subjects) {
-    const assignedSubject = await Subject.findOne({
-      uniqueId: assignedSubjectId,
-    });
+  const subjectAssigned = await Subject.findOne({ teacherId });
 
-    if (
-      assignedSubject.name === existedSubject.name ||
-      assignedSubject.uniqueId === subjectId
-    )
-      return next(
-        new ApiError(
-          400,
-          "Given Subject Name or Subject Unique-Id is already assigned to the Current Teacher!!!"
-        )
-      );
-  }
-
-  const updatedTeacher = await Teacher.findByIdAndUpdate(
-    existedTeacher._id,
-    {
-      $push: { subjects: subjectId },
-    },
-    { new: true }
-  );
-
-  const updatedSubject = await Subject.findByIdAndUpdate(existedSubject._id, {
-    $push: { teachers: teacherId },
-  });
-
-  if (!updatedTeacher || !updatedSubject)
+  if (subjectAssigned)
     return next(
-      new ApiError(
-        500,
-        "Sorry!!! Something went wrong while updating Teacher or Subject!!!"
-      )
+      new ApiError(400, "Given Subject is already assigned to given Teacher!!!")
     );
 
+  existedSubject.teacherId = teacherId;
+  await existedSubject.save();
+
   return res.status(200).json({
-    teacherId,
-    subjectId,
+    existedSubject,
     message:
       "Given Teacher assigned to given Subject of HoD's Department successfully!!!",
     success: true,
@@ -125,52 +86,36 @@ export const addSubjectToDepartment = asyncHandler(async (req, res, next) => {
 
   const hod = await Teacher.findById(_id);
 
-  if (!hod || !hod.department)
+  if (!hod)
     return next(new ApiError(404, "No HoD found with given details!!!"));
 
-  if (hod.designation !== "hod")
+  if (!hod.name || hod.designation !== "hod")
     return next(new ApiError(401, "Un-Authorized Access!!!"));
 
-  const existedSubject = await Subject.findOne({ uniqueId });
-  const currentDepartment = hod.department;
+  const myName = name.toLowerCase();
+
+  const existedSubject = await Subject.findOne({
+    $or: [{ uniqueId }, { name: myName }],
+  });
 
   if (existedSubject)
-    return next(new ApiError(400, "Subject Unique-Id already exists!!!"));
-
-  if (!currentDepartment)
     return next(
-      new ApiError(404, "Sorry!!! No Department found with given HoD!!!")
+      new ApiError(
+        400,
+        "Subject with given Unique-Id or Name already exists!!!"
+      )
     );
 
-  for (const subjectId of currentDepartment.subjects) {
-    const alreadyAddedSubject = await Subject.findOne({ uniqueId: subjectId });
-
-    // console.log(alreadyAddedSubject.uniqueId);
-
-    if (
-      alreadyAddedSubject.name === name ||
-      alreadyAddedSubject.uniqueId === uniqueId
-    )
-      return next(
-        new ApiError(
-          400,
-          "Subject-Id or Subject-Name already exists in the given Department"
-        )
-      );
-  }
-
   const newSubject = await Subject.create({
-    name,
+    name: myName,
     uniqueId,
     department: currentDepartment.uniqueId,
   });
 
   if (!newSubject)
-    return next(new ApiError(500, "Sorry!!! Internal Server Error!!!"));
-
-  await Department.findByIdAndUpdate(currentDepartment._id, {
-    $push: { subjects: uniqueId },
-  });
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
 
   return res.status(201).json({
     newSubject,
