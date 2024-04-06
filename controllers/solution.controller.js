@@ -114,11 +114,17 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
+  const assignment = await Assignment.findById(assignmentId);
+
+  if (!assignment)
+    return next(
+      new ApiError(404, "No Assignment found with given credentials!!!")
+    );
+
   const { _id } = req.user;
 
   if (!_id)
     return next(new ApiError(500, "Something went wrong with the token!!!"));
-
   const solutions = await Solution.find({ assignmentId });
 
   if (!solutions)
