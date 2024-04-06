@@ -37,7 +37,7 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
 
   const newTeacher = await Teacher.create({
     uniqueId,
-    department: departmentId,
+    departmentId,
   });
 
   if (!newTeacher)
@@ -82,7 +82,7 @@ export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
 
   const newStudent = await Student.create({
     uniqueId,
-    department: departmentId,
+    departmentId,
   });
 
   if (!newStudent)
@@ -165,7 +165,7 @@ export const assignHoD = asyncHandler(async (req, res, next) => {
     );
 
   const department = await Department.findOne({
-    uniqueId: existedHoD.department,
+    uniqueId: existedHoD.departmentId,
   });
 
   if (department.hod)
@@ -381,8 +381,8 @@ export const getAllStudents = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
   
-  const department = req.params.department;
-  const students = await Student.find({department});
+  const departmentId = req.params.department;
+  const students = await Student.find({departmentId});
 
   if (!students)
     return next(
@@ -419,8 +419,8 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
   if (!admin)
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
-  const department = req.params.department;
-  const teachers = await Teacher.find({department});
+  const departmentId = req.params.department;
+  const teachers = await Teacher.find({departmentId});
 
   if (!teachers)
     return next(
