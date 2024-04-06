@@ -354,7 +354,7 @@ function getAllSolutions(assignmentId) {
             "<td><button onclick=\"addMarks('" +
             solution._id +
             "', '" +
-            subjectId +
+            assignmentId +
             "')\"> " +
             str +
             " </button></td>";
@@ -373,6 +373,10 @@ function getAllSolutions(assignmentId) {
         document.getElementById("notification").innerText = "";
       }, 2000);
     });
+}
+
+function addMarks(solutionId){
+  
 }
 
 // Backend Functionalities ends here

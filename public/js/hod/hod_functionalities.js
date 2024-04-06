@@ -119,6 +119,72 @@ function assignSubjectToTeacher() {
   }, 2000);
 }
 
+function getAllSubjects() {
+  let html = "";
+
+  fetch("forms/hodforms/showsubjects.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/teacher/all", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }) 
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.name + "</td>";
+          html +=
+            "<td><button onclick=\"removeSubject('" +
+            subject._id +
+            "')\"> Resources </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function removeSubject(subjectId) {
+  fetch("/api/v1/subject/remove", {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ subjectId }), // ObjectId
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+        getAllSubjects();
+      } else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
+}
+
 // Backend Functionalities ends here
 
 function logout() {

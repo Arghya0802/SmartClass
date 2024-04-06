@@ -75,15 +75,15 @@ function getAllSubjects() {
         // need to change after Backend changes
         data.loggedInTeacher.subjects.forEach((subject) => {
           html += "<tr>";
-          html += "<td>" + subject + "</td>";
-          html += "<td>" + subject + "</td>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.name + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
-            subject +
+            subject.uniqueId +
             "')\"> Resources </button></td>";
           html +=
             "<td><button onclick=\"getAllAssignments('" +
-            subject +
+            subject.uniqueId +
             "')\"> Assignments </button></td>";
           html += "</tr>";
         });
@@ -190,40 +190,6 @@ function getAllResources(subjectId) {
 }
 
 function addSolution() {
-  const assignmentId = document.getElementById("solution-id").value;
-  const title = document.getElementById("title").value;
-
-  document.getElementById("solution-id").value = "";
-  document.getElementById("title").value = "";
-
-  const jsonObject = {
-    assignmentId,
-    title,
-  };
-  console.log(jsonObject);
-
-  fetch("/api/v1/student/assignment/submit", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: JSON.stringify(jsonObject),
-  })
-    .then((response) => {
-      //   console.log(response);
-      return response.json();
-    })
-    .then((data) => {
-      //   console.log(data);
-      document.getElementById("notification").innerText = data.message;
-      if (data.success)
-        document.getElementById("notification").style.color = "green";
-      else document.getElementById("notification").style.color = "red";
-    });
-  setTimeout(() => {
-    document.getElementById("notification").innerText = "";
-  }, 2000);
 }
 
 // Backend Functionalities ends here
