@@ -51,20 +51,41 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Current Subject doesn't belong to HoD's Department!!!")
     );
 
-  const subjectAssigned = await Subject.findOne({ teacherId });
-
-  if (subjectAssigned)
+  if (existedSubject.teacherId !== teacherId)
     return next(
-      new ApiError(400, "Given Subject is already assigned to given Teacher!!!")
+      new ApiError(
+        400,
+        "Given Subject is already assigned to Requested Teacher!!!"
+      )
     );
 
-  existedSubject.teacherId = teacherId;
-  await existedSubject.save();
+  if (!existedSubject.teacherId) {
+    existedSubject.teacherId = teacherId;
+    await existedSubject.save();
+    return res.status(200).json({
+      existedSubject,
+      message:
+        "Given Teacher assigned to given Subject of HoD's Department successfully!!!",
+      success: true,
+    });
+  }
+
+  const newSubject = await Subject.create({
+    name: existedSubject.name.toLowerCase(),
+    departmentId: existedSubject.departmentId,
+    teacherId,
+    uniqueId: existedSubject.uniqueId,
+  });
+
+  if (!newSubject)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
 
   return res.status(200).json({
-    existedSubject,
+    newSubject,
     message:
-      "Given Teacher assigned to given Subject of HoD's Department successfully!!!",
+      "Given Subject has been assigned to Requested Teacher successfully",
     success: true,
   });
 });
