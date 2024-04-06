@@ -23,10 +23,10 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false || data.designation!=="hod") {
+    if (data.success === false || data.designation !== "hod") {
       localStorage.setItem(
         "response",
-        JSON.stringify({ message : data.message, statusCode })
+        JSON.stringify({ message: data.message, statusCode })
       );
       window.location.href = "/error/error.html";
     }
@@ -64,7 +64,7 @@ function addSubject() {
     subjectId,
     name,
   };
-  fetch("/api/v1/subject/add", {
+  fetch("/api/v1/hod/add-subject-department", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -134,7 +134,7 @@ function getAllSubjects() {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-  }) 
+  })
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
@@ -164,7 +164,7 @@ function getAllSubjects() {
 }
 
 function removeSubject(subjectId) {
-  fetch("/api/v1/subject/remove", {
+  fetch("/api/v1/hod/remove-subject-department", {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${accessToken}`,

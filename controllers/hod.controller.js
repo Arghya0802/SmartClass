@@ -5,6 +5,9 @@ import Department from "../models/department.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
+import Resource from "../models/resource.model.js";
+import Assignment from "../models/assignment.model.js";
+import Solution from "../models/solution.model.js";
 
 export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
   const { teacherId, subjectId } = req.body;
@@ -143,3 +146,115 @@ export const getSingleHoD = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const removeSubjectFromDepartment = asyncHandler(
+  async (req, res, next) => {
+    const { subjectId } = req.body;
+
+    if (!subjectId)
+      return next(
+        new ApiError(400, "Please enter all the details before proceeding!!!")
+      );
+
+    const { _id } = req.user;
+
+    if (!_id)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    const hod = await Teacher.findById(_id);
+    const subject = await Subject.findById(subjectId);
+
+    if (!hod || !hod.designation !== "hod" || !subject)
+      return next(
+        new ApiError(404, "No HoD or Subject found with given credentials!!!")
+      );
+
+    if (hod.departmentId !== subject.departmentId)
+      return next(
+        new ApiError(403, "HoD and Subject must be from same Department!!!")
+      );
+
+    const allSubjectTeachers = await Subject.find({
+      uniqueId: subject.uniqueId,
+    });
+
+    for (const teacher of allSubjectTeachers) {
+      const removed = await Subject.findByIdAndDelete(teacher._id);
+
+      if (!removed)
+        return next(
+          new ApiError(
+            500,
+            "Somerhing went wrong while calling to the DataBase!!!"
+          )
+        );
+    }
+
+    const allSubjectResources = await Resource.find({
+      subjectId: subject.uniqueId,
+    });
+
+    for (const resource of allSubjectResources) {
+      const removed = await Resource.findByIdAndDelete(resource._id);
+
+      if (!removed)
+        return next(
+          new ApiError(
+            500,
+            "Something went wrong while calling to the DataBase!!!"
+          )
+        );
+    }
+
+    const allSubjectAssignments = await Assignment.find({
+      subjectId: subject._id,
+    });
+
+    for (const assignment of allSubjectAssignments) {
+      const removedSolution = await Solution.findOneAndDelete({
+        assignmentId: assignment._id,
+      });
+
+      if (!removedSolution)
+        return next(
+          new ApiError(
+            500,
+            "Something went wrong while calling to the DataBase!!!"
+          )
+        );
+
+      const removedAssignment = await Assignment.findByIdAndDelete(
+        assignment._id
+      );
+
+      if (!removedAssignment)
+        return next(
+          new ApiError(
+            500,
+            "Something went wrong while calling to the DataBase!!!"
+          )
+        );
+    }
+
+    const removedSubject = await Subject.findByIdAndDelete(subject._id);
+
+    if (!removedSubject)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    return res.status(200).json({
+      removedSubject,
+      message: "Given Subject has been removed from Department successfully!!!",
+      success: true,
+    });
+  }
+);
