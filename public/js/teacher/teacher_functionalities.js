@@ -151,11 +151,11 @@ function getAllSubjects() {
           html += "<td>" + subject.uniqueId + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
-            subject +
+            subject._id +
             "')\"> Resources </button></td>";
           html +=
             "<td><button onclick=\"getAllAssignments('" +
-            subject +
+            subject._id +
             "')\"> Assignments </button></td>";
           html += "</tr>";
         });
@@ -185,7 +185,7 @@ function getAllResources(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/resource/all" + subjectId, {
+  fetch("/api/v1/resource/all/" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -255,7 +255,7 @@ function getAllAssignments(subjectId) {
     });
 
   // SubjectId --> ObjectId in Params
-  fetch("/api/v1/assignment/all" + subjectId, {
+  fetch("/api/v1/assignment/all/" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

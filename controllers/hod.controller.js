@@ -109,7 +109,7 @@ export const addSubjectToDepartment = asyncHandler(async (req, res, next) => {
   const newSubject = await Subject.create({
     name: myName,
     uniqueId,
-    department: currentDepartment.uniqueId,
+    departmentId: hod.departmentId,
   });
 
   if (!newSubject)

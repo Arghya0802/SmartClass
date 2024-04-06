@@ -61,11 +61,11 @@ function addSubject() {
   document.getElementById("name").value = "";
 
   const jsonObject = {
-    subjectId,
+    uniqueId : subjectId,
     name,
   };
-  fetch("/api/v1/subject/add", {
-    method: "POST",
+  fetch("/api/v1/hod/add-subject-department", {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
