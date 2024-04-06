@@ -53,10 +53,37 @@ fetch("api/v1/hod/", {
 
 // Backend Functionalities are starts here
 
-function addAssignment() {
-  //Testing functionality
-  document.getElementById("notification").innerText =
-    "Hi there You have clicked Add";
+function addSubject() {
+  const subjectId = document.getElementById("subject-id").value;
+  const name = document.getElementById("name").value;
+
+  document.getElementById("subject-id").value = "";
+  document.getElementById("name").value = "";
+
+  const jsonObject = {
+    subjectId,
+    name,
+  };
+  fetch("/api/v1/subject/add", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
 }
 
 function assignSubjectToTeacher() {

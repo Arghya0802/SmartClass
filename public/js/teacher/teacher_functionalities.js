@@ -137,16 +137,15 @@ function getAllSubjects() {
       html = data;
     });
 
-  fetch("/api/v1/teacher/", {
+  fetch("/api/v1/subject/teacher/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-  })
+  }) 
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
         data.subjects.forEach((subject) => {
-          // Subjects array is received from Backend API Call
           html += "<tr>";
           html += "<td>" + subject.name + "</td>";
           html += "<td>" + subject.uniqueId + "</td>";
