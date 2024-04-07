@@ -2,6 +2,7 @@ let accessToken;
 let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
+let teacherId;
 
 if (!accessToken) {
   localStorage.setItem(
@@ -46,6 +47,7 @@ fetch("api/v1/teacher/", {
     document.getElementById("designation").innerText =
       loggedInTeacher.designation;
     document.getElementById("uniqueId").innerText = loggedInTeacher.uniqueId;
+    teacherId = loggedInTeacher.uniqueId;
 
     // setTimeout(()=>{
     //     logout();
@@ -151,11 +153,11 @@ function getAllSubjects() {
           html += "<td>" + subject.uniqueId + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
-            subject._id +
+            subject.uniqueId +
             "')\"> Resources </button></td>";
           html +=
             "<td><button onclick=\"getAllAssignments('" +
-            subject._id +
+            subject.uniqueId +
             "')\"> Assignments </button></td>";
           html += "</tr>";
         });
@@ -176,6 +178,10 @@ function getAllSubjects() {
 
 function getAllResources(subjectId) {
   let html = "";
+  let jsonObject = {
+    subjectId,
+    teacherId
+  }
 
   fetch("forms/teacherforms/showresources.html")
     .then((response) => {
@@ -185,10 +191,13 @@ function getAllResources(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/resource/all/" + subjectId, {
+  fetch("/api/v1/resource/all/", {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(jsonObject)
   })
     .then((response) => response.json())
     .then((data) => {
@@ -245,6 +254,10 @@ function removeResource(resourceId, subjectId) {
 
 function getAllAssignments(subjectId) {
   let html = "";
+  let jsonObject = {
+    teacherId,
+    subjectId
+  }
 
   fetch("forms/teacherforms/showassignments.html")
     .then((response) => {
@@ -254,11 +267,13 @@ function getAllAssignments(subjectId) {
       html = data;
     });
 
-  // SubjectId --> ObjectId in Params
-  fetch("/api/v1/assignment/all/" + subjectId, {
+  fetch("/api/v1/assignment/all/", {
+    method: "POST",
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
+    body: JSON.stringify(jsonObject)
   })
     .then((response) => response.json())
     .then((data) => {
@@ -347,17 +362,12 @@ function getAllSolutions(assignmentId) {
           html += "<td>" + solution.marksObtained + "</td>";
           html += "<td>" + solution.fullMarks + "</td>";
 
-          let str = "Edit Marks";
-          if (solution.marksObtained) str = "Add Marks";
-
           html +=
-            "<td><button onclick=\"addMarks('" +
+            "<td><button onclick=\"addMarksClicked('" +
             solution._id +
             "', '" +
             assignmentId +
-            "')\"> " +
-            str +
-            " </button></td>";
+            "')\"> Marks </button></td>";
           html += "</tr>";
         });
       }
@@ -375,8 +385,52 @@ function getAllSolutions(assignmentId) {
     });
 }
 
-function addMarks(solutionId){
-  
+function addMarksClicked(solutionId,assignmentId){
+  fetch("forms/teacherforms/addMarks.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("display-window").innerHTML = html;
+      const addButton = document.getElementById("add-marks");
+      addButton.addEventListener("click",function() {addMarks(solutionId,assignmentId)})
+    });
+}
+
+function addMarks(solutionId,assignmentId){
+  const marks = document.getElementById("marks").value;
+
+  document.getElementById("marks").value = "";
+
+  const jsonObject = {
+    marks,
+    solutionId
+  };
+  fetch("/api/v1/marks/teacher/assign-marks", {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+      {
+        document.getElementById("notification").style.color = "green";
+        setTimeout(() => {
+          getAllSolutions(assignmentId);
+        },2000)
+      }
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
 }
 
 // Backend Functionalities ends here

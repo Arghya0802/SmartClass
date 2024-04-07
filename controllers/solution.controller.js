@@ -76,7 +76,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
 
   const solutions = await Solution.findOne({
     studentId: student.uniqueId,
-    assignment: assignmentId,
+    assignmentId,
   });
 
   if (solutions)
@@ -89,7 +89,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
 
   const newSolution = await Solution.create({
     studentId: student.uniqueId,
-    assignment: assignmentId,
+    assignmentId,
     link: link,
     fullMarks: assignment.fullMarks,
   });

@@ -61,7 +61,7 @@ export const createResource = asyncHandler(async (req, res, next) => {
 });
 
 export const getAllResources = asyncHandler(async (req, res, next) => {
-  const { subjectId } = req.params;
+  const { subjectId,teacherId } = req.body;
 
   if (!subjectId)
     return next(
@@ -75,8 +75,8 @@ export const getAllResources = asyncHandler(async (req, res, next) => {
       new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
     );
 
-  const teacher = await Teacher.findById(_id);
-  const subject = await Subject.findById(subjectId);
+  const teacher = await Teacher.findOne({uniqueId: teacherId});
+  const subject = await Subject.findOne({uniqueId: subjectId});
 
   if (!teacher || !subject)
     return next(
@@ -89,8 +89,8 @@ export const getAllResources = asyncHandler(async (req, res, next) => {
     );
 
   const resources = await Resource.find({
-    teacherId: teacher.uniqueId,
-    subjectId: subject.uniqueId,
+    teacherId,
+    subjectId
   });
 
   return res.status(200).json({

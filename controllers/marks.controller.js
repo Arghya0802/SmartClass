@@ -65,6 +65,6 @@ export const assignMarks = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     solution,
     message: "Marks Updated for the given Assignment successfully!!!",
-    success: TextTrackCueList,
+    success: true,
   });
 });

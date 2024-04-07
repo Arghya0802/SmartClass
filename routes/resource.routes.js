@@ -11,7 +11,7 @@ import {
 
 router.post("/add", verifyJWT, createResource);
 
-router.get("/all/:subjectId", verifyJWT, getAllResources);
+router.post("/all", verifyJWT, getAllResources);
 
 router.delete("/remove", verifyJWT, removeResource);
 

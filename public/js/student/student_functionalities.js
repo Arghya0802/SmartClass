@@ -72,18 +72,21 @@ function getAllSubjects() {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        console.log(data.subjects);
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
-          html += "<td>" + subject.name + "</td>";
+          html += "<td>" + subject.teacherId + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
-            subject._id +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
             "')\"> Resources </button></td>";
-          html +=
+            html +=
             "<td><button onclick=\"getAllAssignments('" +
-            subject._id +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
             "')\"> Assignments </button></td>";
           html += "</tr>";
         });
@@ -102,8 +105,13 @@ function getAllSubjects() {
     });
 }
 
-function getAllAssignments(subjectId) {
+function getAllAssignments(subjectId,teacherId) {
+  const jsonObject = {
+    subjectId,
+    teacherId
+  }
   let html = "";
+  console.log(jsonObject)
 
   fetch("forms/studentforms/showassignments.html")
     .then((response) => {
@@ -113,10 +121,13 @@ function getAllAssignments(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/assignment/all/" + subjectId, {
+  fetch("/api/v1/assignment/all", {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
     },
+    body: JSON.stringify(jsonObject)
   })
     .then((response) => response.json())
     .then((data) => {
@@ -130,7 +141,7 @@ function getAllAssignments(subjectId) {
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
-            "')\"> Solutions </button></td>";
+            "')\"> Add Solution </button></td>";
           html += "</tr>";
         });
       }
@@ -148,7 +159,12 @@ function getAllAssignments(subjectId) {
     });
 }
 
-function getAllResources(subjectId) {
+function getAllResources(subjectId,teacherId) {
+  let jsonObject = {
+    subjectId,
+    teacherId
+  }
+  console.log(jsonObject)
   let html = "";
 
   fetch("forms/studentforms/showresources.html")
@@ -159,10 +175,14 @@ function getAllResources(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/resource/all/" + subjectId, {
+  fetch("/api/v1/resource/all", {
+    method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+
     },
+    body: JSON.stringify(jsonObject)
   })
     .then((response) => response.json())
     .then((data) => {
@@ -196,7 +216,8 @@ function addSolutionClicked(assignmentId) {
     })
     .then((html) => {
       document.getElementById("display-window").innerHTML = html;
-      document.getElementById("add-solution").onclick = addSolution(assignmentId);
+      const addButton = document.getElementById("add-solution");
+      addButton.addEventListener("click",function() {addSolution(assignmentId)})
     });
 }
 
@@ -222,13 +243,17 @@ function addSolution(assignmentId){
     .then((data) => {
       document.getElementById("notification").innerText = data.message;
       if (data.success)
+      {
         document.getElementById("notification").style.color = "green";
+        setTimeout(() => {
+          getAllSubjects();
+        },2000)
+      }
       else document.getElementById("notification").style.color = "red";
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
   }, 2000);
-  getAllSubjects();
 }
 
 // Backend Functionalities ends here

@@ -16,6 +16,6 @@ router.patch("/:solutionId/assign-marks", verifyJWT, assignMarksToStudent);
 
 router.delete("/remove", verifyJWT, removeAssignment);
 
-router.get("/all/:subjectId", verifyJWT, getAllAssignmentsOfTeacher);
+router.post("/all", verifyJWT, getAllAssignmentsOfTeacher);
 
 export default router;

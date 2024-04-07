@@ -130,7 +130,7 @@ function getAllSubjects() {
       html = data;
     });
 
-  fetch("/api/v1/subject/teacher/all", {
+  fetch("/api/v1/subject/department/all", { 
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -145,7 +145,7 @@ function getAllSubjects() {
           html +=
             "<td><button onclick=\"removeSubject('" +
             subject._id +
-            "')\"> Resources </button></td>";
+            "')\"> Remove </button></td>";
           html += "</tr>";
         });
       }
