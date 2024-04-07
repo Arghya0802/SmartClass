@@ -43,7 +43,6 @@ export const addTeacherToDataBase = asyncHandler(async (req, res, next) => {
   if (!newTeacher)
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
 
-
   return res.status(201).json({
     newTeacher,
     message: "Teacher with given Unique-Id created successfully!!!",
@@ -97,9 +96,18 @@ export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
 });
 
 export const addAdminToDataBase = asyncHandler(async (req, res, next) => {
-  const { name, email, password, uniqueId } = req.body;
+  const { name, email, password, uniqueId, phone, age, DOB, gender } = req.body;
 
-  if (!uniqueId || !email || !password || !name)
+  if (
+    !uniqueId ||
+    !email ||
+    !password ||
+    !name ||
+    !phone ||
+    !age ||
+    !DOB ||
+    !gender
+  )
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
@@ -114,16 +122,28 @@ export const addAdminToDataBase = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Admin with given Unique-Id already exists!!!")
     );
 
-  const findAdmin = await Admin.findOne({ email });
-  const findTeacher = await Teacher.findOne({ email });
-  const findStudent = await Student.findOne({ email });
+  const findAdmin = await Admin.findOne({ $or: [{ email }, { phone }] });
+  const findTeacher = await Teacher.findOne({ $or: [{ email }, { phone }] });
+  const findStudent = await Student.findOne({ $or: [{ email }, { phone }] });
 
   if (findAdmin || findStudent || findTeacher)
     return next(
-      new ApiError(400, "Email-ID is already present in our DataBase!!!")
+      new ApiError(
+        400,
+        "Email-ID or Mobile Number is already present in our DataBase!!!"
+      )
     );
 
-  const newAdmin = await Admin.create({ name, email, password, uniqueId });
+  const newAdmin = await Admin.create({
+    name,
+    email,
+    password,
+    uniqueId,
+    phone,
+    DOB,
+    age,
+    gender,
+  });
 
   if (!newAdmin)
     return next(new ApiError(500, "Sorry!!! Internal Server Error"));
@@ -380,9 +400,8 @@ export const getAllStudents = asyncHandler(async (req, res, next) => {
   if (!admin)
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
-  
   const departmentId = req.params.department;
-  const students = await Student.find({departmentId});
+  const students = await Student.find({ departmentId });
 
   if (!students)
     return next(
@@ -420,7 +439,7 @@ export const getAllTeachers = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, "No Admin found with given credentials!!!"));
 
   const departmentId = req.params.department;
-  const teachers = await Teacher.find({departmentId});
+  const teachers = await Teacher.find({ departmentId });
 
   if (!teachers)
     return next(
@@ -466,8 +485,7 @@ export const getAllDepartments = asyncHandler(async (req, res, next) => {
 
   return res.status(200).json({
     departments,
-    message:
-      "All the Departments successfully fetched !!!",
+    message: "All the Departments successfully fetched !!!",
     success: true,
   });
 });

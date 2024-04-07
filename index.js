@@ -79,6 +79,10 @@ app.use("/api/v1/subject", subjectRouter);
 import marksRouter from "./routes/marks.routes.js";
 app.use("/api/v1/marks", marksRouter);
 
+// Notice Routes
+import noticeRouter from "./routes/notice.routes.js";
+app.use("/api/v1/notice", noticeRouter);
+
 // Error Handler Middleware
 app.use(notFoundMiddleware);
 app.use(errorMiddleware);

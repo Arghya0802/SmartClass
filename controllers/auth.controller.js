@@ -26,20 +26,32 @@ const generateAccessAndRefreshTokens = async (userId, User) => {
 };
 
 export const register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, uniqueId } = req.body;
+  const { name, email, password, uniqueId, gender, age, DOB, phone } = req.body;
 
-  if (!name || !email || !password || !uniqueId)
+  if (
+    !name ||
+    !email ||
+    !password ||
+    !uniqueId ||
+    !gender ||
+    !age ||
+    !DOB ||
+    !phone
+  )
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  const findTeacher = await Teacher.findOne({ email });
-  const findStudent = await Student.findOne({ email });
-  const findAdmin = await Admin.findOne({ email });
+  const findTeacher = await Teacher.findOne({ $or: [{ email }, { phone }] });
+  const findStudent = await Student.findOne({ $or: [{ email }, { phone }] });
+  const findAdmin = await Admin.findOne({ $or: [{ email }, { phone }] });
 
   if (findAdmin || findTeacher || findStudent)
     return next(
-      new ApiError(400, "Sorry!!! Email-ID is already registered!!!")
+      new ApiError(
+        400,
+        "Sorry!!! Email-ID or Mobile Number is already registered!!!"
+      )
     );
 
   const post = uniqueId[0];
@@ -57,6 +69,10 @@ export const register = asyncHandler(async (req, res, next) => {
         name,
         email,
         password: hashed,
+        age,
+        DOB,
+        gender,
+        phone,
       },
       { new: true }
     );
@@ -85,6 +101,10 @@ export const register = asyncHandler(async (req, res, next) => {
         name,
         email,
         password: hashed,
+        age,
+        gender,
+        phone,
+        DOB,
       },
       { new: true }
     );
@@ -405,5 +425,34 @@ export const verifyToken = asyncHandler(async (req, res, next) => {
   return res.status(500).json({
     message: "Access Token is not validated!!!",
     success: false,
+  });
+});
+
+export const viewProfile = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+  const teacher = await Teacher.findById(_id);
+  const student = await Student.findById(_id);
+
+  if (!admin && !teacher && !student)
+    return next(
+      new ApiError(
+        404,
+        "No Admin or HoD or Teacher or Student found with given credentials!!!"
+      )
+    );
+
+  let user = admin ? admin : teacher ? teacher : student;
+
+  return res.status(200).json({
+    user,
+    message: "LoggedIn User profile fetched successfully!!!",
+    success: true,
   });
 });

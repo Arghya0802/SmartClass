@@ -4,6 +4,7 @@ const router = express.Router();
 import {
   addSubjectToDepartment,
   assignSubjectToTeacher,
+  getAllFeedbacks,
   getSingleHoD,
   removeSubjectFromDepartment,
 } from "../controllers/hod.controller.js";
@@ -18,5 +19,7 @@ router.delete(
   verifyJWT,
   removeSubjectFromDepartment
 );
+
+router.get("/feedbacks/all", verifyJWT, getAllFeedbacks);
 
 export default router;

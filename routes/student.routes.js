@@ -10,7 +10,10 @@ import {
   getAllSubmittedAssignments,
   getSingleStudent,
   submitAssignment,
+  submitFeedback,
 } from "../controllers/student.controller.js";
 
 router.get("/", verifyJWT, getSingleStudent);
+router.post("/submit-feedback", verifyJWT, submitFeedback);
+
 export default router;

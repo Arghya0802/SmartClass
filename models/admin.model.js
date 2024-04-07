@@ -8,6 +8,24 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    age: {
+      type: Number,
+      required: true,
+    },
+    gender: {
+      type: String,
+      enum: ["male", "female", "neutral"],
+      required: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    DOB: {
+      type: String,
+      required: true,
+    },
     uniqueId: {
       type: String,
       required: true,

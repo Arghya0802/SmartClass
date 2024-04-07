@@ -2,6 +2,14 @@ import mongoose from "mongoose";
 
 const assignmentSchema = new mongoose.Schema(
   {
+    title: {
+      type: String,
+      required: true,
+    },
+    dueDate: {
+      type: String,
+      required: true,
+    },
     fullMarks: {
       type: String,
       required: true,
@@ -14,10 +22,12 @@ const assignmentSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    link: {
-      type: String,
-      required: true,
-    }
+    links: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
   },
   { timestamps: true }
 );

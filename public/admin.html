@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +8,22 @@
   <link rel="stylesheet" href="css/adminstyles.css">
   <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
 </head>
+
 <body>
   <header>
     <div class="container">
       <div class="logo">
         <a href="/admin.html">
-            <img src="icons/Logo.svg" alt="Logo">
+          <img src="icons/Logo.svg" alt="Logo">
         </a>
-    </div>
+      </div>
       <nav>
         <ul>
-            <li><a href="#">Notice</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><button onclick="logout()">logout</button></li> 
+          <li><a href="#" style="color:rgba(55, 17, 225, 0.851)"><strong>ADMIN</strong></a>
+          </li>
+          <li><a href="#">Notice</a></li>
+          <li><a href="#">Profile</a></li>
+          <li><button onclick="logout()">logout</button></li>
         </ul>
       </nav>
     </div>
@@ -28,14 +31,14 @@
 
   <div class="main-content">
     <div class="sidebar">
-        <button onclick="addDepartmentClicked()">Add Department</button>
-        <button onclick="addStudentClicked()">Add Student</button>
-        <button onclick="addTeacherClicked()">Add Teacher</button>
-        <button onclick="addAdminClicked()">Add Admin</button>
-        <button onclick="assignHODClicked()">Assign HOD</button>
-        <button onclick="removeHODClicked()">Remove HOD</button>
-        <button onclick="getAllAdmin()">Admin List</button>
-        <button onclick="getAllDepartments()">Department List</button>
+      <button onclick="addDepartmentClicked()">Add Department</button>
+      <button onclick="addStudentClicked()">Add Student</button>
+      <button onclick="addTeacherClicked()">Add Teacher</button>
+      <button onclick="addAdminClicked()">Add Admin</button>
+      <button onclick="assignHODClicked()">Assign HOD</button>
+      <button onclick="removeHODClicked()">Remove HOD</button>
+      <button onclick="getAllAdmin()">Admin List</button>
+      <button onclick="getAllDepartments()">Department List</button>
     </div>
     <div class="content" id="display-window">
       <h1>Welcome <span id="name"></span> !</h1>
@@ -46,4 +49,5 @@
   <script src="js/admin/admin.js"></script>
   <script src="js/admin/admin_functionalities.js"></script>
 </body>
+
 </html>

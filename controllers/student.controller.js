@@ -5,6 +5,9 @@ import Solution from "../models/solution.model.js";
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import Teacher from "../models/teacher.model.js";
+import Subject from "../models/subject.model.js";
+import Feedback from "../models/feedback.model.js";
 
 export const getAllAssignments = asyncHandler(async (req, res, next) => {
   const { _id, uniqueId } = req.user;
@@ -269,6 +272,71 @@ export const getSingleStudent = asyncHandler(async (req, res, next) => {
   return res.status(200).json({
     loggedInStudent,
     message: "LoggedIn Student data successfully fetched from DataBase!!!",
+    success: true,
+  });
+});
+
+export const submitFeedback = asyncHandler(async (req, res, next) => {
+  const { teacherId, subjectId, description } = req.body;
+
+  if (!teacherId || !subjectId || !description)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const teacher = await Teacher.findOne({ uniqueId: teacherId });
+  const subject = await Subject.findOne({ teacherId, uniqueId: subjectId });
+
+  if (!teacher || !subject)
+    return next(
+      new ApiError(
+        404,
+        "No Teacher or Subject found for the given credentials!!!"
+      )
+    );
+
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
+
+  const student = await Student.findById(_id);
+
+  if (!student)
+    return next(
+      new ApiError(404, "No Student found with given credentials!!!")
+    );
+
+  if (
+    student.departmentId !== teacher.departmentId ||
+    student.departmentId !== subject.departmentId
+  )
+    return next(
+      new ApiError(
+        403,
+        "Cannot submit feedback to other Department's Teacher or Subject!!!"
+      )
+    );
+
+  const newFeedback = await Feedback.create({
+    studentId: student.uniqueId,
+    teacherId,
+    subjectId,
+    description,
+    departmentId: student.departmentId,
+  });
+
+  if (!newFeedback)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
+
+  return res.status(201).json({
+    newFeedback,
+    message:
+      "New Feedback for the given Teacher and Subject has been created successfully!!!",
     success: true,
   });
 });

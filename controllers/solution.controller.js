@@ -8,38 +8,57 @@ import Assignment from "../models/assignment.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import Solution from "../models/solution.model.js";
 
+const insertCloudinaryLinks = async (resources) => {
+  try {
+    let resourcesLink = [];
+
+    for (let i = 0; i < resources.length; i++) {
+      const localFilePath = resources[i].path;
+
+      const newResource = await uploadOnCloudinary(localFilePath);
+      // console.log(newResource);
+      if (!newResource) {
+        return null;
+      }
+
+      resourcesLink.push(newResource.url);
+    }
+
+    return resourcesLink;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteCloudinaryLinks = async (resources) => {
+  try {
+    for (let i = 0; i < resources.length; i++) {
+      const response = await deleteFromCloudinary(resources[i]);
+
+      if (response.result !== "ok") return null;
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createSolution = asyncHandler(async (req, res, next) => {
   const { assignmentId } = req.params;
-  const { link } = req.body;
+  if (
+    !req.files ||
+    !Array.isArray(req.files.solutions) ||
+    !req.files.solutions.length
+  )
+    return next(
+      new ApiError(400, "Please enter some Solutions before proceeding!!!")
+    );
 
-  if (!assignmentId || !link)
+  if (!assignmentId)
     return next(
       new ApiError(400, "Please enter all the details before entering!!!")
     );
-
-  // if (
-  //   !req.files ||
-  //   !Array.isArray(req.files.solutions) ||
-  //   !req.files.solution.length
-  // )
-  //   return next(
-  //     new ApiError(
-  //       400,
-  //       "Please enter some Assignment Resources before proceeding!!!"
-  //     )
-  //   );
-
-  // const localFilePath = req.files.solutions[0].path;
-
-  // const response = await uploadOnCloudinary(localFilePath);
-
-  // if (!response)
-  //   return next(
-  //     new ApiError(
-  //       500,
-  //       "Something went wrong while uploading files at Cloudinary!!!"
-  //     )
-  //   );
 
   const { _id } = req.user;
 
@@ -79,6 +98,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
     assignmentId,
   });
 
+  // console.log(solutions);
   if (solutions)
     return next(
       new ApiError(
@@ -87,10 +107,20 @@ export const createSolution = asyncHandler(async (req, res, next) => {
       )
     );
 
+  const response = await insertCloudinaryLinks(req.files.solutions);
+
+  if (!response)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while uploading files to Cloudinary!!!"
+      )
+    );
+
   const newSolution = await Solution.create({
     studentId: student.uniqueId,
     assignmentId,
-    link: link,
+    links: response,
     fullMarks: assignment.fullMarks,
   });
 

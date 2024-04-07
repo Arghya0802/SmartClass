@@ -8,6 +8,7 @@ import ApiError from "../utils/ApiError.js";
 import Resource from "../models/resource.model.js";
 import Assignment from "../models/assignment.model.js";
 import Solution from "../models/solution.model.js";
+import Feedback from "../models/feedback.model.js";
 
 export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
   const { teacherId, subjectId } = req.body;
@@ -279,3 +280,33 @@ export const removeSubjectFromDepartment = asyncHandler(
     });
   }
 );
+
+export const getAllFeedbacks = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const hod = await Teacher.findById(_id);
+
+  if (!hod || hod.designation !== "hod")
+    return next(new ApiError(404, "No HoD found with given credentials!!!"));
+
+  const allFeedbacks = await Feedback.find({ departmentId: hod.departmentId });
+
+  if (!allFeedbacks)
+    return next(
+      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+    );
+
+  // Sort notices based on createdAt in descending order
+  allFeedbacks.sort((a, b) => b.createdAt - a.createdAt);
+
+  return res.status(200).json({
+    allFeedbacks,
+    message: "All Feedbacks for the given Department fetched successfully!!!",
+    success: true,
+  });
+});

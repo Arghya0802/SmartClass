@@ -12,42 +12,61 @@ import {
 } from "../utils/cloudinary.js";
 import Solution from "../models/solution.model.js";
 
+const insertCloudinaryLinks = async (resources) => {
+  try {
+    let resourcesLink = [];
+
+    for (let i = 0; i < resources.length; i++) {
+      const localFilePath = resources[i].path;
+
+      const newResource = await uploadOnCloudinary(localFilePath);
+      // console.log(newResource);
+      if (!newResource) {
+        return null;
+      }
+
+      resourcesLink.push(newResource.url);
+    }
+
+    return resourcesLink;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteCloudinaryLinks = async (resources) => {
+  try {
+    for (let i = 0; i < resources.length; i++) {
+      const response = await deleteFromCloudinary(resources[i]);
+
+      if (response.result !== "ok") return null;
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createAssignment = asyncHandler(async (req, res, next) => {
-  const { subjectId, fullMarks, link } = req.body;
-  if (!subjectId || !fullMarks || !link)
+  const { subjectId, fullMarks, dueDate, title } = req.body;
+
+  if (!subjectId || !fullMarks || !dueDate || !title)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
 
-  const subject = await Subject.findOne({ uniqueId: subjectId });
-
-  if (!subject)
+  if (
+    !req.files ||
+    !Array.isArray(req.files.assignments) ||
+    !req.files.assignments.length
+  )
     return next(
-      new ApiError(404, "No Subject found with given credentials!!!")
+      new ApiError(
+        400,
+        "Please enter some Assignment Resources before proceeding!!!"
+      )
     );
-  // if (
-  //   !req.files ||
-  //   !Array.isArray(req.files.assignment) ||
-  //   !req.files.assignment.length
-  // )
-  //   return next(
-  //     new ApiError(
-  //       400,
-  //       "Please enter some Assignment Resources before proceeding!!!"
-  //     )
-  //   );
-
-  // const localFilePath = req.files.assignment[0].path;
-
-  // const response = await uploadOnCloudinary(localFilePath);
-
-  // if (!response)
-  //   return next(
-  //     new ApiError(
-  //       500,
-  //       "Something went wrong while uploading files at Cloudinary!!!"
-  //     )
-  //   );
 
   const { _id } = req.user;
 
@@ -63,16 +82,41 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
       new ApiError(404, "No Teacher found with given credentials!!!")
     );
 
+  const subject = await Subject.findOne({
+    uniqueId: subjectId,
+    teacherId: teacher.uniqueId,
+  });
+
+  if (!subject)
+    return next(
+      new ApiError(
+        404,
+        "No Subject found for the given Teacher with given credentials!!!"
+      )
+    );
+
   if (teacher.departmentId !== subject.departmentId)
     return next(
       new ApiError(403, "Teacher and Subject must be from Same Department!!!")
+    );
+
+  const links = await insertCloudinaryLinks(req.files.assignments);
+
+  if (!links)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while uploading files to Cloudinary!!!"
+      )
     );
 
   const newAssignment = await Assignment.create({
     subjectId,
     teacherId: teacher.uniqueId,
     fullMarks,
-    link,
+    links,
+    dueDate,
+    title,
   });
 
   if (!newAssignment)
@@ -116,16 +160,6 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
   if (assignment.teacherId !== teacher.uniqueId)
     return next(new ApiError(403, "Sorry!!! Access-Denied!!!"));
 
-  // const response = await deleteFromCloudinary(assignment.link);
-
-  // if (!response)
-  //   return next(
-  //     new ApiError(
-  //       500,
-  //       "Something went wrong while deleting the uploaded files from Cloudinary!!!"
-  //     )
-  //   );
-
   const solutions = await Solution.find({ assignmentId });
 
   for (const solution of solutions) {
@@ -139,6 +173,16 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
         )
       );
   }
+
+  const response = await deleteCloudinaryLinks(assignment.links);
+
+  if (!response)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while deleting the Uploaded files from Cloudinary!!!"
+      )
+    );
 
   const deletedAssignment = await Assignment.findByIdAndDelete(assignmentId);
 
@@ -157,13 +201,27 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
 export const getAllAssignmentsOfTeacher = asyncHandler(
   async (req, res, next) => {
     const { subjectId, teacherId } = req.body;
-    if (!subjectId)
+
+    if (!subjectId || !teacherId)
       return next(
         new ApiError(400, "Please enter all the details before proceeding!!!")
       );
 
-    const teacher = await Teacher.findOne({uniqueId: teacherId});
-    const subject = await Subject.findOne({uniqueId: subjectId});
+    const { _id, uniqueId } = req.user;
+
+    if (!_id || !uniqueId)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+
+    if (uniqueId !== teacherId)
+      return next(new ApiError(401, "Access-Denied!!!"));
+
+    const teacher = await Teacher.findOne({ uniqueId: teacherId });
+    const subject = await Subject.findOne({ uniqueId: subjectId, teacherId });
 
     if (!teacher || !subject)
       return next(
@@ -173,18 +231,13 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
         )
       );
 
-    if (teacher.departmentId !== subject.departmentId)
-      return next(
-        new ApiError(
-          403,
-          "Teacher and Subject must be from the same Department!!!"
-        )
-      );
-
     const assignments = await Assignment.find({
       subjectId,
-      teacherId
+      teacherId,
     });
+
+    // Sort notices based on createdAt in descending order
+    assignments.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.status(200).json({
       assignments,
@@ -257,3 +310,77 @@ export const assignMarksToStudent = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getAllActiveAssignmentsOfTeacher = asyncHandler(
+  async (req, res, next) => {
+    const { subjectId, teacherId } = req.body;
+
+    if (!subjectId || !teacherId)
+      return next(
+        new ApiError(400, "Please enter all the details before proceeding!!!")
+      );
+
+    const { _id, uniqueId } = req.user;
+
+    if (!_id || !uniqueId)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while decoding Access-Tokens!!!"
+        )
+      );
+
+    if (uniqueId !== teacherId)
+      return next(new ApiError(401, "Access Denied!!!"));
+
+    const teacher = await Teacher.findOne({ uniqueId: teacherId });
+    const subject = await Subject.findOne({ uniqueId: subjectId, teacherId });
+
+    if (!teacher || !subject)
+      return next(
+        new ApiError(
+          404,
+          "No Teacher or Subject found with given credentials!!!"
+        )
+      );
+
+    if (teacher.departmentId !== subject.departmentId)
+      return next(
+        new ApiError(
+          403,
+          "Teacher and Subject must be from the same Department!!!"
+        )
+      );
+
+    const assignments = await Assignment.find({
+      subjectId,
+      teacherId,
+    });
+
+    const today = new Date();
+    const dd = today.getDate();
+    const mm = today.getMonth() + 1;
+    const yyyy = today.getFullYear();
+
+    const currDate = `${dd}/${mm}/${yyyy}`;
+    let activeAssignments = [];
+    console.log(currDate);
+    for (const assignment of assignments) {
+      const dueDate = assignment.dueDate;
+      const [day, month, year] = dueDate.split("/").map(Number);
+
+      if (yyyy <= year && mm <= month && dd <= day)
+        activeAssignments.push(assignment);
+    }
+
+    // Sort notices based on createdAt in descending order
+    activeAssignments.sort((a, b) => b.createdAt - a.createdAt);
+
+    return res.status(200).json({
+      activeAssignments,
+      message:
+        "All Active Assignments for the given Subject and Teacher fetched successfully!!!",
+      success: true,
+    });
+  }
+);

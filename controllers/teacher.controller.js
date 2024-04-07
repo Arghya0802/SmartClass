@@ -5,7 +5,10 @@ import Assignment from "../models/assignment.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.js";
 import Department from "../models/department.model.js";
 import Student from "../models/student.model.js";
 import Solution from "../models/solution.model.js";
