@@ -72,18 +72,18 @@ function getAllSubjects() {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        console.log(data);
+        console.log(data.subjects);
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
           html += "<td>" + subject.name + "</td>";
           html +=
             "<td><button onclick=\"getAllResources('" +
-            subject.uniqueId +
+            subject._id +
             "')\"> Resources </button></td>";
           html +=
             "<td><button onclick=\"getAllAssignments('" +
-            subject.uniqueId +
+            subject._id +
             "')\"> Assignments </button></td>";
           html += "</tr>";
         });
@@ -113,7 +113,7 @@ function getAllAssignments(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/assignment/" + subjectId, {
+  fetch("/api/v1/assignment/all/" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -159,7 +159,7 @@ function getAllResources(subjectId) {
       html = data;
     });
 
-  fetch("/api/v1/resource/" + subjectId, {
+  fetch("/api/v1/resource/all/" + subjectId, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

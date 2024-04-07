@@ -87,7 +87,7 @@ export const getAllDepartmentSubjects = asyncHandler(async (req, res, next) => {
   // console.log(deptSubjects);
 
   return res.status(200).json({
-    mySubjects,
+    subjects,
     message: "All Subjects of the Department fetched successfully!!!",
     success: true,
   });
