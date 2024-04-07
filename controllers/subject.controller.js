@@ -69,7 +69,7 @@ export const getAllDepartmentSubjects = asyncHandler(async (req, res, next) => {
   });
 
   // console.log(subjects.length);
-  let myTeachers = {};
+  let mySubjects = {};
 
   // for (const subject of subjects) {
   //   subject.name = capitalizeWords(subject.name);
@@ -77,17 +77,16 @@ export const getAllDepartmentSubjects = asyncHandler(async (req, res, next) => {
 
   for (const subject of subjects) {
     subject.name = capitalizeWords(subject.name);
-    const teacher = await Teacher.findOne({ uniqueId: subject.teacherId });
 
-    if (subject in myTeachers) {
-      myTeachers[subject].push(teacher);
+    if (subject.uniqueId in mySubjects) {
+      mySubjects[subject.uniqueId].push(subject);
     } else {
-      myTeachers[subject] = teacher;
+      mySubjects[subject.uniqueId] = subject;
     }
   }
 
   return res.status(200).json({
-    myTeachers,
+    mySubjects,
     message: "All Subjects of the LoggedIn Teacher fetched successfully!!!",
     success: true,
   });
