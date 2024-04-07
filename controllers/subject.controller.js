@@ -70,24 +70,25 @@ export const getAllDepartmentSubjects = asyncHandler(async (req, res, next) => {
 
   // console.log(subjects.length);
   let mySubjects = {};
-
   // for (const subject of subjects) {
   //   subject.name = capitalizeWords(subject.name);
   // }
 
   for (const subject of subjects) {
     subject.name = capitalizeWords(subject.name);
-
-    if (subject.uniqueId in mySubjects) {
-      mySubjects[subject.uniqueId].push(subject);
-    } else {
-      mySubjects[subject.uniqueId] = subject;
-    }
+    // console.log(subject.name);
+    if (subject.name in mySubjects) mySubjects[subject.name].push(subject);
+    else mySubjects[subject.name] = [subject];
   }
+  // console.log(mySubjects);
+
+  // Convert to JSON string
+  // const deptSubjects = JSON.stringify(Object.fromEntries(mySubjects));
+  // console.log(deptSubjects);
 
   return res.status(200).json({
     mySubjects,
-    message: "All Subjects of the LoggedIn Teacher fetched successfully!!!",
+    message: "All Subjects of the Department fetched successfully!!!",
     success: true,
   });
 });
