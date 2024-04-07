@@ -64,7 +64,7 @@ function getAllSubjects() {
       html = data;
     });
 
-  fetch("/api/v1/student/", {
+  fetch("/api/v1/subject/department/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -72,7 +72,7 @@ function getAllSubjects() {
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
-        // need to change after Backend changes
+        console.log(data);
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
