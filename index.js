@@ -1,7 +1,7 @@
 // TODO: DELETE TESTING ROUTES POSITIVELY
 
 // import cors from "cors";
-// import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3000;
 
 // // middlewares
 // app.use(cors({ credentials: true, origin: process.env.FRONTEND_URL }));
-// app.use(cookieParser());
+app.use(cookieParser());
 
 // Basic configuration set-up to receive JSON data
 app.use(express.json());
