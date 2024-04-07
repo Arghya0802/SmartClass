@@ -73,7 +73,7 @@ function getAllSubjects() {
     .then((data) => {
       if (data.success) {
         // need to change after Backend changes
-        data.loggedInTeacher.subjects.forEach((subject) => {
+        data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
           html += "<td>" + subject.name + "</td>";
@@ -105,7 +105,7 @@ function getAllSubjects() {
 function getAllAssignments(subjectId) {
   let html = "";
 
-  fetch("forms/teacherforms/showassignments.html")
+  fetch("forms/studentforms/showassignments.html")
     .then((response) => {
       return response.text();
     })
@@ -128,7 +128,7 @@ function getAllAssignments(subjectId) {
           html += "<td>" + assignment.fullMarks + "</td>";
           html += "<td>" + assignment.link + "</td>";
           html +=
-            "<td><button onclick=\"addSolutions('" +
+            "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
             "')\"> Solutions </button></td>";
           html += "</tr>";
@@ -151,7 +151,7 @@ function getAllAssignments(subjectId) {
 function getAllResources(subjectId) {
   let html = "";
 
-  fetch("forms/teacherforms/showresources.html")
+  fetch("forms/studentforms/showresources.html")
     .then((response) => {
       return response.text();
     })
@@ -189,7 +189,46 @@ function getAllResources(subjectId) {
     });
 }
 
-function addSolution() {
+function addSolutionClicked(assignmentId) {
+  fetch("forms/studentforms/addSolution.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("add-solution").onclick = addSolution(assignmentId);
+    });
+}
+
+function addSolution(assignmentId){
+  const link = document.getElementById("link").value;
+
+  document.getElementById("link").value = "";
+
+  const jsonObject = {
+    link,
+  };
+  fetch("/api/v1/solution/add/"+assignmentId, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
+  getAllSubjects();
 }
 
 // Backend Functionalities ends here
