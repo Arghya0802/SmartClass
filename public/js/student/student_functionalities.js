@@ -306,9 +306,11 @@ function getAllResources(subjectId, teacherId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += "<td>" + resource.chapter + "</td>";
+          html += '<td rowspan="' + (resource.links.length+1) +'">' + resource.topic + "</td>";
           resource.links.forEach((link) => {
+            html += "<tr>";
             html += '<td><a href="' + link + '"> Link </a></td>';
+            html += "</tr>";
           })
           html += "</tr>";
         });
