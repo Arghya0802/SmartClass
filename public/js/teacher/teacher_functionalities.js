@@ -143,7 +143,7 @@ function getAllSubjects() {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
-  }) 
+  })
     .then((response) => response.json())
     .then((data) => {
       if (data.success) {
@@ -180,8 +180,8 @@ function getAllResources(subjectId) {
   let html = "";
   let jsonObject = {
     subjectId,
-    teacherId
-  }
+    teacherId,
+  };
 
   fetch("forms/teacherforms/showresources.html")
     .then((response) => {
@@ -197,7 +197,7 @@ function getAllResources(subjectId) {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(jsonObject)
+    body: JSON.stringify(jsonObject),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -256,8 +256,8 @@ function getAllAssignments(subjectId) {
   let html = "";
   let jsonObject = {
     teacherId,
-    subjectId
-  }
+    subjectId,
+  };
 
   fetch("forms/teacherforms/showassignments.html")
     .then((response) => {
@@ -273,7 +273,7 @@ function getAllAssignments(subjectId) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(jsonObject)
+    body: JSON.stringify(jsonObject),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -296,7 +296,7 @@ function getAllAssignments(subjectId) {
             "')\"> Remove </button></td>";
           html += "</tr>";
         });
-        data.nonActiveAssignments.forEach((assignment) => {
+        data.notActiveAssignments.forEach((assignment) => {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
@@ -402,7 +402,7 @@ function getAllSolutions(assignmentId) {
     });
 }
 
-function addMarksClicked(solutionId,assignmentId){
+function addMarksClicked(solutionId, assignmentId) {
   fetch("forms/teacherforms/addMarks.html")
     .then((response) => {
       return response.text();
@@ -410,18 +410,20 @@ function addMarksClicked(solutionId,assignmentId){
     .then((html) => {
       document.getElementById("display-window").innerHTML = html;
       const addButton = document.getElementById("add-marks");
-      addButton.addEventListener("click",function() {addMarks(solutionId,assignmentId)})
+      addButton.addEventListener("click", function () {
+        addMarks(solutionId, assignmentId);
+      });
     });
 }
 
-function addMarks(solutionId,assignmentId){
+function addMarks(solutionId, assignmentId) {
   const marks = document.getElementById("marks").value;
 
   document.getElementById("marks").value = "";
 
   const jsonObject = {
     marks,
-    solutionId
+    solutionId,
   };
   fetch("/api/v1/marks/teacher/assign-marks", {
     method: "PATCH",
@@ -436,14 +438,12 @@ function addMarks(solutionId,assignmentId){
     })
     .then((data) => {
       document.getElementById("notification").innerText = data.message;
-      if (data.success)
-      {
+      if (data.success) {
         document.getElementById("notification").style.color = "green";
         setTimeout(() => {
           getAllSolutions(assignmentId);
-        },2000)
-      }
-      else document.getElementById("notification").style.color = "red";
+        }, 2000);
+      } else document.getElementById("notification").style.color = "red";
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
