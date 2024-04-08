@@ -79,15 +79,16 @@ export const getAllSubmittedAssignments = asyncHandler(
           )
         );
 
-        const dueDate = assignment.dueDate;
-        const [day, month, year] = dueDate.split("/").map(Number);
-  
-        if (yyyy <= year && mm <= month && dd <= day)
-          activeSubmittedAssignments.push({assignment,solution});
-        else nonactiveSubmittedAssignments.push({assignment,solution});
+      const dueDate = assignment.dueDate;
+      const [year, month, day] = dueDate.split("-").map(Number);
+
+      if (yyyy <= year && mm <= month && dd <= day)
+        activeSubmittedAssignments.push({ assignment, solution });
+      else nonactiveSubmittedAssignments.push({ assignment, solution });
     }
 
-    submittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
+    activeSubmittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
+    nonactiveSubmittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.status(200).json({
       activeSubmittedAssignments,
@@ -124,7 +125,7 @@ export const getAllPendingAssignments = asyncHandler(async (req, res, next) => {
 
   for (const assignment of assignments) {
     const dueDate = assignment.dueDate;
-    const [day, month, year] = dueDate.split("/").map(Number);
+    const [year, month, day] = dueDate.split("-").map(Number);
 
     const solution = await Solution.findOne({
       assignmentId: assignment._id,
@@ -416,7 +417,7 @@ export const getAllMissedAssignments = asyncHandler(async (req, res, next) => {
 
   for (const assignment of assignments) {
     const dueDate = assignment.dueDate;
-    const [day, month, year] = dueDate.split("/").map(Number);
+    const [year, month, day] = dueDate.split("-").map(Number);
 
     const solution = await Solution.findOne({
       assignmentId: assignment._id,
