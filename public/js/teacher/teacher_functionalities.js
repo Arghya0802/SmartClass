@@ -128,10 +128,10 @@ function addResource() {
   }, 2000);
 }
 
-function getAllSubjects() {
+function getAllSubjectsforResource() {
   let html = "";
 
-  fetch("forms/teacherforms/showsubjects.html")
+  fetch("forms/teacherforms/showsubjectsforresource.html")
     .then((response) => {
       return response.text();
     })
@@ -155,6 +155,46 @@ function getAllSubjects() {
             "<td><button onclick=\"getAllResources('" +
             subject.uniqueId +
             "')\"> Resources </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllSubjectsforAssignment() {
+  let html = "";
+
+  fetch("forms/teacherforms/showsubjectsforassignment.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/teacher/all", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.name + "</td>";
+          html += "<td>" + subject.uniqueId + "</td>";
           html +=
             "<td><button onclick=\"getAllAssignments('" +
             subject.uniqueId +

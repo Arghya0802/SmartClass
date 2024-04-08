@@ -105,6 +105,52 @@ function getAllSubjects() {
     });
 }
 
+function getAllSubjectsforResource() {
+  let html = "";
+
+  fetch("forms/studentforms/showsubjectsforresource.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/department/all", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.teacherId + "</td>";
+          html +=
+            "<td><button onclick=\"getAllResources('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> Resources </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
 function getAllAssignments(subjectId,teacherId) {
   const jsonObject = {
     subjectId,
