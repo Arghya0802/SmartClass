@@ -261,7 +261,7 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
       });
       //console.log(solution);
 
-      if (!solution) continue;
+      if (!solution || !solution.marksObtained) continue;
 
       const existedSubject = resultSubjects.find(
         (obj) => obj.subjectId === subject.uniqueId
