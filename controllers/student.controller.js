@@ -63,7 +63,7 @@ export const getAllSubmittedAssignments = asyncHandler(
     let submittedAssignments = [];
 
     for (const solution of solutions) {
-      const assignment = await Assignment.find(solution.assignmentId);
+      const assignment = await Assignment.findById(solution.assignmentId);
 
       if (!assignment)
         return next(
