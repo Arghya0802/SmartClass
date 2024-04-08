@@ -287,9 +287,14 @@ function getAllResources(subjectId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += '<td rowspan="' + resource.links.length +'">' + resource.topic + "</td>";
+          html +=
+            '<td rowspan="' +
+            (resource.links.length + 1) +
+            '">' +
+            resource.topic +
+            "</td>";
           resource.links.forEach((link) => {
-            html += "<tr>"
+            html += "<tr>";
             html += '<td><a href="' + link + '"> Link </a></td>';
             html +=
               "<td><button onclick=\"removeResource('" +
@@ -297,8 +302,8 @@ function getAllResources(subjectId) {
               "', '" +
               subjectId +
               "')\"> Remove </button></td>";
-              html += "</tr>";
-          })
+            html += "</tr>";
+          });
           html += "</tr>";
         });
       }
