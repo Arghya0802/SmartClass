@@ -245,29 +245,36 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
   {
     const subject = subjects[ind]
 
-    const assignment = await Assignment.findOne({subjectId: subject.uniqueId, teacherId: subject.teacherId})
+    const assignments = await Assignment.find({subjectId: subject.uniqueId, teacherId: subject.teacherId})
 
-    if(!assignment) continue;
-
-    const solution = await Solution.findOne({assignmentId: assignment._id})
-
-    const existedSubject = resultSubjects.find(obj => obj.subjectId === subject.uniqueId)
-
-    if(existedSubject)
+    if(!assignments) continue;
+    
+    for(const index in assignments)
     {
-      existedSubject.assignments.push({assignment,solution});
-      existedSubject.totalScore = existedSubject.totalScore + solution.marksObtained;
-      existedSubject.highestScore = existedSubject.highestScore + assignment.fullMarks;
-    }
-    else
-    {
-      resultSubjects.push({
-      subjectId: subject.uniqueId,
-      subjectName: subject.name, 
-      totalScore: solution.marksObtained,
-      highestScore: assignment.fullMarks,
-      assignments: [{assignment,solution},],
-    })
+      
+      const assignment = assignments[index];
+      const solution = await Solution.findOne({assignmentId: assignment._id})
+
+      if(!solution) continue;
+
+      const existedSubject = resultSubjects.find(obj => obj.subjectId === subject.uniqueId)
+
+      if(existedSubject)
+      {
+        existedSubject.assignments.push({assignment,solution});
+        existedSubject.totalScore = existedSubject.totalScore + solution.marksObtained;
+        existedSubject.highestScore = existedSubject.highestScore + assignment.fullMarks;
+      }
+      else
+      {
+        resultSubjects.push({
+        subjectId: subject.uniqueId,
+        subjectName: subject.name, 
+        totalScore: solution.marksObtained,
+        highestScore: assignment.fullMarks,
+        assignments: [{assignment,solution},],
+      })
+      }
     }
   }
 
