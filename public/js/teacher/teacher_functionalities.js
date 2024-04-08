@@ -287,16 +287,16 @@ function getAllResources(subjectId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += "<td>" + resource.topic + "</td>";
+          html += '<td rowspan="' + resource.links.length +'">' + resource.topic + "</td>";
           resource.links.forEach((link) => {
             html += '<tr><a href="' + link + '"> Link </a></tr>';
+            html +=
+              "<td><button onclick=\"removeResource('" +
+              resource._id +
+              "', '" +
+              subjectId +
+              "')\"> Remove </button></td>";
           })
-          html +=
-            "<td><button onclick=\"removeResource('" +
-            resource._id +
-            "', '" +
-            subjectId +
-            "')\"> Remove </button></td>";
           html += "</tr>";
         });
       }
