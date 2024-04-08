@@ -103,7 +103,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
   const yyyy = today.getFullYear();
 
   const dueDate = assignment.dueDate;
-  const [day, month, year] = dueDate.split("/").map(Number);
+  const [year, month, day] = dueDate.split("-").map(Number);
 
   if (!(dd <= day && mm <= month && yyyy <= year))
     return next(
@@ -225,8 +225,7 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getGradeCard = asyncHandler(async (req,res,next) => {
-  
+export const getGradeCard = asyncHandler(async (req, res, next) => {
   const { _id, uniqueId } = req.user;
 
   if (!_id || !uniqueId)
@@ -234,40 +233,43 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
 
   const student = await Student.findById(_id);
 
-  if(!student)
-    return next(new ApiError(404,"No student with the given Id exists!!!"));
+  if (!student)
+    return next(new ApiError(404, "No student with the given Id exists!!!"));
 
-  const subjects = await Subject.find({departmentId: student.departmentId});
+  const subjects = await Subject.find({ departmentId: student.departmentId });
 
   let resultSubjects = [];
 
-  for(const ind in subjects)
-  {
-    const subject = subjects[ind]
+  for (const subject in subjects) {
+    console.log(subject);
 
-    const assignment = await Assignment.findOne({subjectId: subject.uniqueId, teacherId: subject.teacherId})
-
-    if(!assignment) continue;
-
-    const solution = await Solution.findOne({assignmentId: assignment._id})
-
-    const existedSubject = resultSubjects.find(obj => obj.subjectId === subject.uniqueId)
-
-    if(existedSubject)
-    {
-      existedSubject.assignments.push({assignment,solution});
-      existedSubject.totalScore = existedSubject.totalScore + solution.marksObtained;
-      existedSubject.highestScore = existedSubject.highestScore + assignment.fullMarks;
-    }
-    else
-    {
-      resultSubjects.push({
+    const assignment = await Assignment.findOne({
       subjectId: subject.uniqueId,
-      subjectName: subject.name, 
-      totalScore: solution.marksObtained,
-      highestScore: assignment.fullMarks,
-      assignments: [{assignment,solution},],
-    })
+      teacherId: subject.teacherId,
+    });
+
+    if (!assignment) continue;
+
+    const solution = await Solution.findOne({ assignmentId: assignment._id });
+
+    const existedSubject = resultSubjects.find(
+      (obj) => obj.subjectId === subject.uniqueId
+    );
+
+    if (existedSubject) {
+      existedSubject.assignments.push({ assignment, solution });
+      existedSubject.totalScore =
+        existedSubject.totalScore + solution.marksObtained;
+      existedSubject.highestScore =
+        existedSubject.highestScore + assignment.fullMarks;
+    } else {
+      resultSubjects.push({
+        subjectId: subject.uniqueId,
+        subjectName: subject.name,
+        totalScore: solution.marksObtained,
+        highestScore: assignment.fullMarks,
+        assignments: [{ assignment, solution }],
+      });
     }
   }
 
@@ -277,5 +279,4 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
       "All the Solutions for the given Assingment fetched successfully!!!",
     success: true,
   });
-
 });
