@@ -660,7 +660,7 @@ function getGradeCard()
       if (data.success) {
         console.log(data);
         data.resultSubjects.forEach((object) => {
-          let {subjectName, assignments, totalScore, percentage} = object;
+          let {subjectName, assignments, totalScore, highestScore} = object;
 
           html += "<tr>";
           html += '<td rowspan="' + assignments.length +'">' + subjectName + "</td>";
@@ -670,10 +670,11 @@ function getGradeCard()
             html += "<td>" + assignment.teacherId + "</td>";
             html += "<td>" + solution.marksObtained + "</td>";
             html += "<td>" + assignment.fullMarks + "</td>";
+
           })
 
           html += '<td rowspan="' + assignments.length +'">' + totalScore + "</td>";
-          html += '<td rowspan="' + assignments.length +'">' + percentage + "</td>";
+          html += '<td rowspan="' + assignments.length +'">' + (totalScore/highestScore*100) + "</td>";
           html += "</tr>";
         });
       }

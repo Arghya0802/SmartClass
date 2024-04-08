@@ -256,12 +256,16 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
     if(existedSubject)
     {
       existedSubject.assignments.push({assignment,solution});
+      existedSubject.totalScore = existedSubject.totalScore + solution.marksObtained;
+      existedSubject.highestScore = existedSubject.highestScore + assignment.fullMarks;
     }
     else
     {
       resultSubjects.push({
       subjectId: subject.uniqueId,
       subjectName: subject.name, 
+      totalScore: solution.marksObtained,
+      highestScore: assignment.fullMarks,
       assignments: [{assignment,solution},],
     })
     }
