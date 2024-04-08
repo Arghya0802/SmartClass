@@ -289,7 +289,7 @@ function getAllResources(subjectId) {
           html += "<tr>";
           html += "<td>" + resource.topic + "</td>";
           resource.links.forEach((link) => {
-            html += '<td><a href="' + link + '"> Link </a></td>';
+            html += '<tr><a href="' + link + '"> Link </a></tr>';
           })
           html +=
             "<td><button onclick=\"removeResource('" +
