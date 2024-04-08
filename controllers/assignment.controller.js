@@ -198,7 +198,7 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllAssignmentsOfTeacher = asyncHandler( 
+export const getAllAssignmentsOfTeacher = asyncHandler(
   async (req, res, next) => {
     const { subjectId, teacherId } = req.body;
 
@@ -236,13 +236,34 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
       teacherId,
     });
 
-    // Sort notices based on createdAt in descending order
-    assignments.sort((a, b) => b.createdAt - a.createdAt);
+    let activeAssignments = [];
+    let notActiveAssignments = [];
+
+    const today = new Date();
+    const dd = today.getDate();
+    const mm = today.getMonth() + 1;
+    const yyyy = today.getFullYear();
+
+    // // Sort notices based on createdAt in descending order
+    // assignments.sort((a, b) => b.createdAt - a.createdAt);
+
+    for (const assignment of assignments) {
+      const dueDate = assignment.dueDate;
+      const [day, month, year] = dueDate.split("/").map(Number);
+
+      if (yyyy <= year && mm <= month && dd <= day)
+        activeAssignments.push(assignment);
+      else notActiveAssignments.push(assignment);
+    }
+    // assignments.sort((a, b) => b.createdAt - a.createdAt);
+    activeAssignments.sort((a, b) => b.createdAt - a.createdAt);
+    notActiveAssignments.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.status(200).json({
-      assignments,
+      activeAssignments,
+      notActiveAssignments,
       message:
-        "All the Assignments of the given Teacher for the given Subject fetched successfully!!!",
+        "All the Assignments of the given Teacher for the given Subject fetched successfully and divided into Active and Not-Active respectively!!!",
       success: true,
     });
   }
@@ -275,7 +296,7 @@ export const assignMarksToStudent = asyncHandler(async (req, res, next) => {
       )
     );
 
-  const assignment = await Assignment.findById(solution.assignment);
+  const assignment = await Assignment.findById(solution.assignmentId);
 
   if (!assignment)
     return next(
@@ -298,6 +319,19 @@ export const assignMarksToStudent = asyncHandler(async (req, res, next) => {
         401,
         "Submitted Solution Student and LoggedIn Teacher must be from same Department!!!"
       )
+    );
+
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  const dueDate = assignment.dueDate;
+  const [day, month, year] = dueDate.split("/").map(Number);
+
+  if (dd <= day && mm <= month && yyyy <= year)
+    return next(
+      new ApiError(401, "Cannot assign marks till assignment is active!!!")
     );
 
   solution.marksObtained = marks;

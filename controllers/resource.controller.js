@@ -6,13 +6,62 @@ import Resource from "../models/resource.model.js";
 
 import asyncHandler from "express-async-handler";
 import ApiError from "../utils/ApiError.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.js";
+
+const insertCloudinaryLinks = async (resources) => {
+  try {
+    let resourcesLink = [];
+
+    for (let i = 0; i < resources.length; i++) {
+      const localFilePath = resources[i].path;
+
+      const newResource = await uploadOnCloudinary(localFilePath);
+      // console.log(newResource);
+      if (!newResource) {
+        return null;
+      }
+
+      resourcesLink.push(newResource.url);
+    }
+
+    return resourcesLink;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const deleteCloudinaryLinks = async (resources) => {
+  try {
+    for (let i = 0; i < resources.length; i++) {
+      const response = await deleteFromCloudinary(resources[i]);
+
+      if (response.result !== "ok") return null;
+    }
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
 
 export const createResource = asyncHandler(async (req, res, next) => {
-  const { subjectId, link, topic } = req.body;
+  const { subjectId, topic } = req.body;
 
-  if (!subjectId || !link || !topic)
+  if (!subjectId || !topic)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  if (
+    !req.files ||
+    !Array.isArray(req.files.resources) ||
+    !req.files.resources.length
+  )
+    return next(
+      new ApiError(400, "Please enter some  Resources before proceeding!!!")
     );
 
   const { _id, uniqueId } = req.user;
@@ -38,11 +87,21 @@ export const createResource = asyncHandler(async (req, res, next) => {
       )
     );
 
+  const links = await insertCloudinaryLinks(req.files.resources);
+
+  if (!links)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while uploading files to Cloudinary!!!"
+      )
+    );
+
   const addResource = await Resource.create({
     subjectId,
     topic,
     teacherId: uniqueId,
-    link,
+    links,
   });
 
   if (!addResource)
@@ -132,6 +191,16 @@ export const removeResource = asyncHandler(async (req, res, next) => {
       new ApiError(403, "Requested Resource must be from the same Teacher!!!")
     );
 
+  const response = await deleteCloudinaryLinks(resource.links);
+
+  if (!response)
+    return next(
+      new ApiError(
+        500,
+        "Something went wrong while deleting the uploaded files from Cloudinary!!!"
+      )
+    );
+
   const deletedResource = await Resource.findByIdAndDelete(resourceId);
 
   if (!deletedResource)
@@ -148,5 +217,3 @@ export const removeResource = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
-
-//fdhjkfs

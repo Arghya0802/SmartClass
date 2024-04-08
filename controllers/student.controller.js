@@ -59,11 +59,30 @@ export const getAllSubmittedAssignments = asyncHandler(
         new ApiError(404, "No Student found with given credentials!!!")
       );
 
-    const submissions = student.submittedSolutions;
+    const solutions = await Solution.find({ studentId: student.uniqueId });
+    let submittedAssignments = [];
+
+    for (const solution of solutions) {
+      const assignment = await Assignment.find(solution.assignmentId);
+
+      if (!assignment)
+        return next(
+          new ApiError(
+            500,
+            "Something went wrong while calling to the DataBase!!!"
+          )
+        );
+
+      submittedAssignments.push(assignment);
+    }
+
+    submittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
+
     return res.status(200).json({
-      submissions,
+      submittedAssignments,
+      solutions,
       message:
-        "Object-Id(s) of all the Submitted-Assignment(s) of given Student fetched successfully!!!",
+        "All Submitted Assignments and their Solutions fetched successfully!!!",
       success: true,
     });
   }
@@ -84,12 +103,32 @@ export const getAllPendingAssignments = asyncHandler(async (req, res, next) => {
       new ApiError(404, "No Student found with given credentials!!!")
     );
 
-  const pending = student.pendingAssignments;
+  const assignments = await Assignment.find();
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  let pendingAssignments = [];
+
+  for (const assignment of assignments) {
+    const dueDate = assignment.dueDate;
+    const [day, month, year] = dueDate.split("/").map(Number);
+
+    const solution = await Solution.findOne({
+      assignmentId: assignment._id,
+      studentId: student.uniqueId,
+    });
+
+    if (dd <= day && mm <= month && yyyy <= year && !solution)
+      pendingAssignments.push(assignment);
+  }
+
+  pendingAssignments.sort((a, b) => b.createdAt - a.createdAt);
 
   return res.status(200).json({
-    pending,
-    message:
-      "Object-Id(s) of all the Pending-Assignment(s) of given Student fetched successfully!!!",
+    pendingAssignments,
+    message: "All Pending Assignments fetched successfully!!!",
     success: true,
   });
 });
@@ -337,6 +376,51 @@ export const submitFeedback = asyncHandler(async (req, res, next) => {
     newFeedback,
     message:
       "New Feedback for the given Teacher and Subject has been created successfully!!!",
+    success: true,
+  });
+});
+
+export const getAllMissedAssignments = asyncHandler(async (req, res, next) => {
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const student = await Student.findById(_id);
+
+  if (!student)
+    return next(
+      new ApiError(404, "No Student found with given credentials!!!")
+    );
+
+  const assignments = await Assignment.find();
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  let missedAssignments = [];
+
+  for (const assignment of assignments) {
+    const dueDate = assignment.dueDate;
+    const [day, month, year] = dueDate.split("/").map(Number);
+
+    const solution = await Solution.findOne({
+      assignmentId: assignment._id,
+      studentId: student.uniqueId,
+    });
+
+    if (dd <= day && mm <= month && yyyy <= year) continue;
+
+    if (!solution) missedAssignments.push(assignment);
+  }
+
+  missedAssignments.sort((a, b) => b.createdAt - a.createdAt);
+  return res.status(200).json({
+    missedAssignments,
+    message: "All Missed Assignments fetched successfully!!",
     success: true,
   });
 });

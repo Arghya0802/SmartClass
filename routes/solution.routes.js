@@ -13,7 +13,7 @@ router.post(
   upload.fields([
     {
       name: "solutions",
-      maxCount: 3,
+      maxCount: 1,
     },
   ]),
   createSolution

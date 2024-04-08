@@ -9,7 +9,17 @@ import {
   createResource,
 } from "../controllers/resource.controller.js";
 
-router.post("/add", verifyJWT, createResource);
+router.post(
+  "/add",
+  verifyJWT,
+  upload.fields([
+    {
+      name: "resources",
+      maxCount: 5,
+    },
+  ]),
+  createResource
+);
 
 router.post("/all", verifyJWT, getAllResources);
 

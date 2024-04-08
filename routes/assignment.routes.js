@@ -17,7 +17,7 @@ router.post(
   upload.fields([
     {
       name: "assignments",
-      maxCount: 2,
+      maxCount: 1,
     },
   ]),
   createAssignment
