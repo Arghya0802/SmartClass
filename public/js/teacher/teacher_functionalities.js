@@ -59,16 +59,19 @@ fetch("api/v1/teacher/", {
 function addAssignment() {
   const subjectId = document.getElementById("subject-id").value;
   const fullMarks = document.getElementById("full-marks").value;
+  const dueDate = document.getElementById("due-date").value;
   const link = document.getElementById("link").value;
 
   document.getElementById("subject-id").value = "";
   document.getElementById("full-marks").value = "";
+  document.getElementById("due-date").value = "";
   document.getElementById("link").value = "";
 
   const jsonObject = {
     subjectId,
     fullMarks,
     link,
+    dueDate
   };
   fetch("/api/v1/assignment/add", {
     method: "POST",

@@ -105,6 +105,74 @@ function getAllSubjects() {
     });
 }
 
+function getAllSubjectsforAssignment(assignmentType) {
+  var html = "";
+
+  fetch("forms/studentforms/showsubjectsforassignment.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/department/all", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.teacherId + "</td>";
+
+          if(assignmentType === 'pending')
+          {
+            html +=
+            "<td><button onclick=\"getAllPendingAssignments('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> Assignments </button></td>";
+          }
+          else if(assignmentType === 'submitted')
+          {
+            html +=
+            "<td><button onclick=\"getAllSubmittedAssignments('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> Assignments </button></td>";
+          }
+          else
+          {
+            html +=
+            "<td><button onclick=\"getAllMissedAssignments('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> Assignments </button></td>";
+          }
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
 function getAllSubjectsforResource() {
   let html = "";
 
@@ -179,7 +247,7 @@ function getAllAssignments(subjectId,teacherId) {
     .then((data) => {
       if (data.success) {
         console.log(data);
-        data.assignments.forEach((assignment) => {
+        data.activeAssignments.forEach((assignment) => {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
@@ -188,6 +256,14 @@ function getAllAssignments(subjectId,teacherId) {
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
             "')\"> Add Solution </button></td>";
+          html += "</tr>";
+        });
+        data.nonActiveAssignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html += "<td>" + "</td>";
           html += "</tr>";
         });
       }
@@ -331,6 +407,156 @@ function sendFeedbackClicked() {
             "', '" +
             subject.teacherId +
             "')\"> send feedback </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllPendingAssignments(subjectId,teacherId) {
+  const jsonObject = {
+    subjectId,
+    teacherId
+  }
+  let html = "";
+  console.log(jsonObject)
+
+  fetch("forms/studentforms/showassignments.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/assignments/pending", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.pendingAssignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html +=
+            "<td><button onclick=\"addSolutionClicked('" +
+            assignment._id +
+            "')\"> Add Solution </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllSubmittedAssignments(subjectId,teacherId) {
+  const jsonObject = {
+    subjectId,
+    teacherId
+  }
+  let html = "";
+  console.log(jsonObject)
+
+  fetch("forms/studentforms/showassignments.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/assignments/submitted", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.submittedAssignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html +=
+            "<td><button onclick=\"addSolutionClicked('" +
+            assignment._id +
+            "')\"> Add Solution </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllMissedAssignments(subjectId,teacherId) {
+  const jsonObject = {
+    subjectId,
+    teacherId
+  }
+  let html = "";
+  console.log(jsonObject)
+
+  fetch("forms/studentforms/showassignments.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/assignments/missed", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.missedAssignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html += "<td>" + "</td>";
           html += "</tr>";
         });
       }

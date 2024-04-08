@@ -217,9 +217,6 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
         )
       );
 
-    if (uniqueId !== teacherId)
-      return next(new ApiError(401, "Access-Denied!!!"));
-
     const teacher = await Teacher.findOne({ uniqueId: teacherId });
     const subject = await Subject.findOne({ uniqueId: subjectId, teacherId });
 
