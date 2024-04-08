@@ -243,33 +243,38 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
   for (const subject in subjects) {
     console.log(subject);
 
-    const assignment = await Assignment.findOne({
+    const assignments = await Assignment.find({
       subjectId: subject.uniqueId,
       teacherId: subject.teacherId,
     });
 
-    if (!assignment) continue;
+    if (!assignments) continue;
 
-    const solution = await Solution.findOne({ assignmentId: assignment._id });
+    for (const index in assignments) {
+      const assignment = assignments[index];
+      const solution = await Solution.findOne({ assignmentId: assignment._id });
 
-    const existedSubject = resultSubjects.find(
-      (obj) => obj.subjectId === subject.uniqueId
-    );
+      if (!solution) continue;
 
-    if (existedSubject) {
-      existedSubject.assignments.push({ assignment, solution });
-      existedSubject.totalScore =
-        existedSubject.totalScore + solution.marksObtained;
-      existedSubject.highestScore =
-        existedSubject.highestScore + assignment.fullMarks;
-    } else {
-      resultSubjects.push({
-        subjectId: subject.uniqueId,
-        subjectName: subject.name,
-        totalScore: solution.marksObtained,
-        highestScore: assignment.fullMarks,
-        assignments: [{ assignment, solution }],
-      });
+      const existedSubject = resultSubjects.find(
+        (obj) => obj.subjectId === subject.uniqueId
+      );
+
+      if (existedSubject) {
+        existedSubject.assignments.push({ assignment, solution });
+        existedSubject.totalScore =
+          existedSubject.totalScore + solution.marksObtained;
+        existedSubject.highestScore =
+          existedSubject.highestScore + assignment.fullMarks;
+      } else {
+        resultSubjects.push({
+          subjectId: subject.uniqueId,
+          subjectName: subject.name,
+          totalScore: solution.marksObtained,
+          highestScore: assignment.fullMarks,
+          assignments: [{ assignment, solution }],
+        });
+      }
     }
   }
 
