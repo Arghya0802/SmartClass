@@ -284,6 +284,7 @@ function getAllAssignments(subjectId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
           html += "<td>" + assignment.link + "</td>";
+          html += "<td>" + "</td>";
           // html +=
           //   "<td><button onclick=\"getAllSolutions('" +
           //   assignment._id +
