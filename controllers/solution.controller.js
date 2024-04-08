@@ -229,7 +229,9 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
   const { _id, uniqueId } = req.user;
 
   if (!_id || !uniqueId)
-    return next(new ApiError(500, "Something went wrong with the token!!!"));
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-token!!!")
+    );
 
   const student = await Student.findById(_id);
 
@@ -240,38 +242,43 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
 
   let resultSubjects = [];
 
-  for (const subject in subjects) {
-    console.log(subject);
-
+  for (const ind in subjects) {
+    const subject = subjects[ind];
+    // console.log(subject);
     const assignments = await Assignment.find({
       subjectId: subject.uniqueId,
       teacherId: subject.teacherId,
     });
-
+    // console.log(assignments);
     if (!assignments) continue;
 
     for (const index in assignments) {
       const assignment = assignments[index];
-      const solution = await Solution.findOne({ assignmentId: assignment._id });
+      // console.log(assignment);
+      const solution = await Solution.findOne({
+        assignmentId: assignment._id,
+        studentId: student.uniqueId,
+      });
+      // console.log(solution);
 
       if (!solution) continue;
-
       const existedSubject = resultSubjects.find(
         (obj) => obj.subjectId === subject.uniqueId
       );
 
+      console.log(existedSubject);
       if (existedSubject) {
         existedSubject.assignments.push({ assignment, solution });
         existedSubject.totalScore =
           existedSubject.totalScore + solution.marksObtained;
         existedSubject.highestScore =
-          existedSubject.highestScore + assignment.fullMarks;
+          existedSubject.highestScore + solution.fullMarks;
       } else {
         resultSubjects.push({
           subjectId: subject.uniqueId,
           subjectName: subject.name,
           totalScore: solution.marksObtained,
-          highestScore: assignment.fullMarks,
+          highestScore: solution.fullMarks,
           assignments: [{ assignment, solution }],
         });
       }
