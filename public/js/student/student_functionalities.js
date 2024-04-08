@@ -672,7 +672,6 @@ function getGradeCard()
             html += "<td>" + assignment.teacherId + "</td>";
             html += "<td>" + solution.marksObtained + "</td>"; 
             html += "<td>" + assignment.fullMarks + "</td>";
-            html += "</tr>";
 
           })
 
