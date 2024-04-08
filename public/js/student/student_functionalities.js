@@ -674,7 +674,7 @@ function getGradeCard()
           })
 
           html += '<td rowspan="' + assignments.length +'">' + totalScore + "</td>";
-          html += '<td rowspan="' + assignments.length +'">' + (totalScore/highestScore*100) + "</td>";
+          html += '<td rowspan="' + assignments.length +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
           html += "</tr>";
         });
       }
