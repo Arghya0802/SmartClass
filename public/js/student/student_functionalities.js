@@ -665,18 +665,22 @@ function getGradeCard()
 
           html += "<tr>";
           html += '<td rowspan="' + (assignments.length+1) +'">' + subjectName + "</td>";
-
+          
+          let index;
           assignments.forEach(({assignment,solution}) => {
-            html += "<tr>";
+            html += "<tr>"
             html += "<td>" + assignment.topic + "</td>";
             html += "<td>" + assignment.teacherId + "</td>";
             html += "<td>" + solution.marksObtained + "</td>"; 
             html += "<td>" + assignment.fullMarks + "</td>";
-
+            if(!index)
+            {
+              index = true;
+              html += '<td rowspan="' + (assignments.length+1) +'">' + totalScore + "</td>";
+              html += '<td rowspan="' + (assignments.length+1) +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
+            }
+            html += "</tr>";
           })
-
-          html += '<td rowspan="' + (assignments.length+1) +'">' + totalScore + "</td>";
-          html += '<td rowspan="' + (assignments.length+1) +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
           html += "</tr>";
         });
       }

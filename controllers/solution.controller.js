@@ -249,7 +249,7 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
       subjectId: subject.uniqueId,
       teacherId: subject.teacherId,
     });
-    // console.log(assignments);
+    //console.log(assignments);
     if (!assignments) continue;
 
     for (const index in assignments) {
@@ -259,20 +259,22 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
         assignmentId: assignment._id,
         studentId: student.uniqueId,
       });
-      // console.log(solution);
+      //console.log(solution);
 
       if (!solution) continue;
+
       const existedSubject = resultSubjects.find(
         (obj) => obj.subjectId === subject.uniqueId
       );
+      const subjectIndex = resultSubjects.indexOf(existedSubject);
 
-      console.log(existedSubject);
       if (existedSubject) {
         existedSubject.assignments.push({ assignment, solution });
         existedSubject.totalScore =
           existedSubject.totalScore + solution.marksObtained;
         existedSubject.highestScore =
           existedSubject.highestScore + solution.fullMarks;
+        resultSubjects[subjectIndex] = existedSubject;
       } else {
         resultSubjects.push({
           subjectId: subject.uniqueId,
@@ -282,8 +284,10 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
           assignments: [{ assignment, solution }],
         });
       }
+      //console.log(existedSubject);
     }
   }
+  //console.log(resultSubjects)
 
   return res.status(200).json({
     resultSubjects,
