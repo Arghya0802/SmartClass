@@ -60,7 +60,13 @@ export const getAllSubmittedAssignments = asyncHandler(
       );
 
     const solutions = await Solution.find({ studentId: student.uniqueId });
-    let submittedAssignments = [];
+    let activeSubmittedAssignments = [];
+    let nonactiveSubmittedAssignments = [];
+
+    const today = new Date();
+    const dd = today.getDate();
+    const mm = today.getMonth() + 1;
+    const yyyy = today.getFullYear();
 
     for (const solution of solutions) {
       const assignment = await Assignment.findById(solution.assignmentId);
@@ -73,14 +79,19 @@ export const getAllSubmittedAssignments = asyncHandler(
           )
         );
 
-      submittedAssignments.push(assignment);
+        const dueDate = assignment.dueDate;
+        const [day, month, year] = dueDate.split("/").map(Number);
+  
+        if (yyyy <= year && mm <= month && dd <= day)
+          activeSubmittedAssignments.push({assignment,solution});
+        else nonactiveSubmittedAssignments.push({assignment,solution});
     }
 
     submittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
 
     return res.status(200).json({
-      submittedAssignments,
-      solutions,
+      activeSubmittedAssignments,
+      nonactiveSubmittedAssignments,
       message:
         "All Submitted Assignments and their Solutions fetched successfully!!!",
       success: true,

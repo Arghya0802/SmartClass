@@ -171,7 +171,7 @@ function getAllSubjectsforAssignment(assignmentType) {
         document.getElementById("notification").innerText = "";
       }, 2000);
     });
-}
+} 
 
 function getAllSubjectsforResource() {
   let html = "";
@@ -483,7 +483,7 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
   let html = "";
   console.log(jsonObject)
 
-  fetch("forms/studentforms/showassignments.html")
+  fetch("forms/studentforms/showsubmittedassignment.html")
     .then((response) => {
       return response.text();
     })
@@ -500,15 +500,29 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
     .then((data) => {
       if (data.success) {
         console.log(data);
-        data.submittedAssignments.forEach((assignment) => {
+        data.activeSubmittedAssignments.forEach((object) => {
+          let {assignment,solution} = object;
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
           html += "<td>" + assignment.link + "</td>";
+          html += "<td>" + solution.link + "</td>";
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
             "')\"> Add Solution </button></td>";
+          html += "</tr>";
+        });
+        data.nonactiveSubmittedAssignments.forEach((object) => {
+          let {assignment,solution} = object;
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + solution.marksObtained + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          html += "<td>" + solution.link + "</td>";
+          html += "<td>" + "</td>";
           html += "</tr>";
         });
       }
