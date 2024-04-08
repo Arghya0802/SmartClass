@@ -288,7 +288,9 @@ function getAllResources(subjectId) {
         data.resources.forEach((resource) => {
           html += "<tr>";
           html += "<td>" + resource.topic + "</td>";
-          html += "<td>" + resource.link + "</td>";
+          resource.links.forEach((link) => {
+            html += '<td><a href="' + link + '"> Link </a></td>';
+          })
           html +=
             "<td><button onclick=\"removeResource('" +
             resource._id +
@@ -365,7 +367,7 @@ function getAllAssignments(subjectId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html += "<td>" + "</td>";
           // html +=
           //   "<td><button onclick=\"getAllSolutions('" +
@@ -383,7 +385,7 @@ function getAllAssignments(subjectId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"getAllSolutions('" +
             assignment._id +

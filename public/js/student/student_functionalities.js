@@ -246,7 +246,7 @@ function getAllAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -307,7 +307,9 @@ function getAllResources(subjectId, teacherId) {
         data.resources.forEach((resource) => {
           html += "<tr>";
           html += "<td>" + resource.chapter + "</td>";
-          html += "<td>" + resource.link + "</td>";
+          resource.links.forEach((link) => {
+            html += '<td><a href="' + link + '"> Link </a></td>';
+          })
           html += "</tr>";
         });
       }
@@ -452,7 +454,7 @@ function getAllPendingAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -505,8 +507,8 @@ function getAllSubmittedAssignments(subjectId, teacherId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
-          html += "<td>" + solution.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -519,8 +521,8 @@ function getAllSubmittedAssignments(subjectId, teacherId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + solution.marksObtained + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
-          html += "<td>" + solution.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
           html += "<td>" + "</td>";
           html += "</tr>";
         });
@@ -568,7 +570,7 @@ function getAllMissedAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html += "<td>" + "</td>";
           html += "</tr>";
         });
@@ -634,6 +636,59 @@ function addFeedback(subjectId, teacherId) {
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
   }, 2000);
+}
+
+function getGradeCard()
+{
+  let html = "";
+  fetch("forms/studentforms/showgradecard.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/get-grade-card", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.resultSubjects.forEach((object) => {
+          let {subjectName, assignments, totalScore, highestScore} = object;
+
+          html += "<tr>";
+          html += '<td rowspan="' + assignments.length +'">' + subjectName + "</td>";
+
+          assignments.forEach(({assignment,solution}) => {
+            html += "<td>" + assignment.topic + "</td>";
+            html += "<td>" + assignment.teacherId + "</td>";
+            html += "<td>" + solution.marksObtained + "</td>"; 
+            html += "<td>" + assignment.fullMarks + "</td>";
+
+          })
+
+          html += '<td rowspan="' + assignments.length +'">' + totalScore + "</td>";
+          html += '<td rowspan="' + assignments.length +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
 }
 
 // Backend Functionalities ends here
