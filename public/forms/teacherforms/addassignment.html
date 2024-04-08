@@ -1,3 +1,17 @@
+<style>
+    /* Increase the size of the date input */
+    input[type="date"] {
+        width: 250px;
+        /* Adjust the width as needed */
+        padding: 8px;
+        /* Add padding for better appearance */
+        font-size: 20px;
+        margin: auto;
+        /* Customize the font size */
+    }
+</style>
+
+
 <div class="container">
     <h2>Add Assignment</h2>
     <div class="form-group">
@@ -5,18 +19,29 @@
         <input type="text" id="subject-id" placeholder="Enter Subject ID">
     </div>
     <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" id="title" placeholder="Enter Title for the Assignment">
+    </div>
+    <div class="form-group">
         <label for="full-marks">Full Marks:</label>
         <input type="text" id="full-marks" placeholder="Enter Full Marks">
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
         <label for="due-date">Due Date:</label>
-        <input type="text" id="due-date" placeholder="Enter Due Date">
-    </div>
-    <div class="form-group">
-        <label for="link">Link:</label>
-        <input type="text" id="link" placeholder="Enter Link">
-    </div>
-    <div class="btn-container">
-        <button class="login-btn" id="add-admin" onclick="addAssignment()">Add</button>
-    </div>
+        <input type="text" id="due-date" placeholder="Enter Due Date"> -->
+
+    <label for="due-date">Choose a date:</label>
+    <input type="date" id="due-date" name="due-date" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
 </div>
+<div class="form-group-addfile">
+    <label for="file-input">Add file:</label>
+    <div class="add-file-section">
+        <div class="dashed-rectangle">
+            <input type="file" id="fileInput" class="file-input"
+                accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png">
+        </div>
+
+        <div class="btn-container">
+            <button class="login-btn" id="add-admin" onclick="addAssignment()">Add</button>
+        </div>
+    </div>

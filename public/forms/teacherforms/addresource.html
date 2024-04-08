@@ -1,18 +1,22 @@
 <div class="container">
-    <h2>Add Department</h2>
+    <h2>Add Resource</h2>
     <div class="form-group">
         <label for="subject-id">Subject-ID:</label>
         <input type="text" id="subject-id" placeholder="Enter Subject-ID">
     </div>
     <div class="form-group">
-        <label for="title">Title:</label>
-        <input type="text" id="title" placeholder="Enter title">
+        <label for="topic">Topic:</label>
+        <input type="text" id="topic" placeholder="Enter topic">
     </div>
-    <div class="form-group">
-        <label for="link">Link:</label>
-        <input type="text" id="link" placeholder="Enter title">
-    </div>
-    <div class="btn-container">
-        <button class="login-btn" id="add-department" onclick="addResource()">Add</button>
-    </div>
-</div>
+    <div class="form-group-addfile">
+        <label for="file-input">Add file:</label>
+        <div class="add-file-section">
+            <div class="dashed-rectangle">
+                <input type="file" id="fileInput" class="file-input"
+                    accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png" multiple>
+            </div>
+
+            <div class="btn-container">
+                <button class="login-btn" id="add-department" onclick="addResource()">Add</button>
+            </div>
+        </div>

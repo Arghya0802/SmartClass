@@ -23,7 +23,7 @@ fetch("api/v1/auth/verify", {
     return res.json();
   })
   .then((data) => {
-    if (data.success === false || data.designation!=="student") {
+    if (data.success === false || data.designation !== "student") {
       localStorage.setItem(
         "response",
         JSON.stringify({ message: data.message, statusCode })
@@ -82,7 +82,7 @@ function getAllSubjects() {
             "', '" +
             subject.teacherId +
             "')\"> Resources </button></td>";
-            html +=
+          html +=
             "<td><button onclick=\"getAllAssignments('" +
             subject.uniqueId +
             "', '" +
@@ -129,32 +129,27 @@ function getAllSubjectsforAssignment(assignmentType) {
           html += "<td>" + subject.uniqueId + "</td>";
           html += "<td>" + subject.teacherId + "</td>";
 
-          if(assignmentType === 'pending')
-          {
+          if (assignmentType === "pending") {
             html +=
-            "<td><button onclick=\"getAllPendingAssignments('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Assignments </button></td>";
-          }
-          else if(assignmentType === 'submitted')
-          {
+              "<td><button onclick=\"getAllPendingAssignments('" +
+              subject.uniqueId +
+              "', '" +
+              subject.teacherId +
+              "')\"> Assignments </button></td>";
+          } else if (assignmentType === "submitted") {
             html +=
-            "<td><button onclick=\"getAllSubmittedAssignments('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Assignments </button></td>";
-          }
-          else
-          {
+              "<td><button onclick=\"getAllSubmittedAssignments('" +
+              subject.uniqueId +
+              "', '" +
+              subject.teacherId +
+              "')\"> Assignments </button></td>";
+          } else {
             html +=
-            "<td><button onclick=\"getAllMissedAssignments('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Assignments </button></td>";
+              "<td><button onclick=\"getAllMissedAssignments('" +
+              subject.uniqueId +
+              "', '" +
+              subject.teacherId +
+              "')\"> Assignments </button></td>";
           }
           html += "</tr>";
         });
@@ -171,7 +166,7 @@ function getAllSubjectsforAssignment(assignmentType) {
         document.getElementById("notification").innerText = "";
       }, 2000);
     });
-} 
+}
 
 function getAllSubjectsforResource() {
   let html = "";
@@ -219,13 +214,13 @@ function getAllSubjectsforResource() {
     });
 }
 
-function getAllAssignments(subjectId,teacherId) {
+function getAllAssignments(subjectId, teacherId) {
   const jsonObject = {
     subjectId,
-    teacherId
-  }
+    teacherId,
+  };
   let html = "";
-  console.log(jsonObject)
+  console.log(jsonObject);
 
   fetch("forms/studentforms/showassignments.html")
     .then((response) => {
@@ -241,7 +236,7 @@ function getAllAssignments(subjectId,teacherId) {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(jsonObject)
+    body: JSON.stringify(jsonObject),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -281,12 +276,12 @@ function getAllAssignments(subjectId,teacherId) {
     });
 }
 
-function getAllResources(subjectId,teacherId) {
+function getAllResources(subjectId, teacherId) {
   let jsonObject = {
     subjectId,
-    teacherId
-  }
-  console.log(jsonObject)
+    teacherId,
+  };
+  console.log(jsonObject);
   let html = "";
 
   fetch("forms/studentforms/showresources.html")
@@ -302,9 +297,8 @@ function getAllResources(subjectId,teacherId) {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
-
     },
-    body: JSON.stringify(jsonObject)
+    body: JSON.stringify(jsonObject),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -339,43 +333,48 @@ function addSolutionClicked(assignmentId) {
     .then((html) => {
       document.getElementById("display-window").innerHTML = html;
       const addButton = document.getElementById("add-solution");
-      addButton.addEventListener("click",function() {addSolution(assignmentId)})
+      addButton.addEventListener("click", function () {
+        addSolution(assignmentId);
+      });
     });
 }
 
-function addSolution(assignmentId){
-  const link = document.getElementById("link").value;
+function addSolution(assignmentId) {
+  const formData = new FormData();
 
-  document.getElementById("link").value = "";
+  // Get the selected files
+  const fileInput = document.getElementById("fileInput");
+  const files = fileInput.files;
 
-  const jsonObject = {
-    link,
-  };
-  fetch("/api/v1/solution/add/"+assignmentId, {
+  // Append each file to the FormData
+  for (const file of files) {
+    console.log(file);
+    formData.append("solutions", file);
+  }
+
+  fetch("/api/v1/solution/add/" + assignmentId, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(jsonObject),
+    body: formData,
   })
     .then((response) => {
       return response.json();
     })
     .then((data) => {
       document.getElementById("notification").innerText = data.message;
-      if (data.success)
-      {
+      if (data.success) {
         document.getElementById("notification").style.color = "green";
         setTimeout(() => {
           getAllSubjects();
-        },2000)
-      }
-      else document.getElementById("notification").style.color = "red";
+        }, 2000);
+      } else document.getElementById("notification").style.color = "red";
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 2000);
+  }, 5000);
 }
 
 function sendFeedbackClicked() {
@@ -424,13 +423,13 @@ function sendFeedbackClicked() {
     });
 }
 
-function getAllPendingAssignments(subjectId,teacherId) {
+function getAllPendingAssignments(subjectId, teacherId) {
   const jsonObject = {
     subjectId,
-    teacherId
-  }
+    teacherId,
+  };
   let html = "";
-  console.log(jsonObject)
+  console.log(jsonObject);
 
   fetch("forms/studentforms/showassignments.html")
     .then((response) => {
@@ -475,13 +474,13 @@ function getAllPendingAssignments(subjectId,teacherId) {
     });
 }
 
-function getAllSubmittedAssignments(subjectId,teacherId) {
+function getAllSubmittedAssignments(subjectId, teacherId) {
   const jsonObject = {
     subjectId,
-    teacherId
-  }
+    teacherId,
+  };
   let html = "";
-  console.log(jsonObject)
+  console.log(jsonObject);
 
   fetch("forms/studentforms/showsubmittedassignment.html")
     .then((response) => {
@@ -501,7 +500,7 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
       if (data.success) {
         console.log(data);
         data.activeSubmittedAssignments.forEach((object) => {
-          let {assignment,solution} = object;
+          let { assignment, solution } = object;
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + "</td>";
@@ -515,7 +514,7 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
           html += "</tr>";
         });
         data.nonactiveSubmittedAssignments.forEach((object) => {
-          let {assignment,solution} = object;
+          let { assignment, solution } = object;
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + solution.marksObtained + "</td>";
@@ -540,13 +539,13 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
     });
 }
 
-function getAllMissedAssignments(subjectId,teacherId) {
+function getAllMissedAssignments(subjectId, teacherId) {
   const jsonObject = {
     subjectId,
-    teacherId
-  }
+    teacherId,
+  };
   let html = "";
-  console.log(jsonObject)
+  console.log(jsonObject);
 
   fetch("forms/studentforms/showassignments.html")
     .then((response) => {
@@ -588,21 +587,21 @@ function getAllMissedAssignments(subjectId,teacherId) {
     });
 }
 
-function sendFeedbackForm(subjectId,teacherId)
-{
+function sendFeedbackForm(subjectId, teacherId) {
   fetch("forms/studentforms/feedbackform.html")
     .then((response) => {
       return response.text();
     })
     .then((html) => {
       document.getElementById("display-window").innerHTML = html;
-      const feedbackbutton = document.getElementById("feedback-button")
-      feedbackbutton.addEventListener("click", function () {addFeedback(subjectId,teacherId)})
+      const feedbackbutton = document.getElementById("feedback-button");
+      feedbackbutton.addEventListener("click", function () {
+        addFeedback(subjectId, teacherId);
+      });
     });
 }
 
-function addFeedback(subjectId,teacherId)
-{
+function addFeedback(subjectId, teacherId) {
   const description = document.getElementById("description").value;
 
   document.getElementById("description").value = "";
@@ -610,7 +609,7 @@ function addFeedback(subjectId,teacherId)
   const jsonObject = {
     description,
     subjectId,
-    teacherId
+    teacherId,
   };
   fetch("/api/v1/student/submit-feedback", {
     method: "POST",
@@ -625,14 +624,12 @@ function addFeedback(subjectId,teacherId)
     })
     .then((data) => {
       document.getElementById("notification").innerText = data.message;
-      if (data.success)
-      {
+      if (data.success) {
         document.getElementById("notification").style.color = "green";
         setTimeout(() => {
           sendFeedbackClicked();
-        },2000)
-      }
-      else document.getElementById("notification").style.color = "red";
+        }, 2000);
+      } else document.getElementById("notification").style.color = "red";
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";

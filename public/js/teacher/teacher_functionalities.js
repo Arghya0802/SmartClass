@@ -57,29 +57,53 @@ fetch("api/v1/teacher/", {
 // Backend Functionalities are starts here
 
 function addAssignment() {
+  // const today = new Date().toISOString().split("T")[0];
+  // document.getElementById("due-date").setAttribute("min", today);
+
   const subjectId = document.getElementById("subject-id").value;
   const fullMarks = document.getElementById("full-marks").value;
   const dueDate = document.getElementById("due-date").value;
-  const link = document.getElementById("link").value;
+  const title = document.getElementById("title").value;
 
+  // Create a new FormData object
+  const formData = new FormData();
+
+  // Get the selected files
+  const fileInput = document.getElementById("fileInput");
+  const files = fileInput.files;
+
+  // Append each file to the FormData
+  for (const file of files) {
+    console.log(file);
+    formData.append("assignments", file);
+  }
+
+  // Append the subjectId and title to the FormData
+  formData.append("subjectId", subjectId);
+  formData.append("title", title);
+  formData.append("fullMarks", fullMarks);
+  // formData.append("title", title);
+  formData.append("dueDate", dueDate);
+
+  document.getElementById("title").value = "";
   document.getElementById("subject-id").value = "";
   document.getElementById("full-marks").value = "";
   document.getElementById("due-date").value = "";
-  document.getElementById("link").value = "";
+  document.getElementById("fileInput").value = "";
 
-  const jsonObject = {
-    subjectId,
-    fullMarks,
-    link,
-    dueDate
-  };
+  // const jsonObject = {
+  //   subjectId,
+  //   fullMarks,
+  //   link,
+  //   dueDate,
+  // };
   fetch("/api/v1/assignment/add", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(jsonObject),
+    body: formData,
   })
     .then((response) => {
       return response.json();
@@ -92,30 +116,45 @@ function addAssignment() {
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 2000);
+  }, 7000);
 }
 
 function addResource() {
   const subjectId = document.getElementById("subject-id").value;
-  const topic = document.getElementById("title").value;
-  const link = document.getElementById("link").value;
+  const topic = document.getElementById("topic").value;
+  // const link = document.getElementById("link").value;
+
+  const formData = new FormData();
+
+  // Get the selected files
+  const fileInput = document.getElementById("fileInput");
+  const files = fileInput.files;
+
+  // Append each file to the FormData
+  for (const file of files) {
+    console.log(file);
+    formData.append("resources", file);
+  }
+
+  formData.append("subjectId", subjectId);
+  formData.append("topic", topic);
 
   document.getElementById("subject-id").value = "";
-  document.getElementById("title").value = "";
-  document.getElementById("link").value = "";
+  document.getElementById("topic").value = "";
+  // document.getElementById("link").value = "";
 
-  const jsonObject = {
-    subjectId,
-    topic,
-    link,
-  };
+  // const jsonObject = {
+  //   subjectId,
+  //   topic,
+  //   link,
+  // };
   fetch("/api/v1/resource/add", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
     },
-    body: JSON.stringify(jsonObject),
+    body: formData,
   })
     .then((response) => {
       return response.json();
@@ -128,7 +167,7 @@ function addResource() {
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 2000);
+  }, 7000);
 }
 
 function getAllSubjectsforResource() {
