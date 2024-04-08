@@ -664,7 +664,7 @@ function getGradeCard()
           let {subjectName, assignments, totalScore, highestScore} = object;
 
           html += "<tr>";
-          html += '<td rowspan="' + assignments.length +'">' + subjectName + "</td>";
+          html += '<td rowspan="' + (assignments.length+1) +'">' + subjectName + "</td>";
 
           assignments.forEach(({assignment,solution}) => {
             html += "<tr>";
@@ -676,8 +676,8 @@ function getGradeCard()
 
           })
 
-          html += '<td rowspan="' + assignments.length +'">' + totalScore + "</td>";
-          html += '<td rowspan="' + assignments.length +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
+          html += '<td rowspan="' + (assignments.length+1) +'">' + totalScore + "</td>";
+          html += '<td rowspan="' + (assignments.length+1) +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
           html += "</tr>";
         });
       }
