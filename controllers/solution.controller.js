@@ -241,9 +241,13 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
 
   let resultSubjects = [];
 
-  for(const subject in subjects)
+  for(const ind in subjects)
   {
+    const subject = subjects[ind]
+
     const assignment = await Assignment.findOne({subjectId: subject.uniqueId, teacherId: subject.teacherId})
+
+    if(!assignment) continue;
 
     const solution = await Solution.findOne({assignmentId: assignment._id})
 
@@ -262,8 +266,6 @@ export const getGradeCard = asyncHandler(async (req,res,next) => {
     })
     }
   }
-
-  console.log(resultSubjects);
 
   return res.status(200).json({
     resultSubjects,

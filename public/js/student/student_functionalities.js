@@ -639,6 +639,58 @@ function addFeedback(subjectId,teacherId)
   }, 2000);
 }
 
+function getGradeCard()
+{
+  let html = "";
+  fetch("forms/studentforms/showgradecard.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/student/get-grade-card", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        console.log(data);
+        data.resultSubjects.forEach((object) => {
+          let {subjectName, assignments, totalScore, percentage} = object;
+
+          html += "<tr>";
+          html += '<td rowspan="' + assignments.length +'">' + subjectName + "</td>";
+
+          assignments.forEach(({assignment,solution}) => {
+            html += "<td>" + assignment.topic + "</td>";
+            html += "<td>" + assignment.teacherId + "</td>";
+            html += "<td>" + solution.marksObtained + "</td>";
+            html += "<td>" + assignment.fullMarks + "</td>";
+          })
+
+          html += '<td rowspan="' + assignments.length +'">' + totalScore + "</td>";
+          html += '<td rowspan="' + assignments.length +'">' + percentage + "</td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
 // Backend Functionalities ends here
 
 function logout() {
