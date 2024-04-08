@@ -87,8 +87,6 @@ export const getAllSubmittedAssignments = asyncHandler(
         else nonactiveSubmittedAssignments.push({assignment,solution});
     }
 
-    submittedAssignments.sort((a, b) => b.createdAt - a.createdAt);
-
     return res.status(200).json({
       activeSubmittedAssignments,
       nonactiveSubmittedAssignments,

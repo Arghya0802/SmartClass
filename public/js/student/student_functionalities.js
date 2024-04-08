@@ -665,10 +665,12 @@ function getGradeCard()
           html += '<td rowspan="' + assignments.length +'">' + subjectName + "</td>";
 
           assignments.forEach(({assignment,solution}) => {
+            html += "<tr>";
             html += "<td>" + assignment.topic + "</td>";
             html += "<td>" + assignment.teacherId + "</td>";
             html += "<td>" + solution.marksObtained + "</td>"; 
             html += "<td>" + assignment.fullMarks + "</td>";
+            html += "</tr>";
 
           })
 
