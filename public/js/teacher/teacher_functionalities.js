@@ -279,7 +279,24 @@ function getAllAssignments(subjectId) {
     .then((data) => {
       if (data.success) {
         console.log(data);
-        data.assignments.forEach((assignment) => {
+        data.activeAssignments.forEach((assignment) => {
+          html += "<tr>";
+          html += "<td>" + assignment.title + "</td>";
+          html += "<td>" + assignment.fullMarks + "</td>";
+          html += "<td>" + assignment.link + "</td>";
+          // html +=
+          //   "<td><button onclick=\"getAllSolutions('" +
+          //   assignment._id +
+          //   "')\"> Solutions </button></td>";
+          html +=
+            "<td><button onclick=\"removeAssignment('" +
+            assignment._id +
+            "', '" +
+            subjectId +
+            "')\"> Remove </button></td>";
+          html += "</tr>";
+        });
+        data.nonActiveAssignments.forEach((assignment) => {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
