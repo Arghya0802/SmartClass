@@ -251,7 +251,7 @@ function getAllAssignments(subjectId,teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -313,7 +313,9 @@ function getAllResources(subjectId,teacherId) {
         data.resources.forEach((resource) => {
           html += "<tr>";
           html += "<td>" + resource.chapter + "</td>";
-          html += "<td>" + resource.link + "</td>";
+          resource.links.forEach((link) => {
+            html += '<td><a href="' + link + '"> Link </a></td>';
+          })
           html += "</tr>";
         });
       }
@@ -453,7 +455,7 @@ function getAllPendingAssignments(subjectId,teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -506,8 +508,8 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
-          html += "<td>" + solution.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -520,8 +522,8 @@ function getAllSubmittedAssignments(subjectId,teacherId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + solution.marksObtained + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
-          html += "<td>" + solution.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
           html += "<td>" + "</td>";
           html += "</tr>";
         });
@@ -569,7 +571,7 @@ function getAllMissedAssignments(subjectId,teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
           html += "<td>" + "</td>";
           html += "</tr>";
         });
@@ -668,7 +670,7 @@ function getGradeCard()
           assignments.forEach(({assignment,solution}) => {
             html += "<td>" + assignment.topic + "</td>";
             html += "<td>" + assignment.teacherId + "</td>";
-            html += "<td>" + solution.marksObtained + "</td>";
+            html += "<td>" + solution.marksObtained + "</td>"; 
             html += "<td>" + assignment.fullMarks + "</td>";
 
           })
