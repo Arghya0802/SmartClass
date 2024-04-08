@@ -224,3 +224,52 @@ export const getAllSolutions = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getGradeCard = asyncHandler(async (req,res,next) => {
+  
+  const { _id, uniqueId } = req.user;
+
+  if (!_id || !uniqueId)
+    return next(new ApiError(500, "Something went wrong with the token!!!"));
+
+  const student = await Student.findById(_id);
+
+  if(!student)
+    return next(new ApiError(404,"No student with the given Id exists!!!"));
+
+  const subjects = await Subject.find({departmentId: student.departmentId});
+
+  let resultSubjects = [];
+
+  for(const subject in subjects)
+  {
+    const assignment = await Assignment.findOne({subjectId: subject.uniqueId, teacherId: subject.teacherId})
+
+    const solution = await Solution.findOne({assignmentId: assignment._id})
+
+    const existedSubject = resultSubjects.find(obj => obj.subjectId === subject.uniqueId)
+
+    if(existedSubject)
+    {
+      existedSubject.assignments.push({assignment,solution});
+    }
+    else
+    {
+      resultSubjects.push({
+      subjectId: subject.uniqueId,
+      subjectName: subject.name, 
+      assignments: [{assignment,solution},],
+    })
+    }
+  }
+
+  console.log(resultSubjects);
+
+  return res.status(200).json({
+    resultSubjects,
+    message:
+      "All the Solutions for the given Assingment fetched successfully!!!",
+    success: true,
+  });
+
+});

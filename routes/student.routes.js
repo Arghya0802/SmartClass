@@ -13,6 +13,7 @@ import {
   submitAssignment,
   submitFeedback,
 } from "../controllers/student.controller.js";
+import { getGradeCard } from "../controllers/solution.controller.js";
 
 router.get("/", verifyJWT, getSingleStudent);
 router.post("/submit-feedback", verifyJWT, submitFeedback);
@@ -20,5 +21,8 @@ router.post("/submit-feedback", verifyJWT, submitFeedback);
 router.get("/assignments/submitted", verifyJWT, getAllSubmittedAssignments);
 router.get("/assignments/missed", verifyJWT, getAllMissedAssignments);
 router.get("/assignments/pending", verifyJWT, getAllPendingAssignments);
+
+//Testing gradecard Route
+router.get("/get-grade-card", verifyJWT, getGradeCard)
 
 export default router;
