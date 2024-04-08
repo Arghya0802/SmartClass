@@ -256,6 +256,103 @@ function addSolution(assignmentId){
   }, 2000);
 }
 
+function sendFeedbackClicked() {
+  let html = "";
+
+  fetch("forms/studentforms/showsubjectsforfeedback.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/department/all", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.teacherId + "</td>";
+          html +=
+            "<td><button onclick=\"sendFeedbackForm('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> send feedback </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function sendFeedbackForm(subjectId,teacherId)
+{
+  fetch("forms/studentforms/feedbackform.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((html) => {
+      document.getElementById("display-window").innerHTML = html;
+      const feedbackbutton = document.getElementById("feedback-button")
+      feedbackbutton.addEventListener("click", function () {addFeedback(subjectId,teacherId)})
+    });
+}
+
+function addFeedback(subjectId,teacherId)
+{
+  const description = document.getElementById("description").value;
+
+  document.getElementById("description").value = "";
+
+  const jsonObject = {
+    description,
+    subjectId,
+    teacherId
+  };
+  fetch("/api/v1/student/submit-feedback", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(jsonObject),
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+      {
+        document.getElementById("notification").style.color = "green";
+        setTimeout(() => {
+          sendFeedbackClicked();
+        },2000)
+      }
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 2000);
+}
+
 // Backend Functionalities ends here
 
 function logout() {

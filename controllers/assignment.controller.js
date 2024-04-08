@@ -198,7 +198,7 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const getAllAssignmentsOfTeacher = asyncHandler(
+export const getAllAssignmentsOfTeacher = asyncHandler( 
   async (req, res, next) => {
     const { subjectId, teacherId } = req.body;
 

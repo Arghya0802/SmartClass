@@ -305,7 +305,7 @@ export const getAllFeedbacks = asyncHandler(async (req, res, next) => {
   allFeedbacks.sort((a, b) => b.createdAt - a.createdAt);
 
   return res.status(200).json({
-    allFeedbacks,
+    feedbacks: allFeedbacks,
     message: "All Feedbacks for the given Department fetched successfully!!!",
     success: true,
   });

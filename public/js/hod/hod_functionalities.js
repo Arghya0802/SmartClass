@@ -185,6 +185,95 @@ function removeSubject(subjectId) {
   }, 2000);
 }
 
+function getAllSubjectsforFeedback() {
+  let html = "";
+
+  fetch("forms/hodforms/showsubjectsforfeedback.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/subject/department/all", { 
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.subjects.forEach((subject) => {
+          html += "<tr>";
+          html += "<td>" + subject.uniqueId + "</td>";
+          html += "<td>" + subject.name + "</td>";
+          html +=
+            "<td><button onclick=\"getAllFeedbacks('" +
+            subject.uniqueId +
+            "', '" +
+            subject.teacherId +
+            "')\"> Feedbacks </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+
+function getAllFeedbacks(subjectId,teacherId) {
+  let html = "";
+
+  fetch("forms/hodforms/showfeedback.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/hod/feedbacks/all", { 
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.feedbacks.forEach((feedback) => {
+          html += "<tr>";
+          html += "<td>" + feedback.subjectId + "</td>";
+          html += "<td>" + feedback.teacherId + "</td>";
+          html += "<td>" + feedback.description + "</td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+
 // Backend Functionalities ends here
 
 function logout() {
