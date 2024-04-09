@@ -221,3 +221,49 @@ button:hover {
   font-size: 20px;
   color: #000;
 }
+
+/* ---------------------------------------------- */
+
+.notice {
+  border: 1px solid #000000;
+  border-radius: 5px;
+  margin: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  cursor: pointer;
+  font-family:Courier Prime;
+
+}
+.notice h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+  font-weight: bold;
+  font-size: 28px;
+  font-family:Courier Prime;
+}
+
+.notice .description {
+  display: none;
+  font-family:Courier Prime;
+}
+
+.notice.open .description {
+  display: block;
+}
+.notice .date {
+  font-style: italic;
+  font-size: 16px;
+  color: #666;
+  font-family:Courier Prime;
+}
+
+.notice.open .date {
+  display: block;
+}
+
+.toggle-description {
+  color: #ff00005a;
+  text-decoration: underline;
+  cursor: pointer;
+} 

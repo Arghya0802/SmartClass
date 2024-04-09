@@ -45,31 +45,28 @@
             <h1>Welcome <span id="name"></span> !</h1>
             <p>You are assigned as <strong><span id="designation"></span></strong></p>
             <p>Your Unique ID is <strong><span id="uniqueId"></span></strong></p>
+            
 
         </div>
     </div>
     <script src="js/student/student.js"></script>
-    <script src="js/student/student_functionalities.js"></script>
     <script>
-        let isClicked = false;
         function toggleDescription(notice) {
             notice.classList.toggle('open');
-            if(isClicked === false)
+            console.log(notice.querySelector("#check-desc-1").textContent)
+            if(notice.querySelector("#check-desc-1").textContent === "Check Description")
             {
-                document.getElementById("check-desc-1").textContent = "Hide Description";
-                document.getElementById("check-desc-1").style.color = "#594B4B";
-                isClicked = true;
+                notice.querySelector("#check-desc-1").textContent = "Hide Description";
+                notice.querySelector("#check-desc-1").style.color = "#594B4B";
             }
             else
             {
-                document.getElementById("check-desc-1").textContent = "Check Description";
-                document.getElementById("check-desc-1").style.color = "red";
-                isClicked = false;
+                notice.querySelector("#check-desc-1").textContent = "Check Description";
+                notice.querySelector("#check-desc-1").style.color = "red";
             }
-
-
         }
     </script>
+    <script src="js/student/student_functionalities.js"></script>
 </body>
 
 </html>

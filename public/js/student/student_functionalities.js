@@ -767,17 +767,60 @@ function profile(){
 }
 
 function notice(){
-  let html = "";
+  let html = '<p id="notification" class="notification" style="color:red;"> </p>';
+  html += "<h1>Notice</h1>";
 
-  fetch("forms/studentforms/notice.html")
-  .then((response) => {
-    return response.text();
+  fetch("api/v1/notice/department/all",{
+    Authorization: `Bearer ${accessToken}`,
   })
+  .then((res) => res.json())
   .then((data) => {
-    html = data;
+    if(data.success)
+    {
+      const {allNotices} = data;
+      for(const notice in allNotices)
+      {
+        html += getNoticeString(allNotices[notice]);
+      }
+    }
     document.getElementById("display-window").innerHTML = html;
-  });
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+  })
+  
 }
+
+function getNoticeString(notice)
+{
+  var htmlString = '<div class="notice" onclick="toggleDescription(this,"'+notice._id+'")"> \
+    <h2>' + notice.title +'</h2> \
+    <p class="date">' + notice.postDate + '</p> \
+    <p class="description">'+ notice.description +'</p> \
+    <p class="toggle-description" id="'+ notice._id +'">Check Description</p> \
+    </div>';
+    return htmlString;
+}
+
+function toggleDescription(notice,noticeId) {
+  notice.classList.toggle('open');
+  if(notice.querySelector(`#${noticeId}`).textContent === "Check Description")
+  {
+      notice.querySelector(`#${noticeId}`).textContent = "Hide Description";
+      notice.querySelector(`#${noticeId}`).style.color = "#594B4B";
+  }
+  else
+  {
+      notice.querySelector(`#${noticeId}`).textContent = "Check Description";
+      notice.querySelector(`#${noticeId}`).style.color = "red";
+  }
+}
+
 
 function logout() {
   fetch("/api/v1/auth/logout", {
