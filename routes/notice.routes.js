@@ -18,7 +18,7 @@ router.post(
   upload.fields([
     {
       name: "links",
-      maxCount: 2,
+      maxCount: 1,
     },
   ]),
   addNoticeToDepartment
