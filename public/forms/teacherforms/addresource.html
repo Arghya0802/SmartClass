@@ -1,15 +1,49 @@
+<style>
+    .dashed-rectangle {
+        width: 50%;
+        /* Increase as needed */
+        margin-left: 300px;
+        /* Center horizontally */
+        /* padding-: auto; */
+        text-align: center;
+        /* Center the content inside the rectangle */
+        font-size: 16px;
+        /* Adjust the font size as desired */
+        border: 2px dashed #000;
+        /* Add a dashed border for the rectangle */
+    }
+
+    .file-input {
+        font-size: 18px
+    }
+
+    label[for="file-input"] {
+        margin-left: 450px;
+        font-size: 32px;
+    }
+
+    .login-btn {
+        margin-top: 7px;
+        margin-left: 50px;
+    }
+
+    .form-group-addfile {
+        margin-top: 50px;
+    }
+</style>
+
 <div class="container">
-    <h2>Add Resource</h2>
+    <h2>Add Resources</h2>
     <div class="form-group">
         <label for="subject-id">Subject-ID:</label>
         <input type="text" id="subject-id" placeholder="Enter Subject-ID">
     </div>
     <div class="form-group">
-        <label for="topic">Topic:</label>
-        <input type="text" id="topic" placeholder="Enter topic">
+        <label for="topic">Topic Name:</label>
+        <input type="text" id="topic" placeholder="Enter Topic Name">
     </div>
     <div class="form-group-addfile">
-        <label for="file-input">Add file:</label>
+        <label for="file-input" id="fileUpload">Add files:</label>
         <div class="add-file-section">
             <div class="dashed-rectangle">
                 <input type="file" id="fileInput" class="file-input"

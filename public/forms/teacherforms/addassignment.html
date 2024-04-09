@@ -1,13 +1,48 @@
 <style>
-    /* Increase the size of the date input */
-    input[type="date"] {
-        width: 250px;
-        /* Adjust the width as needed */
-        padding: 8px;
-        /* Add padding for better appearance */
+    .dashed-rectangle {
+        width: 50%;
+        /* Increase as needed */
+        margin-left: 300px;
+        /* Center horizontally */
+        /* padding-: auto; */
+        text-align: center;
+        /* Center the content inside the rectangle */
+        font-size: 16px;
+        /* Adjust the font size as desired */
+        border: 2px dashed #000;
+        /* Add a dashed border for the rectangle */
+    }
+
+    .file-input {
+        font-size: 18px
+    }
+
+    label[for="file-input"] {
+        margin-left: 60px;
+        font-size: 32px;
+    }
+
+    label[for="due-date"] {
+        /* margin-left: 450px; */
+        font-size: 32px;
+    }
+
+    .login-btn {
+        margin-top: 7px;
+        margin-left: 50px;
+    }
+
+    .form-group-addfile {
+        margin-top: 50px;
+    }
+
+    #due-date {
+        font-size: 22px;
+    }
+
+    #fileInput {
         font-size: 20px;
-        margin: auto;
-        /* Customize the font size */
+        margin-left: 100px;
     }
 </style>
 
@@ -29,9 +64,11 @@
     <!-- <div class="form-group">
         <label for="due-date">Due Date:</label>
         <input type="text" id="due-date" placeholder="Enter Due Date"> -->
-
     <label for="due-date">Choose a date:</label>
-    <input type="date" id="due-date" name="due-date" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
+    <div class="dashed-rectangle">
+        <input type="date" id="due-date" name="due-date" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
+    </div>
+
 </div>
 <div class="form-group-addfile">
     <label for="file-input">Add file:</label>
@@ -42,6 +79,6 @@
         </div>
 
         <div class="btn-container">
-            <button class="login-btn" id="add-admin" onclick="addAssignment()">Add</button>
+            <button class="login-btn" id="add-admin" onclick="addAssignment()">Create New Assignment</button>
         </div>
     </div>
