@@ -5,7 +5,7 @@ const assignmentSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-    },
+    }, 
     dueDate: {
       type: String,
       required: true,
@@ -19,6 +19,10 @@ const assignmentSchema = new mongoose.Schema(
       required: true,
     },
     teacherId: {
+      type: String,
+      required: true,
+    },
+    departmentId: {
       type: String,
       required: true,
     },

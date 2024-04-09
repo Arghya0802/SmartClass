@@ -113,6 +113,7 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
   const newAssignment = await Assignment.create({
     subjectId,
     teacherId: teacher.uniqueId,
+    departmentId: teacher.departmentId,
     fullMarks,
     link: links[0],
     dueDate,
