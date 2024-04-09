@@ -306,12 +306,17 @@ function getAllResources(subjectId, teacherId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += '<td rowspan="' + (resource.links.length+1) +'">' + resource.topic + "</td>";
+          html +=
+            '<td rowspan="' +
+            (resource.links.length + 1) +
+            '">' +
+            resource.topic +
+            "</td>";
           resource.links.forEach((link) => {
             html += "<tr>";
             html += '<td><a href="' + link + '"> Link </a></td>';
             html += "</tr>";
-          })
+          });
           html += "</tr>";
         });
       }
@@ -640,8 +645,7 @@ function addFeedback(subjectId, teacherId) {
   }, 2000);
 }
 
-function getGradeCard()
-{
+function getGradeCard() {
   let html = "";
   fetch("forms/studentforms/showgradecard.html")
     .then((response) => {
@@ -661,26 +665,42 @@ function getGradeCard()
       if (data.success) {
         console.log(data);
         data.resultSubjects.forEach((object) => {
-          let {subjectName, assignments, totalScore, highestScore} = object;
+          let { subjectName, assignments, totalScore, highestScore } = object;
 
           html += "<tr>";
-          html += '<td rowspan="' + (assignments.length+1) +'">' + subjectName + "</td>";
-          
+          html +=
+            '<td rowspan="' +
+            (assignments.length + 1) +
+            '">' +
+            subjectName +
+            "</td>";
+
           let index;
-          assignments.forEach(({assignment,solution}) => {
-            html += "<tr>"
-            html += "<td>" + assignment.topic + "</td>";
+          assignments.forEach(({ assignment, solution }) => {
+            html += "<tr>";
+            html += "<td>" + assignment.title + "</td>";
             html += "<td>" + assignment.teacherId + "</td>";
-            html += "<td>" + solution.marksObtained + "</td>"; 
+            html += "<td>" + solution.marksObtained + "</td>";
             html += "<td>" + assignment.fullMarks + "</td>";
-            if(!index)
-            {
+            if (!index) {
               index = true;
-              html += '<td rowspan="' + (assignments.length+1) +'">' + totalScore + "</td>";
-              html += '<td rowspan="' + (assignments.length+1) +'">' + (totalScore/highestScore*100).toFixed(2) + " % </td>";
+              html +=
+                '<td rowspan="' +
+                (assignments.length + 1) +
+                '">' +
+                totalScore +
+                "/" +
+                highestScore +
+                "</td>";
+              html +=
+                '<td rowspan="' +
+                (assignments.length + 1) +
+                '">' +
+                ((totalScore / highestScore) * 100).toFixed(2) +
+                " % </td>";
             }
             html += "</tr>";
-          })
+          });
           html += "</tr>";
         });
       }

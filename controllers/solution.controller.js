@@ -275,7 +275,7 @@ export const getGradeCard = asyncHandler(async (req, res, next) => {
         existedSubject.highestScore =
           existedSubject.highestScore + solution.fullMarks;
         resultSubjects[subjectIndex] = existedSubject;
-      } else { 
+      } else {
         resultSubjects.push({
           subjectId: subject.uniqueId,
           subjectName: subject.name,
@@ -310,46 +310,51 @@ export const getGradeCardV2 = asyncHandler(async (req, res, next) => {
   if (!student)
     return next(new ApiError(404, "No student with the given Id exists!!!"));
 
-  const assignments = await Assignment.find({ departmentId: student.departmentId });
+  const assignments = await Assignment.find({
+    departmentId: student.departmentId,
+  });
 
   let resultSubjects = [];
 
   for (const ind in assignments) {
     const assignment = assignments[ind];
-      // console.log(assignment);
-      const solution = await Solution.findOne({
-        assignmentId: assignment._id,
-        studentId: student.uniqueId,
+    // console.log(assignment);
+    const solution = await Solution.findOne({
+      assignmentId: assignment._id,
+      studentId: student.uniqueId,
+    });
+
+    const subject = await Subject.findOne({
+      uniqueId: assignment.subjectId,
+      teacherId: assignment.teacherId,
+    });
+    //console.log(solution);
+
+    if (!solution || !solution.marksObtained) continue;
+
+    const existedSubject = resultSubjects.find(
+      (obj) => obj.subjectId === subject.uniqueId
+    );
+    const subjectIndex = resultSubjects.indexOf(existedSubject);
+
+    if (existedSubject) {
+      existedSubject.assignments.push({ assignment, solution });
+      existedSubject.totalScore =
+        existedSubject.totalScore + solution.marksObtained;
+      existedSubject.highestScore =
+        existedSubject.highestScore + solution.fullMarks;
+      resultSubjects[subjectIndex] = existedSubject;
+    } else {
+      resultSubjects.push({
+        subjectId: subject.uniqueId,
+        subjectName: subject.name,
+        totalScore: solution.marksObtained,
+        highestScore: solution.fullMarks,
+        assignments: [{ assignment, solution }],
       });
-
-      const subject = Subject.findOne({uniqueId: assignment.subjectId, teacherId: assignment.teacherId})
-      //console.log(solution);
-
-      if (!solution || !solution.marksObtained) continue;
-
-      const existedSubject = resultSubjects.find(
-        (obj) => obj.subjectId === subject.uniqueId
-      );
-      const subjectIndex = resultSubjects.indexOf(existedSubject);
-
-      if (existedSubject) {
-        existedSubject.assignments.push({ assignment, solution });
-        existedSubject.totalScore =
-          existedSubject.totalScore + solution.marksObtained;
-        existedSubject.highestScore =
-          existedSubject.highestScore + solution.fullMarks;
-        resultSubjects[subjectIndex] = existedSubject;
-      } else { 
-        resultSubjects.push({
-          subjectId: subject.uniqueId,
-          subjectName: subject.name,
-          totalScore: solution.marksObtained,
-          highestScore: solution.fullMarks,
-          assignments: [{ assignment, solution }],
-        });
-      }
-      //console.log(existedSubject);
     }
+    //console.log(existedSubject);
+  }
   //console.log(resultSubjects)
 
   return res.status(200).json({
