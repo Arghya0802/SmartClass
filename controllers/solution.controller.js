@@ -324,14 +324,36 @@ export const getGradeCardV2 = asyncHandler(async (req, res, next) => {
       studentId: student.uniqueId,
     });
 
-    const subject = await Subject.findOne({
-      uniqueId: assignment.subjectId,
-      teacherId: assignment.teacherId,
-    });
-    //console.log(solution);
+      const subject = await Subject.findOne({uniqueId: assignment.subjectId, teacherId: assignment.teacherId})
 
-    if (!solution || !solution.marksObtained) continue;
+      if (!solution || !solution.marksObtained || !subject) continue;
 
+
+      let existedSubject = resultSubjects.find(
+        (obj) => obj.subjectId === subject.uniqueId
+      );
+      let subjectIndex = resultSubjects.indexOf(existedSubject);
+      
+      
+      //console.log(existedSubject);
+      if (existedSubject) {
+        existedSubject.assignments.push({ assignment, solution });
+        existedSubject.totalScore =
+          existedSubject.totalScore + solution.marksObtained;
+        existedSubject.highestScore =
+          existedSubject.highestScore + solution.fullMarks;
+        resultSubjects[subjectIndex] = existedSubject;
+      } else { 
+        resultSubjects.push({
+          subjectId: subject.uniqueId,
+          subjectName: subject.name,
+          totalScore: solution.marksObtained,
+          highestScore: solution.fullMarks,
+          assignments: [{ assignment, solution }],
+        });
+      }
+      //console.log(existedSubject);
+    }
     const existedSubject = resultSubjects.find(
       (obj) => obj.subjectId === subject.uniqueId
     );
