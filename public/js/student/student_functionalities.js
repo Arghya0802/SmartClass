@@ -666,7 +666,7 @@ function getGradeCard()
           html += "<tr>";
           html += '<td rowspan="' + (assignments.length+1) +'">' + subjectName + "</td>";
           
-          let index;
+          var index;
           assignments.forEach(({assignment,solution}) => {
             html += "<tr>"
             html += "<td>" + assignment.topic + "</td>";

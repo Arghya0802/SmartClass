@@ -322,16 +322,19 @@ export const getGradeCardV2 = asyncHandler(async (req, res, next) => {
         studentId: student.uniqueId,
       });
 
-      const subject = Subject.findOne({uniqueId: assignment.subjectId, teacherId: assignment.teacherId})
-      //console.log(solution);
+      const subject = await Subject.findOne({uniqueId: assignment.subjectId, teacherId: assignment.teacherId})
+      console.log(subject);
 
       if (!solution || !solution.marksObtained) continue;
 
-      const existedSubject = resultSubjects.find(
+
+      let existedSubject = resultSubjects.find(
         (obj) => obj.subjectId === subject.uniqueId
       );
-      const subjectIndex = resultSubjects.indexOf(existedSubject);
-
+      let subjectIndex = resultSubjects.indexOf(existedSubject);
+      
+      
+      //console.log(existedSubject);
       if (existedSubject) {
         existedSubject.assignments.push({ assignment, solution });
         existedSubject.totalScore =
