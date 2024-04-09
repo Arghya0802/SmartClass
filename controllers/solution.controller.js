@@ -323,9 +323,8 @@ export const getGradeCardV2 = asyncHandler(async (req, res, next) => {
       });
 
       const subject = await Subject.findOne({uniqueId: assignment.subjectId, teacherId: assignment.teacherId})
-      console.log(subject);
 
-      if (!solution || !solution.marksObtained) continue;
+      if (!solution || !solution.marksObtained || !subject) continue;
 
 
       let existedSubject = resultSubjects.find(
