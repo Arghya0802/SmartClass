@@ -19,12 +19,12 @@ const noticeSchema = new mongoose.Schema(
       maxLength: 100,
       //   required: true,
     },
-    links: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    link: {
+      type: String,
+    },
+    postDate: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

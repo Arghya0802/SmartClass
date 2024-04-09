@@ -91,12 +91,20 @@ export const addNoticeToDepartment = asyncHandler(async (req, res, next) => {
   if (department.hod !== hod.uniqueId)
     return next(new ApiError(403, "Access Denied!!!"));
 
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  const currDate = `${dd}/${mm}/${yyyy}`;
+
   const newNotice = await Notice.create({
     title,
     description: description ? description : "",
-    links,
+    link: links[0],
     departmentId: department.uniqueId,
     hodId: hod.uniqueId,
+    postDate: currDate,
   });
 
   if (!newNotice)
@@ -129,7 +137,6 @@ export const getAllNotices = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(500, "Something went wrong while calling to the DataBase!!!")
     );
-
   // Sort notices based on createdAt in descending order
   allNotices.sort((a, b) => b.createdAt - a.createdAt);
 
