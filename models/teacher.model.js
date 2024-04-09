@@ -19,7 +19,7 @@ const teacherSchema = new mongoose.Schema(
     },
     phone: {
       type: Number,
-      unique: true,
+      // unique: true,
     },
     DOB: {
       type: String,
