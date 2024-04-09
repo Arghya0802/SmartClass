@@ -1,5 +1,40 @@
+<style>
+    .dashed-rectangle {
+        width: 50%;
+        /* Increase as needed */
+        margin-left: 300px;
+        /* Center horizontally */
+        /* padding-: auto; */
+        text-align: center;
+        /* Center the content inside the rectangle */
+        font-size: 16px;
+        /* Adjust the font size as desired */
+        border: 2px dashed #000;
+        /* Add a dashed border for the rectangle */
+    }
+
+    .file-input {
+        font-size: 18px
+    }
+
+    label {
+        margin-left: 450px;
+        font-size: 32px;
+    }
+
+    .login-btn {
+        margin-top: 7px;
+        margin-left: 50px;
+    }
+
+    .form-group-addfile {
+        margin-top: 50px;
+    }
+</style>
+
+
 <div class="container">
-    <h2>Add Solution</h2>
+    <h2>Submit Solution</h2>
     <div class="form-group-addfile">
         <label for="file-input">Add file:</label>
         <div class="add-file-section">
@@ -8,6 +43,6 @@
                     accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png">
             </div>
             <div class="btn-container">
-                <button class="login-btn" id="add-solution">Add</button>
+                <button class="login-btn" id="add-solution">Submit</button>
             </div>
         </div>

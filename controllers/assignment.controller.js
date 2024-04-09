@@ -247,7 +247,7 @@ export const getAllAssignmentsOfTeacher = asyncHandler(
 
     for (const assignment of assignments) {
       const dueDate = assignment.dueDate;
-      const [day, month, year] = dueDate.split("/").map(Number);
+      const [year, month, day] = dueDate.split("-").map(Number);
 
       if (yyyy <= year && mm <= month && dd <= day)
         activeAssignments.push(assignment);

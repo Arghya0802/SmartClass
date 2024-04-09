@@ -246,18 +246,24 @@ function getAllAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html +=
+            '<td> <a href="' +
+            assignment.link +
+            '" target="_blank"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
             "')\"> Add Solution </button></td>";
           html += "</tr>";
         });
-        data.nonActiveAssignments.forEach((assignment) => {
+        data.notActiveAssignments.forEach((assignment) => {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += "<td>" + assignment.link + "</td>";
+          html +=
+            '<td> <a href="' +
+            assignment.link +
+            '" target="_blank"> Link </a></td>';
           html += "<td>" + "</td>";
           html += "</tr>";
         });
@@ -314,7 +320,9 @@ function getAllResources(subjectId, teacherId) {
             "</td>";
           resource.links.forEach((link) => {
             html += "<tr>";
-            html += '<td><a href="' + link + '"> Link </a></td>';
+            html +=
+              '<td><a href="' + link + '" target="_blank"> Link </a></td>';
+
             html += "</tr>";
           });
           html += "</tr>";
@@ -461,11 +469,14 @@ function getAllPendingAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
+          html +=
+            '<td><a href="' +
+            assignment.link +
+            '" target="_blank"> Link </a></td>';
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
-            "')\"> Add Solution </button></td>";
+            "')\"> Submit Solution </button></td>";
           html += "</tr>";
         });
       }
@@ -514,8 +525,16 @@ function getAllSubmittedAssignments(subjectId, teacherId) {
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
-          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
+          html +=
+            '<td><a href="' +
+            assignment.link +
+            '" target="_blank"> Link </a></td>';
+
+          html +=
+            '<td><a href="' +
+            solution.link +
+            '" target="_blank"> Link </a></td>';
+
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
@@ -526,11 +545,21 @@ function getAllSubmittedAssignments(subjectId, teacherId) {
           let { assignment, solution } = object;
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
-          html += "<td>" + solution.marksObtained + "</td>";
+          html +=
+            "<td>" +
+            (solution.marksObtained ? solution.marksObtained : "NOT MARKED") +
+            "</td>";
+
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
-          html += '<td> <a href="' + solution.link + '"> Link </a></td>';
-          html += "<td>" + "</td>";
+          html +=
+            '<td><a href="' +
+            solution.link +
+            '" target="_blank"> Link </a></td>';
+          html +=
+            '<td><a href="' +
+            solution.link +
+            '" target="_blank"> Link </a></td>';
+          html += '<td style="color:red;">DUE DATE OVER</td>';
           html += "</tr>";
         });
       }
@@ -556,7 +585,7 @@ function getAllMissedAssignments(subjectId, teacherId) {
   let html = "";
   console.log(jsonObject);
 
-  fetch("forms/studentforms/showassignments.html")
+  fetch("forms/studentforms/showmissedassignments.html")
     .then((response) => {
       return response.text();
     })
@@ -577,8 +606,12 @@ function getAllMissedAssignments(subjectId, teacherId) {
           html += "<tr>";
           html += "<td>" + assignment.title + "</td>";
           html += "<td>" + assignment.fullMarks + "</td>";
-          html += '<td> <a href="' + assignment.link + '"> Link </a></td>';
-          html += "<td>" + "</td>";
+          html +=
+            '<td> <a href="' +
+            assignment.link +
+            '" target="_blank"> Link </a></td>';
+
+          // html += '<td><strong style="color: red;">MISSED</strong></td>';
           html += "</tr>";
         });
       }
