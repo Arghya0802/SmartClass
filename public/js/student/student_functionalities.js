@@ -753,6 +753,32 @@ function getGradeCard() {
 
 // Backend Functionalities ends here
 
+function profile(){
+  let html = "";
+
+  fetch("forms/studentforms/profile.html")
+  .then((response) => {
+    return response.text();
+  })
+  .then((data) => {
+    html = data;
+    document.getElementById("display-window").innerHTML = html;
+  });
+}
+
+function notice(){
+  let html = "";
+
+  fetch("forms/studentforms/notice.html")
+  .then((response) => {
+    return response.text();
+  })
+  .then((data) => {
+    html = data;
+    document.getElementById("display-window").innerHTML = html;
+  });
+}
+
 function logout() {
   fetch("/api/v1/auth/logout", {
     headers: {

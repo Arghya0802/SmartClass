@@ -19,10 +19,10 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="#" style="color:rgba(55, 17, 225, 0.851)"><strong>STUDENT</strong></a>
+                    <li><a style="font-size: 30px ; color:rgba(55, 17, 225, 0.851)"><strong>STUDENT</strong></a>
                     </li>
-                    <li><a href="#">Notice</a></li>
-                    <li><a href="#">Profile</a></li>
+                    <li><button class="forgot-password-btn" onclick="notice()">Notice</button></li>
+                    <li><button class="forgot-password-btn" onclick="profile()">Profile</button></li>
                     <li><button onclick="logout()">Logout</button></li>
                 </ul>
             </nav>
@@ -50,6 +50,26 @@
     </div>
     <script src="js/student/student.js"></script>
     <script src="js/student/student_functionalities.js"></script>
+    <script>
+        let isClicked = false;
+        function toggleDescription(notice) {
+            notice.classList.toggle('open');
+            if(isClicked === false)
+            {
+                document.getElementById("check-desc-1").textContent = "Hide Description";
+                document.getElementById("check-desc-1").style.color = "#594B4B";
+                isClicked = true;
+            }
+            else
+            {
+                document.getElementById("check-desc-1").textContent = "Check Description";
+                document.getElementById("check-desc-1").style.color = "red";
+                isClicked = false;
+            }
+
+
+        }
+    </script>
 </body>
 
 </html>
