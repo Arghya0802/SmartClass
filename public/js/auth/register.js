@@ -6,13 +6,22 @@ function registerClicked()
     const password = document.getElementById("password").value;
     const email = document.getElementById("email-id").value;
     const name = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+    const phone = document.getElementById("phone").value;
+    const gender = document.getElementById("gender").value;
+    const DOB = document.getElementById("dob").value;
+
     if(uniqueId && password && email && name)
     {
         jsonObject = {
             uniqueId,
             password,
             email,
-            name
+            name,
+            age,
+            phone,
+            gender,
+            DOB
         }
     }
     var statusCode;

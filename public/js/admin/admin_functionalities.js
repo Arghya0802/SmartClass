@@ -319,14 +319,14 @@ function getAllAdmin() {
       {
         data.registered.forEach(student => {
           html += "<tr>";
-          html += "<td>" + student.name + "</td>";
+          html += "<td>" + (student.name ? student.name : "Not Registered") + "</td>";
           html += "<td>" + student.uniqueId + "</td>";
           html += "<td><button onclick=\"removeStudent('" + student._id + "')\"> Remove </button></td>"
           html += "</tr>";
         });
         data.notRegistered.forEach(student => {
             html += "<tr>";
-            html += "<td>" + student.name + "</td>";
+            html += "<td>" + (student.name ? student.name : "Not Registered") + "</td>";
             html += "<td>" + student.uniqueId + "</td>";
             html += "<td><button onclick=\"removeStudent('" + student._id + "')\"> Remove </button></td>"
             html += "</tr>";
@@ -370,14 +370,16 @@ function getAllAdmin() {
       {
         data.registered.forEach(teacher => {
           html += "<tr>";
-          html += "<td>" + teacher.name + "</td>";
+          html += "<td>" + (teacher.name ? teacher.name : "Not Registered") + "</td>";
+
           html += "<td>" + teacher.uniqueId + "</td>";
           html += "<td><button onclick=\"removeTeacher('" + teacher._id + "')\"> Remove </button></td>"
           html += "</tr>";
         });
         data.notRegistered.forEach(teacher => {
             html += "<tr>";
-            html += "<td>" + teacher.name + "</td>";
+            html += "<td>" + (teacher.name ? teacher.name : "Not Registered") + "</td>";
+
             html += "<td>" + teacher.uniqueId + "</td>";
             html += "<td><button onclick=\"removeTeacher('" + teacher._id + "')\"> Remove </button></td>"
             html += "</tr>";
@@ -505,7 +507,8 @@ function getAllAdmin() {
           html += "<tr>";
           html += "<td>" + department.name + "</td>";
           html += "<td>" + department.uniqueId + "</td>";
-          html += "<td>" + department.hod + "</td>";
+          html += "<td>" + (department.hod ? department.hod : "Not Assigned") + "</td>";
+
           html += "<td><button onclick=\"getAllStudents('" + department.uniqueId + "')\"> Students List </button></td>"
           html += "<td><button onclick=\"getAllTeachers('" + department.uniqueId + "')\"> Teachers List </button></td>"
           html += "</tr>";

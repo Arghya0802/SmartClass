@@ -10,7 +10,7 @@ if (!accessToken) {
     JSON.stringify({ message: "Unauthorized Access", statusCode: 404 })
   );
   document.location.href = "/error/error.html";
-}
+} 
 
 var statusCode;
 
