@@ -30,12 +30,12 @@
     </header>
 
 
-    <p id="notification" class="notification" style="color:red;"> </p>
+   
 
     <div class="main-content">
         <div class="sidebar">
             <button onclick="assignSubjectToTeacherClicked()">Assign Subject</button>
-            <button onclick="addSubjectClicked()">Add Subject</button>
+            <button onclick="addSubjectClicked()">Add Subject to Department</button>
             <button onclick="getAllSubjects()">Subject list</button>
             <button onclick="addAssignmentClicked()">Add Assignment</button>
             <button onclick="addResourceClicked()">Add Resources</button>
@@ -44,6 +44,7 @@
             <button onclick="getAllFeedbacks()">Feedback list</button>
         </div>
         <div class="content" id="display-window">
+            <p id="notification" class="notification" style="color:red;"> </p>
             <h1>Welcome <span id="name"></span> !</h1>
             <p>You are assigned as <strong><span id="designation"></span></strong></p>
             <p>Your Unique ID is <strong><span id="uniqueId"></span></strong></p>
