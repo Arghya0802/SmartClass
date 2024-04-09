@@ -127,9 +127,11 @@ export const getAllNotices = asyncHandler(async (req, res, next) => {
     );
 
   const admin = await Admin.findById(_id);
+  const teacher = await Teacher.findById(_id);
+  const student = await Student.findById(_id);
 
-  if (!admin)
-    return next(new ApiError(404, "No Admin found with given credentials!!!"));
+  if (!admin && !teacher && !student)
+    return next(new ApiError(404, "No User found with given credentials!!!"));
 
   const allNotices = await Notice.find();
 
