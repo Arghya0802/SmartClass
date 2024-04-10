@@ -756,7 +756,7 @@ function getGradeCard() {
 function profile(){
   let html = "";
 
-  fetch("forms/studentforms/profile.html")
+  fetch("forms/profile.html")
   .then((response) => {
     return response.text();
   })
@@ -764,6 +764,25 @@ function profile(){
     html = data;
     document.getElementById("display-window").innerHTML = html;
   });
+  fetch("api/v1/student/", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      const { loggedInStudent } = data;
+      const {name,uniqueId,age,DOB,email,phone,departmentId} = loggedInStudent;
+      document.getElementById("name").innerText = name;
+      document.getElementById("uniqueId").innerText = uniqueId;
+      document.getElementById("age").innerText = age;
+      document.getElementById("DOB").innerText = DOB;
+      document.getElementById("phone").innerText = phone;
+      document.getElementById("email").innerText = email;
+      document.getElementById("department").innerText = departmentId;
+    });
 }
 
 function notice(){

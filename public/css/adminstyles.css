@@ -267,3 +267,51 @@ button:hover {
   text-decoration: underline;
   cursor: pointer;
 } 
+
+
+/* ------------------------------------------------- */
+
+h1 {
+  text-align: center;
+  font-weight: bold;
+}
+h3 {
+  font-size: 28px;
+  padding-top: 20px;
+  text-align: center;
+}
+.profile-container {
+  position: relative;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  width: 750px;
+  padding: 20px 80px;
+  background-color: #F1F0EA;
+  border-radius: 20px;
+  border: 1px solid #2D232E;
+}
+.data-box {
+  background-color: #F1F0EA;
+  border: 1px solid #2D232E;
+  padding: 8px 32px;
+  font-size: 28px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+.btn-container {
+  text-align: center;
+}
+
+.forgot-btn {
+  padding: 15px 30px;
+  margin: 15px 15px;
+  font-family:Courier Prime;
+  font-size: 18px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #2D232E;
+  color: #F1F0EA;
+  text-align: center;
+}
