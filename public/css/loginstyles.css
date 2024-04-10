@@ -3,6 +3,7 @@ body {
     padding: 0;
     font-family:Courier Prime;
     background-color: #F1F0EA;
+    height: 100%;
 }
 
 .container {
@@ -79,4 +80,19 @@ transition: background-color 0.3s;
 
 .forgot-password-btn:hover {
 background-color: #a9a696;
+}
+
+.date-style {
+    width: 100%;
+    text-align: center;
+    font-size: 12px;
+}
+.gender-style select{
+    background-color: #fff;
+    border: 1px solid #ffffff;
+    padding: 6px 30px 6px 16px;
+    width: 105%;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
 }

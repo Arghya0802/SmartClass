@@ -19,38 +19,42 @@
         <label for="email-id">Email ID:</label>
         <input type="email" id="email-id" placeholder="Enter Email id">
     </div>
-    <div class="dashed-rectangle">
+    <div class="form-group">
         <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" name="dob" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
+        <div class="date-style">
+            <input type="date" id="dob" name="dob" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
+        </div>
     </div>
     <div class="form-group">
-        <label for="age">Age:</label>
-        <input type="number" id="age" placeholder="Enter your Age">
+            <label for="age">Age:</label>
+            <input type="number" id="age" placeholder="Enter your Age">
+        </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <div class="gender-style">
+                <select id="gender" name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="neutral">Prefer not to say</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone number:</label>
+            <input type="number" id="phone" placeholder="Enter Phone number">
+        </div>
+        <div class="form-group">
+            <label for="unique-id">Unique ID:</label>
+            <input type="text" id="unique-id" placeholder="Enter Unique ID">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter Password">
+        </div>
+        <div class="btn-container">
+            <button class="login-btn" id="login" onclick="registerClicked()">Register</button>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="neutral">Prefer not to say</option>
-          </select>
-    </div>
-    <div class="form-group">
-        <label for="phone">Phone number:</label>
-        <input type="number" id="phone" placeholder="Enter Phone number">
-    </div>
-    <div class="form-group">
-        <label for="unique-id">Unique ID:</label>
-        <input type="text" id="unique-id" placeholder="Enter Unique ID">
-    </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter Password">
-    </div>
-    <div class="btn-container">
-        <button class="login-btn" id="login" onclick="registerClicked()">Register</button>
-    </div>
-</div>
-<script src="js/auth/register.js"></script>
+    <script src="js/auth/register.js"></script>
+    </html>    
 </body>
-</html>
