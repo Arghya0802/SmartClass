@@ -6,7 +6,7 @@ import {
   addAssignment,
   addResources,
   assignMarks,
-  getAllSubjectsOfTeacher,
+  getAllSubjectsOfTeacher, 
   getSingleTeacher,
 } from "../controllers/teacher.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";

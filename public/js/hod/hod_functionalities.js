@@ -86,6 +86,63 @@ function addSubject() {
   }, 2000);
 }
 
+
+function addNotice() {
+  // const today = new Date().toISOString().split("T")[0];
+  // document.getElementById("due-date").setAttribute("min", today);
+
+  const description = document.getElementById("description").value;
+  const title = document.getElementById("title").value;
+
+  // Create a new FormData object
+  const formData = new FormData();
+
+  // Get the selected files
+  const fileInput = document.getElementById("fileInput");
+  const files = fileInput.files;
+
+  // Append each file to the FormData
+  for (const file of files) {
+    console.log(file);
+    formData.append("links", file);
+  }
+
+  // Append the subjectId and title to the FormData
+  formData.append("title", title);
+  formData.append("description", description);
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("fileInput").value = "";
+
+  // const jsonObject = {
+  //   subjectId,
+  //   fullMarks,
+  //   link,
+  //   dueDate,
+  // };
+  fetch("/api/v1/notice/hod/add", {
+    method: "POST",
+    headers: {
+      // "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: formData,
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+    });
+  setTimeout(() => {
+    document.getElementById("notification").innerText = "";
+  }, 7000);
+}
+
 function assignSubjectToTeacher() {
   const subjectId = document.getElementById("subject-id").value;
   const teacherId = document.getElementById("teacher-id").value;
@@ -756,6 +813,62 @@ function addMarks(solutionId, assignmentId) {
 
 
 // Backend Functionalities ends here
+
+function notice(){
+  let html = '<p id="notification" class="notification" style="color:red;"> </p>';
+  html += "<h1>Notice</h1>";
+
+  fetch("api/v1/notice/department/all",{
+    Authorization: `Bearer ${accessToken}`,
+  })
+  .then((res) => res.json())
+  .then((data) => {
+    if(data.success)
+    {
+      const {allNotices} = data;
+      for(const notice in allNotices)
+      {
+        html += getNoticeString(allNotices[notice]);
+      }
+    }
+    document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+  })
+  
+}
+
+function getNoticeString(notice)
+{
+  var htmlString = '<div class="notice" onclick="toggleDescription(this, \'' + notice._id + '\')"> \
+  <h2>' + " " + notice.title + " " + '<a href="' +  ((!notice.link) ? " " : notice.link) +  '" target="_blank">Link </a></h2> \
+    <p class="date">' + notice.postDate + '</p> \
+    <p class="description">' + notice.description + '</p> \
+    <p class="toggle-description" id="' + notice._id + '">Check Description</p> \
+    </div>';
+    return htmlString;
+}
+
+function toggleDescription(element,noticeId) {
+  console.log(element,noticeId);
+  element.classList.toggle('open');
+  var toggleElement = document.getElementById(noticeId);
+  if (toggleElement) {
+    if (toggleElement.textContent === "Check Description") {
+      toggleElement.textContent = "Hide Description";
+      toggleElement.style.color = "#594B4B";
+    } else {
+      toggleElement.textContent = "Check Description";
+      toggleElement.style.color = "red";
+    }
+  }
+}
 
 function logout() {
   fetch("/api/v1/auth/logout", {

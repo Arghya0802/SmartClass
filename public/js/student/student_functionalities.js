@@ -798,26 +798,27 @@ function notice(){
 
 function getNoticeString(notice)
 {
-  var htmlString = '<div class="notice" onclick="toggleDescription(this,"'+notice._id+'")"> \
-    <h2>' + notice.title +'</h2> \
+  var htmlString = '<div class="notice" onclick="toggleDescription(this, \'' + notice._id + '\')"> \
+  <h2>' + " " + notice.title + " " + '<a href="' +  ((!notice.link) ? " " : notice.link) +  '" target="_blank">Link </a></h2> \
     <p class="date">' + notice.postDate + '</p> \
-    <p class="description">'+ notice.description +'</p> \
-    <p class="toggle-description" id="'+ notice._id +'">Check Description</p> \
+    <p class="description">' + notice.description + '</p> \
+    <p class="toggle-description" id="' + notice._id + '">Check Description</p> \
     </div>';
     return htmlString;
 }
 
-function toggleDescription(notice,noticeId) {
-  notice.classList.toggle('open');
-  if(notice.querySelector(`#${noticeId}`).textContent === "Check Description")
-  {
-      notice.querySelector(`#${noticeId}`).textContent = "Hide Description";
-      notice.querySelector(`#${noticeId}`).style.color = "#594B4B";
-  }
-  else
-  {
-      notice.querySelector(`#${noticeId}`).textContent = "Check Description";
-      notice.querySelector(`#${noticeId}`).style.color = "red";
+function toggleDescription(element,noticeId) {
+  console.log(element,noticeId);
+  element.classList.toggle('open');
+  var toggleElement = document.getElementById(noticeId);
+  if (toggleElement) {
+    if (toggleElement.textContent === "Check Description") {
+      toggleElement.textContent = "Hide Description";
+      toggleElement.style.color = "#594B4B";
+    } else {
+      toggleElement.textContent = "Check Description";
+      toggleElement.style.color = "red";
+    }
   }
 }
 

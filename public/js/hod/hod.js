@@ -35,3 +35,12 @@ function addResourceClicked() {
       document.getElementById("display-window").innerHTML = html;
   })
 }
+
+function addNoticeClicked() {
+  fetch("forms/hodforms/addnotice.html").then(response => {
+      return response.text();
+  }
+  ).then(html => {
+      document.getElementById("display-window").innerHTML = html;
+  })
+}

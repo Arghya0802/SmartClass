@@ -1,0 +1,69 @@
+<style>
+    .dashed-rectangle {
+        width: 50%;
+        /* Increase as needed */
+        margin-left: 300px;
+        /* Center horizontally */
+        /* padding-: auto; */
+        text-align: center;
+        /* Center the content inside the rectangle */
+        font-size: 16px;
+        /* Adjust the font size as desired */
+        border: 2px dashed #000;
+        /* Add a dashed border for the rectangle */
+    }
+
+    .file-input {
+        font-size: 18px
+    }
+
+    label[for="file-input"] {
+        margin-left: 60px;
+        font-size: 32px;
+    }
+
+    label[for="due-date"] {
+        /* margin-left: 450px; */
+        font-size: 32px;
+    }
+
+    .login-btn {
+        margin-top: 7px;
+        margin-left: 50px;
+    }
+
+    .form-group-addfile {
+        margin-top: 50px;
+    }
+
+    #fileInput {
+        font-size: 20px;
+        margin-left: 100px;
+    }
+</style>
+
+<p id="notification" class="notification" style="color:red;"> </p>
+
+<div class="container">
+    <h2>Add Notice</h2>
+    <div class="form-group">
+        <label for="title">Title:</label>
+        <input type="text" id="title" placeholder="Enter Title for the Notice">
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <input type="text" id="description" placeholder="Enter Description">
+    </div>
+</div>
+<div class="form-group-addfile">
+    <label for="file-input">Add file:</label>
+    <div class="add-file-section">
+        <div class="dashed-rectangle">
+            <input type="file" id="fileInput" class="file-input"
+                accept=".doc, .docx, .ppt, .pptx, .pdf, .jpg, .jpeg, .png">
+        </div>
+
+        <div class="btn-container">
+            <button class="login-btn" id="add-admin" onclick="addNotice()">Create New Notice</button>
+        </div>
+    </div>

@@ -7,7 +7,7 @@ import {
   getAllSubjects,
 } from "../controllers/subject.controller.js";
 
-router.get("/teacher/all", verifyJWT, getAllSubjects);
+router.get("/teacher/all", verifyJWT, getAllSubjects); 
 router.get("/department/all", verifyJWT, getAllDepartmentSubjects);
 
 export default router;
