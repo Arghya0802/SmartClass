@@ -127,18 +127,16 @@ export const getAllNotices = asyncHandler(async (req, res, next) => {
     );
 
   const admin = await Admin.findById(_id);
-  const teacher = await Teacher.findById(_id);
-  const student = await Student.findById(_id);
 
-  if (!admin && !teacher && !student)
-    return next(new ApiError(404, "No User found with given credentials!!!"));
+  if (!admin)
+    return next(new ApiError(404, "No admin found with given credentials!!!"));
 
   const allNotices = await Notice.find();
 
-  if (!allNotices)
-    return next(
-      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
-    );
+  // if (!allNotices)
+  //   return next(
+  //     new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+  //   );
   // Sort notices based on createdAt in descending order
   allNotices.sort((a, b) => b.createdAt - a.createdAt);
 
@@ -171,10 +169,10 @@ export const getAllDepartmentNotices = asyncHandler(async (req, res, next) => {
     departmentId: teacher ? teacher.departmentId : student.departmentId,
   });
 
-  if (!allNotices)
-    return next(
-      new ApiError(500, "Something went wrong while calling to the DataBase!!!")
-    );
+  // if (!allNotices)
+  //   return next(
+  //     new ApiError(500, "Something went wrong while calling to the DataBase!!!")
+  //   );
 
   // Sort notices based on createdAt in descending order
   allNotices.sort((a, b) => b.createdAt - a.createdAt);

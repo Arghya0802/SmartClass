@@ -928,9 +928,10 @@ function getNoticeString(notice) {
     " " +
     notice.title +
     " " +
-    '<a href="' +
-    (!notice.link ? " " : notice.link) +
-    '" target="_blank">Link </a></h2> \
+    (!notice.link
+      ? ""
+      : '<a href="' + notice.link + '" target="_blank">Link</a>') +
+    '</h2> \
     <p class="date">' +
     notice.postDate +
     '</p> \

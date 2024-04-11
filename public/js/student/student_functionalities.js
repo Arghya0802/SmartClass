@@ -75,19 +75,32 @@ function getAllSubjects() {
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
-          html += "<td>" + subject.teacherId + "</td>";
           html +=
-            "<td><button onclick=\"getAllResources('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Resources </button></td>";
+            "<td>" +
+            (subject.teacherId
+              ? subject.teacherId
+              : "No Teacher assigned yet") +
+            "</td>";
           html +=
-            "<td><button onclick=\"getAllAssignments('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Assignments </button></td>";
+            "<td>" +
+            (subject.teacherId
+              ? "<button onclick=\"getAllResources('" +
+                subject.uniqueId +
+                "', '" +
+                subject.teacherId +
+                "')\"> Resources </button>"
+              : "") +
+            "</td>";
+          html +=
+            "<td>" +
+            (subject.teacherId
+              ? "<button onclick=\"getAllAssignments('" +
+                subject.uniqueId +
+                "', '" +
+                subject.teacherId +
+                "')\"> Assignments </button>"
+              : "") +
+            "</td>";
           html += "</tr>";
         });
       }
@@ -127,7 +140,12 @@ function getAllSubjectsforAssignment(assignmentType) {
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
-          html += "<td>" + subject.teacherId + "</td>";
+          html +=
+            "<td>" +
+            (subject.teacherId
+              ? subject.teacherId
+              : "No Teacher assigned yet") +
+            "</td>";
 
           if (assignmentType === "pending") {
             html +=
@@ -190,13 +208,22 @@ function getAllSubjectsforResource() {
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
-          html += "<td>" + subject.teacherId + "</td>";
           html +=
-            "<td><button onclick=\"getAllResources('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> Resources </button></td>";
+            "<td>" +
+            (subject.teacherId
+              ? subject.teacherId
+              : "No Teacher assigned yet") +
+            "</td>";
+          html +=
+            "<td>" +
+            (subject.teacherId
+              ? "<button onclick=\"getAllResources('" +
+                subject.uniqueId +
+                "', '" +
+                subject.teacherId +
+                "')\"> Resources </button>"
+              : "") +
+            "</td>";
           html += "</tr>";
         });
       }
@@ -416,13 +443,22 @@ function sendFeedbackClicked() {
         data.subjects.forEach((subject) => {
           html += "<tr>";
           html += "<td>" + subject.uniqueId + "</td>";
-          html += "<td>" + subject.teacherId + "</td>";
           html +=
-            "<td><button onclick=\"sendFeedbackForm('" +
-            subject.uniqueId +
-            "', '" +
-            subject.teacherId +
-            "')\"> send feedback </button></td>";
+            "<td>" +
+            (subject.teacherId
+              ? subject.teacherId
+              : "No Teacher assigned yet") +
+            "</td>";
+          html +=
+            "<td>" +
+            (subject.teacherId
+              ? "<button onclick=\"sendFeedbackForm('" +
+                subject.uniqueId +
+                "', '" +
+                subject.teacherId +
+                "')\"> Send feedback </button>"
+              : "") +
+            "</td>";
           html += "</tr>";
         });
       }
@@ -753,17 +789,17 @@ function getGradeCard() {
 
 // Backend Functionalities ends here
 
-function profile(){
+function profile() {
   let html = "";
 
   fetch("forms/profile.html")
-  .then((response) => {
-    return response.text();
-  })
-  .then((data) => {
-    html = data;
-    document.getElementById("display-window").innerHTML = html;
-  });
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+      document.getElementById("display-window").innerHTML = html;
+    });
   fetch("api/v1/student/", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -774,7 +810,8 @@ function profile(){
     })
     .then((data) => {
       const { loggedInStudent } = data;
-      const {name,uniqueId,age,DOB,email,phone,departmentId} = loggedInStudent;
+      const { name, uniqueId, age, DOB, email, phone, departmentId } =
+        loggedInStudent;
       document.getElementById("name").innerText = name;
       document.getElementById("uniqueId").innerText = uniqueId;
       document.getElementById("age").innerText = age;
@@ -785,24 +822,23 @@ function profile(){
     });
 }
 
-function notice(){
-  let html = '<p id="notification" class="notification" style="color:red;"> </p>';
+function notice() {
+  let html =
+    '<p id="notification" class="notification" style="color:red;"> </p>';
   html += "<h1>Notice</h1>";
 
-  fetch("api/v1/notice/department/all",{
+  fetch("api/v1/notice/department/all", {
     Authorization: `Bearer ${accessToken}`,
   })
-  .then((res) => res.json())
-  .then((data) => {
-    if(data.success)
-    {
-      const {allNotices} = data;
-      for(const notice in allNotices)
-      {
-        html += getNoticeString(allNotices[notice]);
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        const { allNotices } = data;
+        for (const notice in allNotices) {
+          html += getNoticeString(allNotices[notice]);
+        }
       }
-    }
-    document.getElementById("display-window").innerHTML = html;
+      document.getElementById("display-window").innerHTML = html;
       document.getElementById("notification").innerText = data.message;
       if (data.success)
         document.getElementById("notification").style.color = "green";
@@ -811,24 +847,38 @@ function notice(){
       setTimeout(() => {
         document.getElementById("notification").innerText = "";
       }, 2000);
-  })
-  
+    });
 }
 
-function getNoticeString(notice)
-{
-  var htmlString = '<div class="notice" onclick="toggleDescription(this, \'' + notice._id + '\')"> \
-  <h2>' + " " + notice.title + " " + '<a href="' +  ((!notice.link) ? " " : notice.link) +  '" target="_blank">Link </a></h2> \
-    <p class="date">' + notice.postDate + '</p> \
-    <p class="description">' + notice.description + '</p> \
-    <p class="toggle-description" id="' + notice._id + '">Check Description</p> \
+function getNoticeString(notice) {
+  var htmlString =
+    '<div class="notice" onclick="toggleDescription(this, \'' +
+    notice._id +
+    "')\"> \
+  <h2>" +
+    " " +
+    notice.title +
+    " " +
+    (!notice.link
+      ? ""
+      : '<a href="' + notice.link + '" target="_blank">Link</a>') +
+    '</h2> \
+    <p class="date">' +
+    notice.postDate +
+    '</p> \
+    <p class="description">' +
+    notice.description +
+    '</p> \
+    <p class="toggle-description" id="' +
+    notice._id +
+    '">Check Description</p> \
     </div>';
-    return htmlString;
+  return htmlString;
 }
 
-function toggleDescription(element,noticeId) {
-  console.log(element,noticeId);
-  element.classList.toggle('open');
+function toggleDescription(element, noticeId) {
+  console.log(element, noticeId);
+  element.classList.toggle("open");
   var toggleElement = document.getElementById(noticeId);
   if (toggleElement) {
     if (toggleElement.textContent === "Check Description") {
@@ -840,7 +890,6 @@ function toggleDescription(element,noticeId) {
     }
   }
 }
-
 
 function logout() {
   fetch("/api/v1/auth/logout", {

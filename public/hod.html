@@ -17,18 +17,19 @@
             background-color: #f1f0ea;
             height: 100vh;
             /* scrollbar-width: none; */
-    }
-    .sidebar {
-        background-color: #e0ddcf; 
-        width: 22%; 
-        text-decoration: none;
-        height: 100%;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        overflow-y: auto;
-    }
+        }
+
+        .sidebar {
+            background-color: #e0ddcf;
+            width: 22%;
+            text-decoration: none;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
     </style>
 </head>
 
@@ -46,23 +47,23 @@
                     </li>
                     <li><button class="forgot-password-btn" onclick="notice()">Notice</button></li>
                     <li><button class="forgot-password-btn" onclick="profile()">Profile</button></li>
-                    <li><button  onclick="logout()">Logout</button></li>
+                    <li><button onclick="logout()">Logout</button></li>
                 </ul>
             </nav>
         </div>
-    </header>   
+    </header>
 
     <div class="main-content">
         <div class="sidebar">
             <button onclick="assignSubjectToTeacherClicked()">Assign Subject to Teacher</button>
             <button onclick="addSubjectClicked()">Add Subject to Department</button>
-            <button onclick="getAllSubjects()">Subject list</button>
-            <button onclick="getAllTeachers()">Teacher list</button>
+            <button onclick="getAllSubjects()">Department Subjects List</button>
+            <button onclick="getAllTeachers()">Department Teachers List</button>
             <button onclick="addAssignmentClicked()">Add Assignment</button>
             <button onclick="addResourceClicked()">Add Resources</button>
-            <button onclick="getAllSubjectsforAssignment()">Assignments List</button>
-            <button onclick="getAllSubjectsforResource()">Resources List</button>
-            <button onclick="addNoticeClicked()">Add Notice</button>
+            <button onclick="getAllSubjectsforAssignment()">My Assignments</button>
+            <button onclick="getAllSubjectsforResource()">My Resources</button>
+            <button onclick="addNoticeClicked()">Add Notice to Department</button>
             <button onclick="getAllFeedbacks()">Feedback list</button>
             <button onclick="getAllFeedbacks()">Feedback list</button>
         </div>
