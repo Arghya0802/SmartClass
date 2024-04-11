@@ -207,8 +207,8 @@ export const removeSubjectFromDepartment = asyncHandler(
 
     console.log(allSubjectTeachers);
 
-    for (const index of allSubjectTeachers) {
-      const teacher = allSubjectTeachers[index];
+    for (const teacher of allSubjectTeachers) {
+      // const teacher = allSubjectTeachers[index];
       console.log(teacher);
       const removed = await Subject.findByIdAndDelete(teacher._id);
 
@@ -232,8 +232,8 @@ export const removeSubjectFromDepartment = asyncHandler(
     //   );
 
     return res.status(200).json({
-      removedSubject,
-      message: "Given Subject has been removed from Department successfully!!!",
+      message:
+        "Given Subject has been removed from Department successfully and removed from its assigned Teachers as well!!!",
       success: true,
     });
   }
