@@ -310,3 +310,25 @@ export const getAllFeedbacks = asyncHandler(async (req, res, next) => {
     success: true,
   });
 });
+
+export const getAllTeachersDepartment = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access Tokens!!!")
+    );
+
+  const hod = await Teacher.findById(_id);
+
+  if (!hod || hod.designation !== "hod")
+    return next(new ApiError(404, "No HoD found with given credentials!!!"));
+
+  const teachers = await Teacher.find({ departmentId: hod.departmentId });
+
+  return res.status(200).json({
+    teachers,
+    message: "All Teachers of HoD's Department fetched successfully!!!",
+    success: true,
+  });
+});

@@ -5,6 +5,7 @@ import {
   addSubjectToDepartment,
   assignSubjectToTeacher,
   getAllFeedbacks,
+  getAllTeachersDepartment,
   getSingleHoD,
   removeSubjectFromDepartment,
 } from "../controllers/hod.controller.js";
@@ -21,5 +22,6 @@ router.delete(
 );
 
 router.get("/feedbacks/all", verifyJWT, getAllFeedbacks);
+router.get("/teachers/all", verifyJWT, getAllTeachersDepartment);
 
 export default router;
