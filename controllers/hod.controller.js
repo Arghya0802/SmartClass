@@ -191,7 +191,7 @@ export const removeSubjectFromDepartment = asyncHandler(
     const hod = await Teacher.findById(_id);
     const subject = await Subject.findById(subjectId);
 
-    if (!hod || !hod.designation !== "hod" || !subject)
+    if (!hod || hod.designation !== "hod" || !subject)
       return next(
         new ApiError(404, "No HoD or Subject found with given credentials!!!")
       );
@@ -213,52 +213,6 @@ export const removeSubjectFromDepartment = asyncHandler(
           new ApiError(
             500,
             "Somerhing went wrong while calling to the DataBase!!!"
-          )
-        );
-    }
-
-    const allSubjectResources = await Resource.find({
-      subjectId: subject.uniqueId,
-    });
-
-    for (const resource of allSubjectResources) {
-      const removed = await Resource.findByIdAndDelete(resource._id);
-
-      if (!removed)
-        return next(
-          new ApiError(
-            500,
-            "Something went wrong while calling to the DataBase!!!"
-          )
-        );
-    }
-
-    const allSubjectAssignments = await Assignment.find({
-      subjectId: subject._id,
-    });
-
-    for (const assignment of allSubjectAssignments) {
-      const removedSolution = await Solution.findOneAndDelete({
-        assignmentId: assignment._id,
-      });
-
-      if (!removedSolution)
-        return next(
-          new ApiError(
-            500,
-            "Something went wrong while calling to the DataBase!!!"
-          )
-        );
-
-      const removedAssignment = await Assignment.findByIdAndDelete(
-        assignment._id
-      );
-
-      if (!removedAssignment)
-        return next(
-          new ApiError(
-            500,
-            "Something went wrong while calling to the DataBase!!!"
           )
         );
     }
