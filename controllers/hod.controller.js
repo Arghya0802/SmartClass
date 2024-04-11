@@ -52,13 +52,8 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
       new ApiError(400, "Current Subject doesn't belong to HoD's Department!!!")
     );
 
-  if (existedSubject.teacherId !== teacherId)
-    return next(
-      new ApiError(
-        400,
-        "Given Subject is already assigned to Requested Teacher!!!"
-      )
-    );
+  console.log(existedSubject.teacherId);
+  console.log(teacherId);
 
   if (!existedSubject.teacherId) {
     existedSubject.teacherId = teacherId;
@@ -70,6 +65,14 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
       success: true,
     });
   }
+
+  if (existedSubject.teacherId !== teacherId)
+    return next(
+      new ApiError(
+        400,
+        "Given Subject is already assigned to Requested Teacher!!!"
+      )
+    );
 
   const newSubject = await Subject.create({
     name: existedSubject.name.toLowerCase(),
@@ -205,11 +208,11 @@ export const removeSubjectFromDepartment = asyncHandler(
       uniqueId: subject.uniqueId,
     });
 
-    console.log(allSubjectTeachers);
+    // console.log(allSubjectTeachers);
 
     for (const teacher of allSubjectTeachers) {
       // const teacher = allSubjectTeachers[index];
-      console.log(teacher);
+      // console.log(teacher);
       const removed = await Subject.findByIdAndDelete(teacher._id);
 
       if (!removed)
