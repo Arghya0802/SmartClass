@@ -7,6 +7,29 @@
     <title>HoD | SmartClass</title>
     <link rel="stylesheet" href="css/adminstyles.css">
     <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Courier Prime;
+            justify-content: center;
+            align-items: center;
+            background-color: #f1f0ea;
+            height: 100vh;
+            /* scrollbar-width: none; */
+    }
+    .sidebar {
+        background-color: #e0ddcf; 
+        width: 22%; 
+        text-decoration: none;
+        height: 100%;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: auto;
+    }
+    </style>
 </head>
 
 <body>
@@ -27,23 +50,23 @@
                 </ul>
             </nav>
         </div>
-    </header>
-
-
-   
+    </header>   
 
     <div class="main-content">
         <div class="sidebar">
-            <button onclick="assignSubjectToTeacherClicked()">Assign Subject</button>
+            <button onclick="assignSubjectToTeacherClicked()">Assign Subject to Teacher</button>
             <button onclick="addSubjectClicked()">Add Subject to Department</button>
             <button onclick="getAllSubjects()">Subject list</button>
+            <button onclick="getAllTeachers()">Teacher list</button>
             <button onclick="addAssignmentClicked()">Add Assignment</button>
             <button onclick="addResourceClicked()">Add Resources</button>
-            <button onclick="getAllSubjectsforResource()">Resources List</button>
             <button onclick="getAllSubjectsforAssignment()">Assignments List</button>
+            <button onclick="getAllSubjectsforResource()">Resources List</button>
             <button onclick="addNoticeClicked()">Add Notice</button>
             <button onclick="getAllFeedbacks()">Feedback list</button>
+            <button onclick="getAllFeedbacks()">Feedback list</button>
         </div>
+
         <div class="content" id="display-window">
             <p id="notification" class="notification" style="color:red;"> </p>
             <h1>Welcome <span id="name"></span> !</h1>

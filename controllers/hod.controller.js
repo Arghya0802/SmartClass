@@ -66,7 +66,7 @@ export const assignSubjectToTeacher = asyncHandler(async (req, res, next) => {
     });
   }
 
-  if (existedSubject.teacherId !== teacherId)
+  if (existedSubject.teacherId === teacherId)
     return next(
       new ApiError(
         400,

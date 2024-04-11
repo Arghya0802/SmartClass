@@ -83,7 +83,7 @@ function addSubject() {
     });
   setTimeout(() => {
     document.getElementById("notification").innerText = "";
-  }, 2000);
+  }, 4000);
 }
 
 
@@ -203,6 +203,46 @@ function getAllSubjects() {
             "<td><button onclick=\"removeSubject('" +
             subject._id +
             "')\"> Remove </button></td>";
+          html += "</tr>";
+        });
+      }
+      html += "</tbody>";
+      html += "</table>";
+      document.getElementById("display-window").innerHTML = html;
+      document.getElementById("notification").innerText = data.message;
+      if (data.success)
+        document.getElementById("notification").style.color = "green";
+      else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 2000);
+    });
+}
+
+function getAllTeachers() {
+  let html = "";
+
+  fetch("forms/hodforms/showteacher.html")
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+    });
+
+  fetch("/api/v1/hod/teachers/all", { 
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        data.teachers.forEach((teacher) => {
+          html += "<tr>";
+          html += "<td>" + (teacher.name ? teacher.name : "Not Registered") + "</td>";
+          html += "<td>" + teacher.uniqueId + "</td>";
           html += "</tr>";
         });
       }
@@ -615,7 +655,6 @@ function removeResource(resourceId, subjectId) {
 function getAllAssignments(subjectId) {
   let html = "";
   let jsonObject = {
-    teacherId,
     subjectId,
   };
 
