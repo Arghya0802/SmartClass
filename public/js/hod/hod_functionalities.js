@@ -2,6 +2,7 @@ let accessToken;
 let refreshToken;
 getCookie(document.cookie);
 console.log(accessToken);
+let teacherId;
 
 if (!accessToken) {
   localStorage.setItem(
@@ -45,7 +46,7 @@ fetch("api/v1/hod/", {
     document.getElementById("name").innerText = loggedInHoD.name;
     document.getElementById("designation").innerText = loggedInHoD.designation;
     document.getElementById("uniqueId").innerText = loggedInHoD.uniqueId;
-
+    teacherId = loggedInHoD.uniqueId;
     // setTimeout(()=>{
     //     logout();
     // },data.session)
@@ -85,7 +86,6 @@ function addSubject() {
     document.getElementById("notification").innerText = "";
   }, 4000);
 }
-
 
 function addNotice() {
   // const today = new Date().toISOString().split("T")[0];
@@ -187,7 +187,7 @@ function getAllSubjects() {
       html = data;
     });
 
-  fetch("/api/v1/subject/department/all", { 
+  fetch("/api/v1/subject/department/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -231,7 +231,7 @@ function getAllTeachers() {
       html = data;
     });
 
-  fetch("/api/v1/hod/teachers/all", { 
+  fetch("/api/v1/hod/teachers/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -241,7 +241,8 @@ function getAllTeachers() {
       if (data.success) {
         data.teachers.forEach((teacher) => {
           html += "<tr>";
-          html += "<td>" + (teacher.name ? teacher.name : "Not Registered") + "</td>";
+          html +=
+            "<td>" + (teacher.name ? teacher.name : "Not Registered") + "</td>";
           html += "<td>" + teacher.uniqueId + "</td>";
           html += "</tr>";
         });
@@ -293,7 +294,7 @@ function getAllSubjectsforFeedback() {
       html = data;
     });
 
-  fetch("/api/v1/subject/department/all", { 
+  fetch("/api/v1/subject/department/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -328,8 +329,7 @@ function getAllSubjectsforFeedback() {
     });
 }
 
-
-function getAllFeedbacks(subjectId,teacherId) {
+function getAllFeedbacks(subjectId, teacherId) {
   let html = "";
 
   fetch("forms/hodforms/showfeedback.html")
@@ -340,7 +340,7 @@ function getAllFeedbacks(subjectId,teacherId) {
       html = data;
     });
 
-  fetch("/api/v1/hod/feedbacks/all", { 
+  fetch("/api/v1/hod/feedbacks/all", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -601,7 +601,12 @@ function getAllResources(subjectId) {
         console.log(data);
         data.resources.forEach((resource) => {
           html += "<tr>";
-          html += '<td rowspan="' + (resource.links.length+1) +'">' + resource.topic + "</td>";
+          html +=
+            '<td rowspan="' +
+            (resource.links.length + 1) +
+            '">' +
+            resource.topic +
+            "</td>";
           resource.links.forEach((link) => {
             html += "<tr>";
             html += '<td><a href="' + link + '"> Link </a></td>';
@@ -656,6 +661,7 @@ function getAllAssignments(subjectId) {
   let html = "";
   let jsonObject = {
     subjectId,
+    teacherId,
   };
 
   fetch("forms/teacherforms/showassignments.html")
@@ -850,20 +856,19 @@ function addMarks(solutionId, assignmentId) {
   }, 2000);
 }
 
-
 // Backend Functionalities ends here
 
-function profile(){
+function profile() {
   let html = "";
 
   fetch("forms/profile.html")
-  .then((response) => {
-    return response.text();
-  })
-  .then((data) => {
-    html = data;
-    document.getElementById("display-window").innerHTML = html;
-  });
+    .then((response) => {
+      return response.text();
+    })
+    .then((data) => {
+      html = data;
+      document.getElementById("display-window").innerHTML = html;
+    });
   fetch("api/v1/hod/", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -873,8 +878,9 @@ function profile(){
       return res.json();
     })
     .then((data) => {
-      const { loggedInStudent } = data;
-      const {name,uniqueId,age,DOB,email,phone,departmentId} = loggedInStudent;
+      const { loggedInHoD } = data;
+      const { name, uniqueId, age, DOB, email, phone, departmentId } =
+        loggedInHoD;
       document.getElementById("name").innerText = name;
       document.getElementById("uniqueId").innerText = uniqueId;
       document.getElementById("age").innerText = age;
@@ -885,24 +891,23 @@ function profile(){
     });
 }
 
-function notice(){
-  let html = '<p id="notification" class="notification" style="color:red;"> </p>';
+function notice() {
+  let html =
+    '<p id="notification" class="notification" style="color:red;"> </p>';
   html += "<h1>Notice</h1>";
 
-  fetch("api/v1/notice/department/all",{
+  fetch("api/v1/notice/department/all", {
     Authorization: `Bearer ${accessToken}`,
   })
-  .then((res) => res.json())
-  .then((data) => {
-    if(data.success)
-    {
-      const {allNotices} = data;
-      for(const notice in allNotices)
-      {
-        html += getNoticeString(allNotices[notice]);
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.success) {
+        const { allNotices } = data;
+        for (const notice in allNotices) {
+          html += getNoticeString(allNotices[notice]);
+        }
       }
-    }
-    document.getElementById("display-window").innerHTML = html;
+      document.getElementById("display-window").innerHTML = html;
       document.getElementById("notification").innerText = data.message;
       if (data.success)
         document.getElementById("notification").style.color = "green";
@@ -911,24 +916,37 @@ function notice(){
       setTimeout(() => {
         document.getElementById("notification").innerText = "";
       }, 2000);
-  })
-  
+    });
 }
 
-function getNoticeString(notice)
-{
-  var htmlString = '<div class="notice" onclick="toggleDescription(this, \'' + notice._id + '\')"> \
-  <h2>' + " " + notice.title + " " + '<a href="' +  ((!notice.link) ? " " : notice.link) +  '" target="_blank">Link </a></h2> \
-    <p class="date">' + notice.postDate + '</p> \
-    <p class="description">' + notice.description + '</p> \
-    <p class="toggle-description" id="' + notice._id + '">Check Description</p> \
+function getNoticeString(notice) {
+  var htmlString =
+    '<div class="notice" onclick="toggleDescription(this, \'' +
+    notice._id +
+    "')\"> \
+  <h2>" +
+    " " +
+    notice.title +
+    " " +
+    '<a href="' +
+    (!notice.link ? " " : notice.link) +
+    '" target="_blank">Link </a></h2> \
+    <p class="date">' +
+    notice.postDate +
+    '</p> \
+    <p class="description">' +
+    notice.description +
+    '</p> \
+    <p class="toggle-description" id="' +
+    notice._id +
+    '">Check Description</p> \
     </div>';
-    return htmlString;
+  return htmlString;
 }
 
-function toggleDescription(element,noticeId) {
-  console.log(element,noticeId);
-  element.classList.toggle('open');
+function toggleDescription(element, noticeId) {
+  console.log(element, noticeId);
+  element.classList.toggle("open");
   var toggleElement = document.getElementById(noticeId);
   if (toggleElement) {
     if (toggleElement.textContent === "Check Description") {

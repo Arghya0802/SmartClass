@@ -110,6 +110,17 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
       )
     );
 
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  // const dueDate = assignment.dueDate;
+  const [day, month, year] = dueDate.split("/").map(Number);
+
+  if (!(dd <= day && mm <= month && yyyy <= year))
+    return next(new ApiError(403, "Due-Date must be after Current Date!!!"));
+
   const newAssignment = await Assignment.create({
     subjectId,
     teacherId: teacher.uniqueId,

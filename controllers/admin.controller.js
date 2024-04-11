@@ -96,18 +96,9 @@ export const addStudentToDataBase = asyncHandler(async (req, res, next) => {
 });
 
 export const addAdminToDataBase = asyncHandler(async (req, res, next) => {
-  const { name, email, password, uniqueId, phone, age, DOB, gender } = req.body;
+  const { name, email, password, uniqueId, phone, DOB, gender } = req.body;
 
-  if (
-    !uniqueId ||
-    !email ||
-    !password ||
-    !name ||
-    !phone ||
-    !age ||
-    !DOB ||
-    !gender
-  )
+  if (!uniqueId || !email || !password || !name || !phone || !DOB || !gender)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
     );
@@ -132,6 +123,23 @@ export const addAdminToDataBase = asyncHandler(async (req, res, next) => {
         400,
         "Email-ID or Mobile Number is already present in our DataBase!!!"
       )
+    );
+
+  const [year, month, date] = DOB.split("-").map(Number);
+
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  let age = yyyy - year;
+
+  if (month < mm) age++;
+  else if (month === mm && dd <= date) age++;
+
+  if (age < 18)
+    return next(
+      new ApiError(400, "Need to be atleast 18 yrs age to register!!!")
     );
 
   const newAdmin = await Admin.create({

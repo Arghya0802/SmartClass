@@ -26,20 +26,28 @@ const generateAccessAndRefreshTokens = async (userId, User) => {
 };
 
 export const register = asyncHandler(async (req, res, next) => {
-  const { name, email, password, uniqueId, gender, age, DOB, phone } = req.body;
+  const { name, email, password, uniqueId, gender, DOB, phone } = req.body;
 
-  if (
-    !name ||
-    !email ||
-    !password ||
-    !uniqueId ||
-    !gender ||
-    !age ||
-    !DOB ||
-    !phone
-  )
+  if (!name || !email || !password || !uniqueId || !gender || !DOB || !phone)
     return next(
       new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
+  const [year, month, date] = DOB.split("-").map(Number);
+
+  const today = new Date();
+  const dd = today.getDate();
+  const mm = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+
+  let age = yyyy - year;
+
+  if (month < mm) age++;
+  else if (month === mm && dd <= date) age++;
+
+  if (age < 18)
+    return next(
+      new ApiError(400, "Need to be atleast 18 yrs age to register!!!")
     );
 
   const findTeacher = await Teacher.findOne({ $or: [{ email }, { phone }] });
