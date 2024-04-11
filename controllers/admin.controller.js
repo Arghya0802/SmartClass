@@ -256,7 +256,7 @@ export const removeHoD = asyncHandler(async (req, res, next) => {
     return next(new ApiError(404, "No HoD found with given Unique-Id"));
 
   const department = await Department.findOne({
-    uniqueId: existedHoD.department,
+    uniqueId: existedHoD.departmentId,
   });
 
   if (!department.hod)
