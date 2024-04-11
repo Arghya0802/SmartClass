@@ -205,7 +205,11 @@ export const removeSubjectFromDepartment = asyncHandler(
       uniqueId: subject.uniqueId,
     });
 
-    for (const teacher of allSubjectTeachers) {
+    console.log(allSubjectTeachers);
+
+    for (const index of allSubjectTeachers) {
+      const teacher = allSubjectTeachers[index];
+      console.log(teacher);
       const removed = await Subject.findByIdAndDelete(teacher._id);
 
       if (!removed)
@@ -217,15 +221,15 @@ export const removeSubjectFromDepartment = asyncHandler(
         );
     }
 
-    const removedSubject = await Subject.findByIdAndDelete(subject._id);
+    // const removedSubject = await Subject.findByIdAndDelete(subjectId);
 
-    if (!removedSubject)
-      return next(
-        new ApiError(
-          500,
-          "Something went wrong while calling to the DataBase!!!"
-        )
-      );
+    // if (!removedSubject)
+    //   return next(
+    //     new ApiError(
+    //       500,
+    //       "Something went wrong while calling to the DataBase!!!"
+    //     )
+    //   );
 
     return res.status(200).json({
       removedSubject,
