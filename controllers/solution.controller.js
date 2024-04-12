@@ -163,6 +163,7 @@ export const createSolution = asyncHandler(async (req, res, next) => {
       )
     );
 
+  console.log(response);
   const newSolution = await Solution.create({
     studentId: student.uniqueId,
     assignmentId,
