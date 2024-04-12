@@ -512,8 +512,8 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
   });
 });
 
-export const changePassword = asyncHandler(async (req, res, next) => {
-  const { otp, email, password } = req.body;
+export const verifyOtp = asyncHandler(async (req, res, next) => {
+  const { otp } = req.body;
   const actualOtp = req.cookies.otp;
   if (!actualOtp) {
     return next(
@@ -523,6 +523,15 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   if (actualOtp !== otp) {
     return next(new ApiError(400, "Incorrect otp!"));
   }
+
+  return res.status(400).json({
+    message: "OTP matched successfully!!!",
+    success: true,
+  });
+});
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
 
   const teacher = await Teacher.findOne({ email });
   const student = await Student.findOne({ email });
@@ -565,10 +574,10 @@ export const changePassword = asyncHandler(async (req, res, next) => {
       message: "Student password successfully updated!!!",
       success: true,
     });
-
-    return res.status(404).json({
-      message: "No User found with given email ID!!!",
-      success: false,
-    });
   }
+
+  return res.status(404).json({
+    message: "No User found with given Email-ID!!!",
+    success: false,
+  });
 });

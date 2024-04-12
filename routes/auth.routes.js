@@ -7,6 +7,7 @@ import {
   logout,
   register,
   sendOtp,
+  verifyOtp,
   verifyToken,
   viewProfile,
 } from "../controllers/auth.controller.js";
@@ -20,6 +21,7 @@ router.get("/verify", verifyToken);
 router.get("/profile", verifyJWT, viewProfile);
 
 router.post("/send-otp", sendOtp);
-router.post("forgot-password", changePassword);
+router.post("/verify-otp", verifyOtp);
+router.post("/forgot-password", changePassword);
 
 export default router;
