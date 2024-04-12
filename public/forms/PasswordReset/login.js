@@ -29,7 +29,7 @@ function sendOTP()
       if (data.success)
       {
         document.getElementById("notification").style.color = "green";
-        window.location.href = "forms/PasswordReset/forgetpassword.html";
+        window.location.href = "/forgetpassword.html";
       }
       else document.getElementById("notification").style.color = "red";
     })
@@ -67,7 +67,7 @@ function verifyOTP()
       if (data.success)
       {
         document.getElementById("notification").style.color = "green";
-        window.location.href = "forms/PasswordReset/newpassword.html";        
+        window.location.href = "/newpassword.html";        
       }
       else document.getElementById("notification").style.color = "red";
     })
