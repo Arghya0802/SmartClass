@@ -49,11 +49,11 @@ export const register = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(400, "Need to be atleast 18 yrs age to register!!!")
     );
-
+  
   const findTeacher = await Teacher.findOne({ $or: [{ email }, { phone }] });
   const findStudent = await Student.findOne({ $or: [{ email }, { phone }] });
   const findAdmin = await Admin.findOne({ $or: [{ email }, { phone }] });
-
+    console.log(findAdmin , findTeacher , findStudent);
   if (findAdmin || findTeacher || findStudent)
     return next(
       new ApiError(
@@ -69,7 +69,7 @@ export const register = asyncHandler(async (req, res, next) => {
 
     if (!existedTeacher)
       return next(new ApiError(404, "No Teacher found with given Unique-Id"));
-
+console.log(existedTeacher.name);
     if (existedTeacher.name || existedTeacher.password)
       return next(
         new ApiError(400, "Requested User has already been registered!!!")

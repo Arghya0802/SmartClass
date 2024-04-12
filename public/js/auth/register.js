@@ -6,7 +6,6 @@ function registerClicked()
     const password = document.getElementById("password").value;
     const email = document.getElementById("email-id").value;
     const name = document.getElementById("name").value;
-    const age = document.getElementById("age").value;
     const phone = document.getElementById("phone").value;
     const gender = document.getElementById("gender").value;
     const DOB = document.getElementById("dob").value;
@@ -18,7 +17,6 @@ function registerClicked()
             password,
             email,
             name,
-            age,
             phone,
             gender,
             DOB
@@ -36,9 +34,9 @@ function registerClicked()
         return response.json();
     }).then((data) => {
         localStorage.setItem("response",JSON.stringify({data,statusCode}))
-        if(statusCode === 200)
-        window.location.href = "/login.html";
-        else
-        window.location.href = "/error/error.html";
-    })
+        document.getElementById("notification").innerText = data.message;
+        if (data.success)
+            document.getElementById("notification").style.color = "green";
+            else document.getElementById("notification").style.color = "red";
+        });
 }

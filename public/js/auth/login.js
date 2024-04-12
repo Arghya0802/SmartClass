@@ -27,6 +27,10 @@ function loginClicked()
         statusCode = response.status;
         return response.json();
     }).then((data) => {
+        document.getElementById("notification").innerText = data.message;
+        if (data.success)
+            document.getElementById("notification").style.color = "green";
+            else document.getElementById("notification").style.color = "red";
         const post = data.designation;
         if(post==="admin")
         window.location.href = "/admin.html";
@@ -36,10 +40,5 @@ function loginClicked()
         window.location.href = "/student.html";
         else if(post==="teacher")
         window.location.href = "/teacher.html";
-        else
-        {
-            localStorage.setItem("response",JSON.stringify({ message : data.message ,statusCode}));
-            window.location.href = "/error/error.html";
-        }
     })
 }

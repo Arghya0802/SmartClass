@@ -140,6 +140,7 @@ function addResource() {
   formData.append("topic", topic);
 
   document.getElementById("subject-id").value = "";
+  document.getElementById("fileInput").value = "";
   document.getElementById("topic").value = "";
   // document.getElementById("link").value = "";
 

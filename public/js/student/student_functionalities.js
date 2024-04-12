@@ -280,7 +280,7 @@ function getAllAssignments(subjectId, teacherId) {
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
-            "')\"> Add Solution </button></td>";
+            "')\"> Update Solution </button></td>";
           html += "</tr>";
         });
         data.notActiveAssignments.forEach((assignment) => {
@@ -381,6 +381,9 @@ function addSolutionClicked(assignmentId) {
         addSolution(assignmentId);
       });
     });
+    // setTimeout(() => {
+    //   document.getElementById("notification").innerText = "";
+    // }, 2000);
 }
 
 function addSolution(assignmentId) {
@@ -395,7 +398,8 @@ function addSolution(assignmentId) {
     console.log(file);
     formData.append("solutions", file);
   }
-
+  document.getElementById("fileInput").value = "";
+  
   fetch("/api/v1/solution/add/" + assignmentId, {
     method: "POST",
     headers: {
@@ -574,7 +578,7 @@ function getAllSubmittedAssignments(subjectId, teacherId) {
           html +=
             "<td><button onclick=\"addSolutionClicked('" +
             assignment._id +
-            "')\"> Add Solution </button></td>";
+            "')\"> Update Solution </button></td>";
           html += "</tr>";
         });
         data.nonactiveSubmittedAssignments.forEach((object) => {

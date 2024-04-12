@@ -1,24 +1,53 @@
-
+<style>
+    .gender-style select{
+    background-color: #fff;
+    border: 1px solid #ffffff;
+    padding: 20px 30px 20px 16px;
+    width: 100%;
+    border-radius: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+</style>
 <div class="container">
     <p id="notification" class= "notification" style="color:red;"> </p>
-    <h2>Add Admin</h2>
-    <p id="notification" class= "notification" style="color:red;"> </p>
-    <div class="form-group">
-        <label for="unique-id">Unique ID:</label>
-        <input type="text" id="unique-id" placeholder="Enter Unique ID">
-    </div>
+    <h2>Create New Admin</h2>
     <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" placeholder="Enter Name">
+        <input type="text" id="name" placeholder="Enter your Name">
     </div>
     <div class="form-group">
         <label for="email-id">Email ID:</label>
         <input type="email" id="email-id" placeholder="Enter Email id">
     </div>
     <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter Password">
+        <label for="dob">Date of Birth:</label>
+        <div class="date-style">
+            <input type="date" id="dob" name="dob" pattern="\d{2}/\d{2}/\d{4}" placeholder="dd/mm/yyyy">
+        </div>
     </div>
+        <div class="form-group">
+            <label for="gender">Gender:</label>
+            <div class="gender-style">
+                <select id="gender" name="gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="neutral">Prefer not to say</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone number:</label>
+            <input type="number" id="phone" placeholder="Enter Phone number">
+        </div>
+        <div class="form-group">
+            <label for="unique-id">Unique ID:</label>
+            <input type="text" id="unique-id" placeholder="Enter Unique ID">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter Password">
+        </div>
     <div class="btn-container">
         <button class="login-btn" id="add-admin" onclick="addAdmin()">Add</button>
     </div>

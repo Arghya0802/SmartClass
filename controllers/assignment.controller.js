@@ -115,9 +115,11 @@ export const createAssignment = asyncHandler(async (req, res, next) => {
   const mm = today.getMonth() + 1;
   const yyyy = today.getFullYear();
 
-  // const dueDate = assignment.dueDate;
-  const [year, month, day] = dueDate.split("/").map(Number);
-
+  //const dueDate = assignment.dueDate;
+  const [year, month, day] = dueDate.split("-").map(Number);
+  // console.log(dueDate);
+  // console.log(typeof(dueDate));
+  // console.log(year, month, day);
   if (!(dd <= day && mm <= month && yyyy <= year))
     return next(new ApiError(403, "Due-Date must be after Current Date!!!"));
 
@@ -185,8 +187,9 @@ export const removeAssignment = asyncHandler(async (req, res, next) => {
         )
       );
   }
-
-  const response = await deleteCloudinaryLinks(assignment.links);
+  let links=[];
+  links.push(assignment.link);
+  const response = await deleteCloudinaryLinks(links);
 
   if (!response)
     return next(

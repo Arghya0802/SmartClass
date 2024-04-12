@@ -455,7 +455,7 @@ function addResource() {
 
   document.getElementById("subject-id").value = "";
   document.getElementById("topic").value = "";
-  // document.getElementById("link").value = "";
+  document.getElementById("fileInput").value = "";
 
   // const jsonObject = {
   //   subjectId,
@@ -781,8 +781,8 @@ function getAllSolutions(assignmentId) {
         data.solutions.forEach((solution) => {
           html += "<tr>";
           html += "<td>" + solution.studentId + "</td>";
-          html += "<td>" + solution.link + "</td>";
-          html += "<td>" + solution.marksObtained + "</td>";
+          html += "<td><a href='" + solution.link + "' target='_blank'>Link</a></td>";
+          html += "<td>" + (solution.marksObtained !== undefined ? solution.marksObtained : "Not Yet Given") + "</td>";
           html += "<td>" + solution.fullMarks + "</td>";
 
           html +=

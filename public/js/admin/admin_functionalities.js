@@ -54,11 +54,17 @@ fetch("api/v1/admin/", {
 function addAdmin() {
   const uniqueId = document.getElementById("unique-id").value;
   const name = document.getElementById("name").value;
+  const gender = document.getElementById("gender").value;
+  const phone = document.getElementById("phone").value;
+  const DOB = document.getElementById("dob").value;
   const email = document.getElementById("email-id").value;
   const password = document.getElementById("password").value;
 
   document.getElementById("unique-id").value = "";
   document.getElementById("name").value = "";
+  document.getElementById("gender").value = "";
+  document.getElementById("phone").value = "";
+  document.getElementById("dob").value = "";
   document.getElementById("email-id").value = "";
   document.getElementById("password").value = "";
 
@@ -67,6 +73,9 @@ function addAdmin() {
     name,
     email,
     password,
+    gender,
+    phone,
+    DOB
   };
   fetch("/api/v1/admin/add-admin", {
     method: "POST",
@@ -610,7 +619,7 @@ function toggleDescription(element, noticeId) {
 function profile() {
   let html = "";
 
-  fetch("forms/profile.html")
+  fetch("forms/adminprofile.html")
     .then((response) => {
       return response.text();
     })
@@ -628,7 +637,7 @@ function profile() {
     })
     .then((data) => {
       const { loggedInAdmin } = data;
-      const { name, uniqueId, age, DOB, email, phone, departmentId } =
+      const { name, uniqueId, age, DOB, email, phone } =
         loggedInAdmin;
       document.getElementById("name").innerText = name;
       document.getElementById("uniqueId").innerText = uniqueId;
@@ -636,7 +645,7 @@ function profile() {
       document.getElementById("DOB").innerText = DOB;
       document.getElementById("phone").innerText = phone;
       document.getElementById("email").innerText = email;
-      document.getElementById("department").innerText = departmentId;
+      // document.getElementById("department").innerText = departmentId;
     });
 }
 
