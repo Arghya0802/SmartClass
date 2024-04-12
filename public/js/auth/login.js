@@ -1,3 +1,5 @@
+let email = "";
+
 function loginClicked()
 {
     event.preventDefault();
@@ -41,4 +43,18 @@ function loginClicked()
         else if(post==="teacher")
         window.location.href = "/teacher.html";
     })
+}
+
+
+
+function forgotPasswordClicked()
+{
+    // fetch("forms/PasswordReset/enteremail.html").then(response => {
+    //     return response.text();
+    // }
+    // ).then(html => {
+    //     document.getElementById("display-window").innerHTML = html;
+    // })
+
+    window.location.href = "forms/PasswordReset/enteremail.html";
 }
