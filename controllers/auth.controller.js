@@ -7,6 +7,9 @@ import ApiError from "../utils/ApiError.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { sendMail } from "../utils/sendMail.js";
+import { generateOtp } from "../utils/generateOtp.js";
+
 const generateAccessAndRefreshTokens = async (userId, User) => {
   try {
     const user = await User.findById(userId);
@@ -49,11 +52,11 @@ export const register = asyncHandler(async (req, res, next) => {
     return next(
       new ApiError(400, "Need to be atleast 18 yrs age to register!!!")
     );
-  
+
   const findTeacher = await Teacher.findOne({ $or: [{ email }, { phone }] });
   const findStudent = await Student.findOne({ $or: [{ email }, { phone }] });
   const findAdmin = await Admin.findOne({ $or: [{ email }, { phone }] });
-    console.log(findAdmin , findTeacher , findStudent);
+  // console.log(findAdmin , findTeacher , findStudent);
   if (findAdmin || findTeacher || findStudent)
     return next(
       new ApiError(
@@ -69,7 +72,7 @@ export const register = asyncHandler(async (req, res, next) => {
 
     if (!existedTeacher)
       return next(new ApiError(404, "No Teacher found with given Unique-Id"));
-console.log(existedTeacher.name);
+    console.log(existedTeacher.name);
     if (existedTeacher.name || existedTeacher.password)
       return next(
         new ApiError(400, "Requested User has already been registered!!!")
@@ -473,4 +476,99 @@ export const viewProfile = asyncHandler(async (req, res, next) => {
     message: "LoggedIn User profile fetched successfully!!!",
     success: true,
   });
+});
+
+export const sendOtp = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) {
+    return next(new ApiError(400, "Please enter your email!"));
+  }
+  let teacher = await Teacher.findOne({ email });
+
+  if (!teacher) {
+    return next(new ApiError(404, "User not found!"));
+  }
+
+  const otp = generateOtp();
+  const isMailSent = await sendMail(email, otp);
+  if (!isMailSent) {
+    return next(new ApiError(500, "Can't send email!"));
+  }
+
+  if (req.cookies.otp) {
+    req.cookies.otp = "";
+  }
+
+  res.cookie("otp", otp, {
+    path: "/",
+    expires: new Date(Date.now() + 1000 * 3600 * 24),
+    httpOnly: true,
+    sameSite: "lax",
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Otp sent successfully",
+  });
+});
+
+export const changePassword = asyncHandler(async (req, res, next) => {
+  const { otp, email, password } = req.body;
+  const actualOtp = req.cookies.otp;
+  if (!actualOtp) {
+    return next(
+      new ApiError(400, "Otp has expired, resend otp to your email!")
+    );
+  }
+  if (actualOtp !== otp) {
+    return next(new ApiError(400, "Incorrect otp!"));
+  }
+
+  const teacher = await Teacher.findOne({ email });
+  const student = await Student.findOne({ email });
+  const admin = await Admin.findOne({ email });
+
+  if (admin) {
+    const hashed = await bcrypt.hash(password, 10);
+
+    admin.password = hashed;
+    await admin.save();
+
+    return res.status(200).json({
+      admin,
+      message: "Admin password successfully updated!!!",
+      success: true,
+    });
+  }
+
+  if (teacher) {
+    const hashed = await bcrypt.hash(password, 10);
+
+    teacher.password = hashed;
+    await teacher.save();
+
+    return res.status(200).json({
+      teacher,
+      message: "Teacher password successfully updated!!!",
+      success: true,
+    });
+  }
+
+  if (student) {
+    const hashed = await bcrypt.hash(password, 10);
+
+    student.password = hashed;
+    await student.save();
+
+    return res.status(200).json({
+      student,
+      message: "Student password successfully updated!!!",
+      success: true,
+    });
+
+    return res.status(404).json({
+      message: "No User found with given email ID!!!",
+      success: false,
+    });
+  }
 });

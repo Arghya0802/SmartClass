@@ -2,9 +2,11 @@ import express from "express";
 const router = express.Router();
 
 import {
+  changePassword,
   login,
   logout,
   register,
+  sendOtp,
   verifyToken,
   viewProfile,
 } from "../controllers/auth.controller.js";
@@ -16,5 +18,8 @@ router.get("/logout", verifyJWT, logout);
 
 router.get("/verify", verifyToken);
 router.get("/profile", verifyJWT, viewProfile);
+
+router.post("/send-otp", sendOtp);
+router.post("forgot-password", changePassword);
 
 export default router;
