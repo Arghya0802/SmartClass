@@ -35,9 +35,10 @@ function registerClicked() {
     .then((data) => {
       localStorage.setItem("response", JSON.stringify({ data, statusCode }));
       document.getElementById("notification").innerText = data.message;
-      if (data.success)
+      if (data.success) {
         document.getElementById("notification").style.color = "green";
-      else document.getElementById("notification").style.color = "red";
+        window.location.href = "../../login.html";
+      } else document.getElementById("notification").style.color = "red";
 
       setTimeout(() => {
         document.getElementById("notification").innerText = "";
