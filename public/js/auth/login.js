@@ -29,18 +29,21 @@ function loginClicked() {
     })
     .then((data) => {
       document.getElementById("notification").innerText = data.message;
-      if (data.success)
+      if (data.success) {
         document.getElementById("notification").style.color = "green";
-      else document.getElementById("notification").style.color = "red";
-      const post = data.designation;
-      if (post === "admin") window.location.href = "/admin.html";
-      else if (post === "hod") window.location.href = "/hod.html";
-      else if (post === "student") window.location.href = "/student.html";
-      else if (post === "teacher") window.location.href = "/teacher.html";
+        const post = data.designation;
+        if (post === "admin") window.location.href = "/admin.html";
+        else if (post === "hod") window.location.href = "/hod.html";
+        else if (post === "student") window.location.href = "/student.html";
+        else if (post === "teacher") window.location.href = "/teacher.html";
+      } else {
+        document.getElementById("notification").style.color = "red";
+        setTimeout(() => {
+          document.getElementById("notification").innerText = "";
+        }, 2000);
+      }
 
-      setTimeout(() => {
-        document.getElementById("notification").innerText = "";
-      }, 2000);
+      // Clear the notification after 2000 milliseconds (2 seconds)
     });
 }
 

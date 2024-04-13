@@ -72,7 +72,7 @@ export const register = asyncHandler(async (req, res, next) => {
 
     if (!existedTeacher)
       return next(new ApiError(404, "No Teacher found with given Unique-Id"));
-    console.log(existedTeacher.name);
+    // console.log(existedTeacher.name);
     if (existedTeacher.name || existedTeacher.password)
       return next(
         new ApiError(400, "Requested User has already been registered!!!")
@@ -109,6 +109,7 @@ export const register = asyncHandler(async (req, res, next) => {
     if (!existedStudent)
       return next(new ApiError(404, "No Student found with given Unique-Id"));
 
+    console.log(existedStudent.name, existedStudent.password);
     if (existedStudent.name || existedStudent.password)
       return next(
         new ApiError(400, "Requested User has already been registered!!!")

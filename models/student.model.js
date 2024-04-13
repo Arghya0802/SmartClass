@@ -41,10 +41,6 @@ const studentSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      default: function () {
-        // Set the default email value based on uniqueId
-        return `${this.uniqueId}`;
-      },
     },
     email: {
       type: String,
