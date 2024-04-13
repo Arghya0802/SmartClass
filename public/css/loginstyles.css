@@ -96,3 +96,23 @@ background-color: #a9a696;
     font-size: 16px;
     cursor: pointer;
 }
+
+        .password-container {
+             position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+        .password-field {
+            padding-right: 30px;
+        }
+        img {
+            height: 30px;
+            width: 21px;
+        }

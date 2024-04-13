@@ -45,7 +45,10 @@
         </div>
         <div class="form-group">
             <label for="password">Password:</label>
-            <input type="password" id="password" placeholder="Enter Password">
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Enter Password">
+                <img src="Eye-icon.svg" class="toggle-password" onclick="togglePasswordVisibility('password')" alt="Toggle Password Visibility">      
+            </div>
         </div>
         <p id="notification" class= "notification" style="color:red; font-size: 20px; text-align: center;" > </p>
         <div class="btn-container">
@@ -53,5 +56,27 @@
         </div>
     </div>
     <script src="js/auth/register.js"></script>
+    <script>
+        function togglePasswordVisibility(inputId) {
+        var passwordInput = document.getElementById(inputId);
+        var icon = passwordInput.nextElementSibling;
+
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            icon.src = "Eye-icon.svg"; // Update with the path to the open eye icon
+        } else {
+            passwordInput.type = "password";
+            icon.src = "Eye-icon-closed.svg"; // Update with the path to the closed eye icon
+        }
+
+        // Hide the password after a fraction of a second
+        setTimeout(function() {
+            passwordInput.type = "password";
+            icon.src = "Eye-icon-closed.svg"; // Update with the path to the closed eye icon
+        },1000);
+    }
+
+
+</script>
     </html>    
 </body>
