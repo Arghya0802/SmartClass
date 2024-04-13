@@ -647,6 +647,28 @@ function toggleDescription(element, noticeId) {
   }
 }
 
+function forgotPasswordClickedProfile() {
+  fetch("api/v1/auth/forget-password", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+        window.location.href = "../../forms/PasswordReset/forgetpassword.html";
+      } else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 4000);
+    });
+}
+
 function logout() {
   fetch("/api/v1/auth/logout", {
     headers: {

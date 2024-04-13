@@ -483,9 +483,11 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
   if (!email) {
     return next(new ApiError(400, "Please enter your email!"));
   }
-  let teacher = await Teacher.findOne({ email });
+  const teacher = await Teacher.findOne({ email });
+  const student = await Student.findOne({ email });
+  const admin = await Admin.findOne({ email });
 
-  if (!teacher) {
+  if (!teacher && !student && !admin) {
     return next(new ApiError(404, "User not found!"));
   }
 
@@ -506,6 +508,11 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
     sameSite: "lax",
   });
 
+  res.cookie("email", email, {
+    expires: new Date(Date.now() + 1000 * 3600 * 24),
+    httpOnly: true,
+  });
+
   return res.status(200).json({
     success: true,
     message: "Otp sent successfully",
@@ -514,6 +521,12 @@ export const sendOtp = asyncHandler(async (req, res, next) => {
 
 export const verifyOtp = asyncHandler(async (req, res, next) => {
   const { otp } = req.body;
+
+  if (!otp)
+    return next(
+      new ApiError(400, "Please enter all the details before proceeding!!!")
+    );
+
   const actualOtp = req.cookies.otp;
   if (!actualOtp) {
     return next(
@@ -524,27 +537,51 @@ export const verifyOtp = asyncHandler(async (req, res, next) => {
     return next(new ApiError(400, "Incorrect otp!"));
   }
 
-  return res.status(400).json({
+  return res.status(200).json({
     message: "OTP matched successfully!!!",
     success: true,
   });
 });
 
 export const changePassword = asyncHandler(async (req, res, next) => {
-  const { email, password } = req.body;
+  const { password, confirmPassword } = req.body;
 
+  if (!password || !confirmPassword)
+    return next(
+      new ApiError(400, "Please enter all details before proceeding!!!")
+    );
+
+  if (password !== confirmPassword)
+    return next(
+      new ApiError(400, "Password and Confirm-Password should be same!!!")
+    );
+
+  const email = req.cookies.email;
   const teacher = await Teacher.findOne({ email });
   const student = await Student.findOne({ email });
   const admin = await Admin.findOne({ email });
 
   if (admin) {
+    console.log(password);
     const hashed = await bcrypt.hash(password, 10);
 
-    admin.password = hashed;
-    await admin.save();
+    // console.log(admin.password);
+    const newAdmin = await Admin.findByIdAndUpdate(
+      admin._id,
+      { password: hashed },
+      { new: true }
+    );
 
+    if (!newAdmin)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
+    console.log(newAdmin.password);
     return res.status(200).json({
-      admin,
+      newAdmin,
       message: "Admin password successfully updated!!!",
       success: true,
     });
@@ -553,11 +590,22 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   if (teacher) {
     const hashed = await bcrypt.hash(password, 10);
 
-    teacher.password = hashed;
-    await teacher.save();
+    const newTeacher = await Teacher.findByIdAndUpdate(
+      teacher._id,
+      { password: hashed },
+      { new: true }
+    );
+
+    if (!newTeacher)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
 
     return res.status(200).json({
-      teacher,
+      newTeacher,
       message: "Teacher password successfully updated!!!",
       success: true,
     });
@@ -566,11 +614,22 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   if (student) {
     const hashed = await bcrypt.hash(password, 10);
 
-    student.password = hashed;
-    await student.save();
+    const newStudent = await Student.findByIdAndUpdate(
+      student._id,
+      { password: hashed },
+      { new: true }
+    );
+
+    if (!newStudent)
+      return next(
+        new ApiError(
+          500,
+          "Something went wrong while calling to the DataBase!!!"
+        )
+      );
 
     return res.status(200).json({
-      student,
+      newStudent,
       message: "Student password successfully updated!!!",
       success: true,
     });
@@ -579,5 +638,50 @@ export const changePassword = asyncHandler(async (req, res, next) => {
   return res.status(404).json({
     message: "No User found with given Email-ID!!!",
     success: false,
+  });
+});
+
+export const sendOtpDirectly = asyncHandler(async (req, res, next) => {
+  const { _id } = req.user;
+
+  if (!_id)
+    return next(
+      new ApiError(500, "Something went wrong while decoding Access-Tokens!!!")
+    );
+
+  const admin = await Admin.findById(_id);
+  const teacher = await Teacher.findById(_id);
+  const student = await Student.findById(_id);
+
+  if (!admin && !teacher && !student)
+    return next(new ApiError(404, "No User found with given credentials!!!"));
+
+  const email = admin ? admin.email : teacher ? teacher.email : student.email;
+
+  const otp = generateOtp();
+  const isMailSent = await sendMail(email, otp);
+  if (!isMailSent) {
+    return next(new ApiError(500, "Can't send email!"));
+  }
+
+  if (req.cookies.otp) {
+    req.cookies.otp = "";
+  }
+
+  res.cookie("otp", otp, {
+    path: "/",
+    expires: new Date(Date.now() + 1000 * 3600 * 24),
+    httpOnly: true,
+    sameSite: "lax",
+  });
+
+  res.cookie("email", email, {
+    expires: new Date(Date.now() + 1000 * 3600 * 24),
+    httpOnly: true,
+  });
+
+  return res.status(200).json({
+    success: true,
+    message: "Otp sent successfully",
   });
 });

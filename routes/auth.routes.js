@@ -7,6 +7,7 @@ import {
   logout,
   register,
   sendOtp,
+  sendOtpDirectly,
   verifyOtp,
   verifyToken,
   viewProfile,
@@ -22,6 +23,8 @@ router.get("/profile", verifyJWT, viewProfile);
 
 router.post("/send-otp", sendOtp);
 router.post("/verify-otp", verifyOtp);
-router.post("/forgot-password", changePassword);
+router.post("/change-password", changePassword);
+
+router.get("/forget-password", verifyJWT, sendOtpDirectly);
 
 export default router;

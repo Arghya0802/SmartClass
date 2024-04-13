@@ -781,8 +781,14 @@ function getAllSolutions(assignmentId) {
         data.solutions.forEach((solution) => {
           html += "<tr>";
           html += "<td>" + solution.studentId + "</td>";
-          html += "<td><a href='" + solution.link + "' target='_blank'>Link</a></td>";
-          html += "<td>" + (solution.marksObtained !== undefined ? solution.marksObtained : "Not Yet Given") + "</td>";
+          html +=
+            "<td><a href='" + solution.link + "' target='_blank'>Link</a></td>";
+          html +=
+            "<td>" +
+            (solution.marksObtained !== undefined
+              ? solution.marksObtained
+              : "Not Yet Given") +
+            "</td>";
           html += "<td>" + solution.fullMarks + "</td>";
 
           html +=
@@ -958,6 +964,30 @@ function toggleDescription(element, noticeId) {
       toggleElement.style.color = "red";
     }
   }
+}
+
+function forgotPasswordClickedProfile() {
+  fetch("api/v1/auth/forget-password", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message
+        ? data.message
+        : "Email couldn't be send!!!";
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+        window.location.href = "../../forms/PasswordReset/forgetpassword.html";
+      } else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 4000);
+    });
 }
 
 function logout() {

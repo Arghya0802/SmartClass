@@ -1,30 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Page</title>
-<link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/loginstyles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css?family=Courier+Prime&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/loginstyles.css">
 
 </head>
+
 <body>
-<div class="container">
-    <h2>Login to SmartClass</h2>
-    <div class="form-group">
-        <label for="unique-id">Unique ID:</label>
-        <input type="text" id="unique-id" placeholder="Enter Unique ID">
+    <div class="container">
+        <h2>Login to SmartClass</h2>
+        <div class="form-group">
+            <label for="unique-id">Unique ID:</label>
+            <input type="text" id="unique-id" placeholder="Enter Unique ID">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter Password">
+        </div>
+        <p id="notification" class="notification" style="color:red; font-size: 20px; text-align: center;"> </p>
+        <div class="btn-container">
+            <button class="forgot-password-btn" id="forgot-password" onclick="forgotPasswordClicked()">Forget
+                Password</button>
+            <button class="login-btn" id="login" onclick="loginClicked()">Login</button>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter Password">
-    </div>
-    <p id="notification" class= "notification" style="color:red; font-size: 20px; text-align: center;" > </p>
-    <div class="btn-container">
-        <button class="forgot-password-btn" id="forgot-password" onclick="forgotPasswordClicked()">Forgot Password</button>
-        <button class="login-btn" id="login" onclick="loginClicked()">Login</button>
-    </div>
-</div>
-<script src="js/auth/login.js"></script>
+    <script src="js/auth/login.js"></script>
 </body>
+
 </html>

@@ -75,7 +75,7 @@ function addAdmin() {
     password,
     gender,
     phone,
-    DOB
+    DOB,
   };
   fetch("/api/v1/admin/add-admin", {
     method: "POST",
@@ -637,8 +637,7 @@ function profile() {
     })
     .then((data) => {
       const { loggedInAdmin } = data;
-      const { name, uniqueId, age, DOB, email, phone } =
-        loggedInAdmin;
+      const { name, uniqueId, age, DOB, email, phone } = loggedInAdmin;
       document.getElementById("name").innerText = name;
       document.getElementById("uniqueId").innerText = uniqueId;
       document.getElementById("age").innerText = age;
@@ -646,6 +645,28 @@ function profile() {
       document.getElementById("phone").innerText = phone;
       document.getElementById("email").innerText = email;
       // document.getElementById("department").innerText = departmentId;
+    });
+}
+
+function forgotPasswordClickedProfile() {
+  fetch("api/v1/auth/forget-password", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      // document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+        window.location.href = "../../forms/PasswordReset/forgetpassword.html";
+      } else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 4000);
     });
 }
 

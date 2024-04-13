@@ -10,11 +10,11 @@ export const sendMail = (email, otp) => {
       },
     });
 
-    const sender = "Eduhub Team";
+    const sender = "SmartClass Team";
     const mailOptions = {
       from: sender,
       to: email,
-      subject: "Eduhub Email Verification",
+      subject: "SmartClass Email Verification",
       html: `<p>Your otp is: <b>${otp}</b>. Use this to verify your account.</p>`,
     };
 

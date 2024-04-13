@@ -381,9 +381,9 @@ function addSolutionClicked(assignmentId) {
         addSolution(assignmentId);
       });
     });
-    // setTimeout(() => {
-    //   document.getElementById("notification").innerText = "";
-    // }, 2000);
+  // setTimeout(() => {
+  //   document.getElementById("notification").innerText = "";
+  // }, 2000);
 }
 
 function addSolution(assignmentId) {
@@ -399,7 +399,7 @@ function addSolution(assignmentId) {
     formData.append("solutions", file);
   }
   document.getElementById("fileInput").value = "";
-  
+
   fetch("/api/v1/solution/add/" + assignmentId, {
     method: "POST",
     headers: {
@@ -893,6 +893,28 @@ function toggleDescription(element, noticeId) {
       toggleElement.style.color = "red";
     }
   }
+}
+
+function forgotPasswordClickedProfile() {
+  fetch("api/v1/auth/forget-password", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      document.getElementById("notification").innerText = data.message;
+      if (data.success) {
+        document.getElementById("notification").style.color = "green";
+        window.location.href = "../../forms/PasswordReset/forgetpassword.html";
+      } else document.getElementById("notification").style.color = "red";
+
+      setTimeout(() => {
+        document.getElementById("notification").innerText = "";
+      }, 4000);
+    });
 }
 
 function logout() {
